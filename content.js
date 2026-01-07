@@ -121,9 +121,9 @@
     
     chrome.storage.sync.get(['settings', 'projects'], (result) => {
       const settings = result.settings || {
-        local: { text: 'ローカル環境', color: '#4CAF50' },
-        staging: { text: 'ステージング環境', color: '#FFC107' },
-        production: { text: '本番環境', color: '#F44336' }
+        local: { text: 'Local Environment', color: '#4CAF50' },
+        staging: { text: 'Staging Environment', color: '#FFC107' },
+        production: { text: 'Production Environment', color: '#F44336' }
       };
       const projects = result.projects || [];
 

@@ -1,11 +1,11 @@
-// 設定画面のロジック
+// Options page logic
 
 (function() {
   'use strict';
 
-  // DOM要素の取得
+  // DOM elements
   const elements = {
-    // 共通設定
+    // Common settings
     localText: document.getElementById('local-text'),
     localColor: document.getElementById('local-color'),
     stagingText: document.getElementById('staging-text'),
@@ -14,11 +14,11 @@
     productionColor: document.getElementById('production-color'),
     saveSettingsBtn: document.getElementById('save-settings'),
 
-    // プロジェクト管理
+    // Project management
     addProjectBtn: document.getElementById('add-project'),
     projectsList: document.getElementById('projects-list'),
 
-    // モーダル
+    // Modal
     modal: document.getElementById('project-modal'),
     modalTitle: document.getElementById('modal-title'),
     projectForm: document.getElementById('project-form'),
@@ -27,111 +27,27 @@
     projectStaging: document.getElementById('project-staging'),
     projectProduction: document.getElementById('project-production'),
     closeModal: document.querySelector('.close'),
-    cancelProject: document.getElementById('cancel-project'),
-
-    // 言語選択
-    languageSelect: document.getElementById('language-select')
+    cancelProject: document.getElementById('cancel-project')
   };
 
   let editingProjectId = null;
-  let currentLanguage = 'ja';
-  let translations = {};
 
-  // 初期化
+  // Initialize
   function init() {
-    loadLanguage();
     loadSettings();
     loadProjects();
     setupEventListeners();
   }
 
-  // 言語ファイルの読み込み
-  function loadLanguage() {
-    chrome.storage.sync.get(['language'], (result) => {
-      currentLanguage = result.language || 'ja';
-      elements.languageSelect.value = currentLanguage;
-      
-      const langFile = `locales/${currentLanguage}.json`;
-      fetch(chrome.runtime.getURL(langFile))
-        .then(response => response.json())
-        .then(data => {
-          translations = data;
-          applyTranslations();
-        })
-        .catch(error => {
-          console.error('Failed to load language file:', error);
-          // フォールバック: デフォルトで日本語を使用
-          if (currentLanguage !== 'ja') {
-            currentLanguage = 'ja';
-            elements.languageSelect.value = 'ja';
-            loadLanguage();
-          }
-        });
-    });
-  }
-
-  // 翻訳を適用
-  function applyTranslations() {
-    // data-i18n-placeholder属性を持つ要素を先に更新（優先）
-    document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
-      const key = element.getAttribute('data-i18n-placeholder');
-      const keys = key.split('.');
-      let value = translations;
-      
-      for (const k of keys) {
-        if (value && typeof value === 'object') {
-          value = value[k];
-        } else {
-          value = null;
-          break;
-        }
-      }
-      
-      if (value !== null && value !== undefined) {
-        element.placeholder = value;
-      }
-    });
-
-    // data-i18n属性を持つ要素を更新（プレースホルダー以外）
-    document.querySelectorAll('[data-i18n]').forEach(element => {
-      // data-i18n-placeholderが既に処理されている場合はスキップ
-      if (element.hasAttribute('data-i18n-placeholder')) {
-        return;
-      }
-
-      const key = element.getAttribute('data-i18n');
-      const keys = key.split('.');
-      let value = translations;
-      
-      for (const k of keys) {
-        if (value && typeof value === 'object') {
-          value = value[k];
-        } else {
-          value = null;
-          break;
-        }
-      }
-      
-      if (value !== null && value !== undefined) {
-        element.textContent = value;
-      }
-    });
-
-    // タイトルを更新
-    if (translations.settings && translations.settings.title) {
-      document.title = translations.settings.title;
-    }
-  }
-
-  // イベントリスナーの設定
+  // Setup event listeners
   function setupEventListeners() {
-    // 共通設定の保存
+    // Save common settings
     elements.saveSettingsBtn.addEventListener('click', saveSettings);
 
-    // プロジェクト追加
+    // Add project
     elements.addProjectBtn.addEventListener('click', () => openProjectModal());
 
-    // モーダルの閉じる
+    // Close modal
     elements.closeModal.addEventListener('click', closeProjectModal);
     elements.cancelProject.addEventListener('click', closeProjectModal);
     elements.modal.addEventListener('click', (e) => {
@@ -140,60 +56,51 @@
       }
     });
 
-    // プロジェクトフォームの送信
+    // Project form submission
     elements.projectForm.addEventListener('submit', handleProjectSubmit);
-
-    // 言語切り替え
-    elements.languageSelect.addEventListener('change', (e) => {
-      currentLanguage = e.target.value;
-      chrome.storage.sync.set({ language: currentLanguage }, () => {
-        loadLanguage();
-      });
-    });
   }
 
-  // 共通設定の読み込み
+  // Load common settings
   function loadSettings() {
     chrome.storage.sync.get(['settings'], (result) => {
       const settings = result.settings || {
-        local: { text: 'ローカル環境', color: '#4CAF50' },
-        staging: { text: 'ステージング環境', color: '#FFC107' },
-        production: { text: '本番環境', color: '#F44336' }
+        local: { text: 'Local Environment', color: '#4CAF50' },
+        staging: { text: 'Staging Environment', color: '#FFC107' },
+        production: { text: 'Production Environment', color: '#F44336' }
       };
 
-      elements.localText.value = settings.local.text || 'ローカル環境';
+      elements.localText.value = settings.local.text || 'Local Environment';
       elements.localColor.value = settings.local.color || '#4CAF50';
-      elements.stagingText.value = settings.staging.text || 'ステージング環境';
+      elements.stagingText.value = settings.staging.text || 'Staging Environment';
       elements.stagingColor.value = settings.staging.color || '#FFC107';
-      elements.productionText.value = settings.production.text || '本番環境';
+      elements.productionText.value = settings.production.text || 'Production Environment';
       elements.productionColor.value = settings.production.color || '#F44336';
     });
   }
 
-  // 共通設定の保存
+  // Save common settings
   function saveSettings() {
     const settings = {
       local: {
-        text: elements.localText.value || 'ローカル環境',
+        text: elements.localText.value || 'Local Environment',
         color: elements.localColor.value
       },
       staging: {
-        text: elements.stagingText.value || 'ステージング環境',
+        text: elements.stagingText.value || 'Staging Environment',
         color: elements.stagingColor.value
       },
       production: {
-        text: elements.productionText.value || '本番環境',
+        text: elements.productionText.value || 'Production Environment',
         color: elements.productionColor.value
       }
     };
 
     chrome.storage.sync.set({ settings }, () => {
-      const message = translations.settings?.settingsSaved || '共通設定を保存しました';
-      alert(message);
+      alert('Common settings saved');
     });
   }
 
-  // プロジェクトの読み込み
+  // Load projects
   function loadProjects() {
     chrome.storage.sync.get(['projects'], (result) => {
       const projects = result.projects || [];
@@ -201,61 +108,52 @@
     });
   }
 
-  // プロジェクトの表示
+  // Render projects
   function renderProjects(projects) {
     if (projects.length === 0) {
-      const noProjects = translations.projects?.noProjects || 'プロジェクトが登録されていません';
-      const addHint = translations.projects?.addProjectHint || '「プロジェクトを追加」ボタンから追加してください';
       elements.projectsList.innerHTML = `
         <div class="empty-state">
-          <p>${escapeHtml(noProjects)}</p>
-          <p>${escapeHtml(addHint)}</p>
+          <p>No projects registered</p>
+          <p>Click "Add Project" button to add one</p>
         </div>
       `;
       return;
     }
-
-    const localEnv = translations.projects?.localDomains?.replace('のドメイン', '') || translations.settings?.localEnv || 'ローカル環境';
-    const stagingEnv = translations.projects?.stagingDomains?.replace('のドメイン', '') || translations.settings?.stagingEnv || 'ステージング環境';
-    const productionEnv = translations.projects?.productionDomains?.replace('のドメイン', '') || translations.settings?.productionEnv || '本番環境';
-    const notSet = translations.projects?.notSet || '未設定';
-    const editText = translations.projects?.edit || '編集';
-    const deleteText = translations.projects?.delete || '削除';
 
     elements.projectsList.innerHTML = projects.map(project => `
       <div class="project-card" data-project-id="${project.id}">
         <div class="project-header">
           <div class="project-name">${escapeHtml(project.name)}</div>
           <div class="project-actions">
-            <button class="btn btn-edit edit-project" data-project-id="${project.id}">${escapeHtml(editText)}</button>
-            <button class="btn btn-danger delete-project" data-project-id="${project.id}">${escapeHtml(deleteText)}</button>
+            <button class="btn btn-edit edit-project" data-project-id="${project.id}">Edit</button>
+            <button class="btn btn-danger delete-project" data-project-id="${project.id}">Delete</button>
           </div>
         </div>
         <div class="project-domains">
           <div class="domain-group">
-            <h4>${escapeHtml(localEnv)}</h4>
+            <h4>Local</h4>
             <div class="domain-list">
               <ul>
                 ${(project.local || []).map(domain => `<li>${escapeHtml(domain)}</li>`).join('')}
-                ${(project.local || []).length === 0 ? `<li style="color: #999;">${escapeHtml(notSet)}</li>` : ''}
+                ${(project.local || []).length === 0 ? '<li style="color: #999;">Not set</li>' : ''}
               </ul>
             </div>
           </div>
           <div class="domain-group">
-            <h4>${escapeHtml(stagingEnv)}</h4>
+            <h4>Staging</h4>
             <div class="domain-list">
               <ul>
                 ${(project.staging || []).map(domain => `<li>${escapeHtml(domain)}</li>`).join('')}
-                ${(project.staging || []).length === 0 ? `<li style="color: #999;">${escapeHtml(notSet)}</li>` : ''}
+                ${(project.staging || []).length === 0 ? '<li style="color: #999;">Not set</li>' : ''}
               </ul>
             </div>
           </div>
           <div class="domain-group">
-            <h4>${escapeHtml(productionEnv)}</h4>
+            <h4>Production</h4>
             <div class="domain-list">
               <ul>
                 ${(project.production || []).map(domain => `<li>${escapeHtml(domain)}</li>`).join('')}
-                ${(project.production || []).length === 0 ? `<li style="color: #999;">${escapeHtml(notSet)}</li>` : ''}
+                ${(project.production || []).length === 0 ? '<li style="color: #999;">Not set</li>' : ''}
               </ul>
             </div>
           </div>
@@ -263,7 +161,7 @@
       </div>
     `).join('');
 
-    // 編集・削除ボタンのイベントリスナー
+    // Edit and delete button event listeners
     document.querySelectorAll('.edit-project').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const projectId = e.target.getAttribute('data-project-id');
@@ -279,13 +177,10 @@
     });
   }
 
-  // プロジェクトモーダルを開く
+  // Open project modal
   function openProjectModal(projectId = null) {
     editingProjectId = projectId;
-    const title = projectId 
-      ? (translations.projects?.editProject || 'プロジェクトを編集')
-      : (translations.projects?.addProject || 'プロジェクトを追加');
-    elements.modalTitle.textContent = title;
+    elements.modalTitle.textContent = projectId ? 'Edit Project' : 'Add Project';
     elements.projectForm.reset();
 
     if (projectId) {
@@ -304,22 +199,21 @@
     elements.modal.style.display = 'block';
   }
 
-  // プロジェクトモーダルを閉じる
+  // Close project modal
   function closeProjectModal() {
     elements.modal.style.display = 'none';
     editingProjectId = null;
     elements.projectForm.reset();
   }
 
-  // プロジェクトの編集
+  // Edit project
   function editProject(projectId) {
     openProjectModal(projectId);
   }
 
-  // プロジェクトの削除
+  // Delete project
   function deleteProject(projectId) {
-    const message = translations.projects?.deleteConfirm || 'このプロジェクトを削除してもよろしいですか？';
-    if (!confirm(message)) {
+    if (!confirm('Are you sure you want to delete this project?')) {
       return;
     }
 
@@ -332,18 +226,17 @@
     });
   }
 
-  // プロジェクトフォームの送信
+  // Handle project form submission
   function handleProjectSubmit(e) {
     e.preventDefault();
 
     const name = elements.projectName.value.trim();
     if (!name) {
-      const message = translations.projects?.nameRequired || 'プロジェクト名を入力してください';
-      alert(message);
+      alert('Please enter a project name');
       return;
     }
 
-    // ドメインを配列に変換（改行またはカンマで区切る）
+    // Parse domains (separated by line breaks or commas)
     const parseDomains = (text) => {
       return text.split(/[\n,]/)
         .map(d => d.trim())
@@ -358,7 +251,7 @@
       const projects = result.projects || [];
 
       if (editingProjectId) {
-        // 編集
+        // Edit
         const index = projects.findIndex(p => p.id === editingProjectId);
         if (index !== -1) {
           projects[index] = {
@@ -370,7 +263,7 @@
           };
         }
       } else {
-        // 新規追加
+        // Add new
         const newProject = {
           id: 'project-' + Date.now(),
           name,
@@ -388,14 +281,13 @@
     });
   }
 
-  // HTMLエスケープ
+  // Escape HTML
   function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
   }
 
-  // 初期化実行
+  // Initialize
   init();
 })();
-

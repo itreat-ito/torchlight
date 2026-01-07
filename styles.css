@@ -28,7 +28,7 @@
 .env-banner[popover] {
   /* デフォルトのpopoverスタイルを上書き */
   inset: unset;
-  width: inherit;
+  width: 100%;
   max-width: unset;
   max-height: unset;
   margin: 0;
