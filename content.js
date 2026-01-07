@@ -149,6 +149,8 @@
               console.warn('Failed to show popover:', error);
               banner.style.zIndex = '9999';
             }
+            // マウスカーソルによるバナーの非表示機能を設定
+            setupBannerAutoHide(banner);
           } else {
             // DOMが準備できていない場合は待機
             const observer = new MutationObserver((mutations, obs) => {
@@ -168,6 +170,8 @@
                   console.warn('Failed to show popover:', error);
                   banner.style.zIndex = '9999';
                 }
+                // マウスカーソルによるバナーの非表示機能を設定
+                setupBannerAutoHide(banner);
                 obs.disconnect();
               }
             });
@@ -177,6 +181,45 @@
       }
     });
   }
+
+  // バナーの自動非表示機能を設定
+  function setupBannerAutoHide(banner) {
+    const BANNER_HEIGHT = 40;
+    const HIDE_THRESHOLD = 60; // バナーの高さ + 余白（マウスカーソルがこの範囲内に入ると非表示）
+    let hideTimeout = null;
+    let isHidden = false;
+
+    // マウスカーソルの位置を監視
+    document.addEventListener('mousemove', (e) => {
+      const mouseY = e.clientY;
+      
+      // 既存のタイムアウトをクリア
+      if (hideTimeout) {
+        clearTimeout(hideTimeout);
+        hideTimeout = null;
+      }
+
+      // バナーの近く（バナーの上も含む）にマウスカーソルがある場合は非表示
+      if (mouseY <= HIDE_THRESHOLD) {
+        if (!isHidden) {
+          // バナーを非表示（pointer-eventsをnoneにしてクリック可能にする）
+          banner.style.pointerEvents = 'none';
+          banner.style.opacity = '0';
+          banner.style.transition = 'opacity 0.2s ease-in-out';
+          isHidden = true;
+        }
+      } else {
+        // マウスカーソルが離れたら少し遅延して再表示
+        if (isHidden) {
+          hideTimeout = setTimeout(() => {
+            banner.style.pointerEvents = 'auto';
+            banner.style.opacity = '1';
+            isHidden = false;
+          }, 100); // 100msの遅延で再表示（ちらつきを防ぐ）
+        }
+      }
+    });
+  };
 
   // ページ読み込み時に実行
   if (document.readyState === 'loading') {
