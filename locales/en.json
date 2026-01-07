@@ -1,0 +1,54 @@
+{
+  "appName": "Environment Banner",
+  "settings": {
+    "title": "Environment Banner Settings",
+    "commonSettings": "Common Settings",
+    "localEnv": "Local Environment",
+    "stagingEnv": "Staging Environment",
+    "productionEnv": "Production Environment",
+    "text": "Text",
+    "color": "Color",
+    "localTextLabel": "Local Environment Text",
+    "localColorLabel": "Local Environment Color",
+    "stagingTextLabel": "Staging Environment Text",
+    "stagingColorLabel": "Staging Environment Color",
+    "productionTextLabel": "Production Environment Text",
+    "productionColorLabel": "Production Environment Color",
+    "localTextPlaceholder": "Local Environment",
+    "stagingTextPlaceholder": "Staging Environment",
+    "productionTextPlaceholder": "Production Environment",
+    "saveSettings": "Save Common Settings",
+    "settingsSaved": "Common settings saved"
+  },
+  "projects": {
+    "title": "Project Management",
+    "addProject": "Add Project",
+    "editProject": "Edit Project",
+    "noProjects": "No projects registered",
+    "addProjectHint": "Click \"Add Project\" button to add one",
+    "projectName": "Project Name",
+    "localDomains": "Local Environment Domains",
+    "stagingDomains": "Staging Environment Domains",
+    "productionDomains": "Production Environment Domains",
+    "domainHint": "Separate multiple domains with line breaks. Wildcards (*) can be used.",
+    "notSet": "Not set",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "deleteConfirm": "Are you sure you want to delete this project?",
+    "nameRequired": "Please enter a project name"
+  },
+  "popup": {
+    "title": "Environment Banner",
+    "description1": "Environment banner is automatically displayed based on the current page domain.",
+    "description2": "Open the options page to change settings.",
+    "openSettings": "Open Settings"
+  },
+  "language": {
+    "label": "Language",
+    "japanese": "日本語",
+    "english": "English"
+  }
+}
+

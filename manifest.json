@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "環境表示バナー",
+  "version": "1.0.0",
+  "description": "ローカル・ステージング・本番環境を視覚的に区別するためのバナーを表示します",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_start"
+    }
+  ],
+  "options_page": "options.html",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["locales/*.json"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
+

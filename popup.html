@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>環境表示バナー</title>
+  <style>
+    body {
+      width: 300px;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    h2 {
+      margin: 0 0 15px 0;
+      font-size: 18px;
+      color: #2c3e50;
+    }
+    .info {
+      color: #7f8c8d;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin-top: 15px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      text-decoration: none;
+    }
+    .btn:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <h2 data-i18n="popup.title">環境表示バナー</h2>
+  <div class="info">
+    <p data-i18n="popup.description1">現在のページのドメインに基づいて、環境バナーが自動的に表示されます。</p>
+    <p data-i18n="popup.description2">設定を変更するには、オプションページを開いてください。</p>
+  </div>
+  <a href="#" id="open-options" class="btn" data-i18n="popup.openSettings">設定を開く</a>
+  <script src="popup.js"></script>
+</body>
+</html>
+
