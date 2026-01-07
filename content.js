@@ -100,6 +100,9 @@
     banner.className = 'env-banner';
     banner.textContent = envSettings.text || `${environment}環境`;
     banner.style.backgroundColor = envSettings.color || '#666666';
+    
+    // Top Layer API: popover属性を使用して最上位レイヤーに配置
+    banner.setAttribute('popover', 'manual');
 
     // テキスト色を決定（明度に基づく）
     const luminance = getLuminance(envSettings.color);
@@ -131,12 +134,40 @@
         if (banner) {
           // DOMが準備できているか確認
           if (document.body) {
-            document.body.insertBefore(banner, document.body.firstChild);
+            document.body.appendChild(banner);
+            // Top Layer API: showPopover()で最上位レイヤーに表示
+            try {
+              if (banner.showPopover && typeof banner.showPopover === 'function') {
+                banner.showPopover();
+              } else {
+                // Top Layer APIがサポートされていない場合のフォールバック
+                console.warn('Top Layer API (popover) is not supported. Using fallback.');
+                banner.style.zIndex = '9999';
+              }
+            } catch (error) {
+              // エラーが発生した場合のフォールバック
+              console.warn('Failed to show popover:', error);
+              banner.style.zIndex = '9999';
+            }
           } else {
             // DOMが準備できていない場合は待機
             const observer = new MutationObserver((mutations, obs) => {
               if (document.body) {
-                document.body.insertBefore(banner, document.body.firstChild);
+                document.body.appendChild(banner);
+                // Top Layer API: showPopover()で最上位レイヤーに表示
+                try {
+                  if (banner.showPopover && typeof banner.showPopover === 'function') {
+                    banner.showPopover();
+                  } else {
+                    // Top Layer APIがサポートされていない場合のフォールバック
+                    console.warn('Top Layer API (popover) is not supported. Using fallback.');
+                    banner.style.zIndex = '9999';
+                  }
+                } catch (error) {
+                  // エラーが発生した場合のフォールバック
+                  console.warn('Failed to show popover:', error);
+                  banner.style.zIndex = '9999';
+                }
                 obs.disconnect();
               }
             });
