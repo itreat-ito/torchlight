@@ -120,10 +120,18 @@
       return;
     }
 
-    elements.projectsList.innerHTML = projects.map(project => `
+    elements.projectsList.innerHTML = projects.map(project => {
+      const isEnabled = project.enabled !== false; // デフォルトはtrue
+      return `
       <div class="project-card" data-project-id="${project.id}">
         <div class="project-header">
-          <div class="project-name">${escapeHtml(project.name)}</div>
+          <div class="project-name-wrapper">
+            <label class="toggle-switch">
+              <input type="checkbox" class="toggle-input" data-project-id="${project.id}" ${isEnabled ? 'checked' : ''}>
+              <span class="toggle-slider"></span>
+            </label>
+            <div class="project-name">${escapeHtml(project.name)}</div>
+          </div>
           <div class="project-actions">
             <button class="btn btn-edit edit-project" data-project-id="${project.id}">Edit</button>
             <button class="btn btn-danger delete-project" data-project-id="${project.id}">Delete</button>
@@ -159,7 +167,8 @@
           </div>
         </div>
       </div>
-    `).join('');
+      `;
+    }).join('');
 
     // Edit and delete button event listeners
     document.querySelectorAll('.edit-project').forEach(btn => {
@@ -173,6 +182,15 @@
       btn.addEventListener('click', (e) => {
         const projectId = e.target.getAttribute('data-project-id');
         deleteProject(projectId);
+      });
+    });
+
+    // Toggle switch event listeners
+    document.querySelectorAll('.toggle-input').forEach(toggle => {
+      toggle.addEventListener('change', (e) => {
+        const projectId = e.target.getAttribute('data-project-id');
+        const enabled = e.target.checked;
+        toggleProject(projectId, enabled);
       });
     });
   }
@@ -226,6 +244,21 @@
     });
   }
 
+  // Toggle project enabled/disabled
+  function toggleProject(projectId, enabled) {
+    chrome.storage.sync.get(['projects'], (result) => {
+      const projects = result.projects || [];
+      const project = projects.find(p => p.id === projectId);
+      if (project) {
+        project.enabled = enabled;
+        chrome.storage.sync.set({ projects }, () => {
+          // プロジェクトリストを再読み込みせず、状態のみ更新
+          // これにより、トグルのちらつきを防ぐ
+        });
+      }
+    });
+  }
+
   // Handle project form submission
   function handleProjectSubmit(e) {
     e.preventDefault();
@@ -254,12 +287,15 @@
         // Edit
         const index = projects.findIndex(p => p.id === editingProjectId);
         if (index !== -1) {
+          // 既存のenabled状態を保持（デフォルトはtrue）
+          const existingProject = projects[index];
           projects[index] = {
             id: editingProjectId,
             name,
             local,
             staging,
-            production
+            production,
+            enabled: existingProject.enabled !== false // 既存の値があれば保持、なければtrue
           };
         }
       } else {
@@ -269,7 +305,8 @@
           name,
           local,
           staging,
-          production
+          production,
+          enabled: true // 新規プロジェクトはデフォルトで有効
         };
         projects.push(newProject);
       }

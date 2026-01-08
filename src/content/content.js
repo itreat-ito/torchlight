@@ -40,6 +40,11 @@ import './styles.css';
   // 環境を判定
   function detectEnvironment(domain, projects) {
     for (const project of projects) {
+      // プロジェクトが無効の場合はスキップ
+      if (project.enabled === false) {
+        continue;
+      }
+      
       // ローカル環境をチェック
       if (project.local && Array.isArray(project.local)) {
         for (const localDomain of project.local) {
