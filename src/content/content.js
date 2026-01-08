@@ -1,4 +1,5 @@
 // 環境表示バナーのコンテンツスクリプト
+import './styles.css';
 
 (function() {
   'use strict';
@@ -239,4 +240,3 @@
   }).observe(document, { subtree: true, childList: true });
 
 })();
-

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Environment Banner - Settings</title>
-  <link rel="stylesheet" href="options.css">
+  <link rel="stylesheet" href="./options.css">
 </head>
 <body>
   <div class="container">
@@ -16,25 +16,28 @@
       <div class="settings-grid">
         <!-- Local Environment -->
         <div class="setting-item">
-          <label for="local-text">Local Environment Text</label>
-          <input type="text" id="local-text" placeholder="Local Environment">
-          <label for="local-color">Local Environment Color</label>
+          <h3>Local Environment</h3>
+          <label for="local-text">Text</label>
+          <input type="text" id="local-text" placeholder="You're on LOCAL env.">
+          <label for="local-color">Color</label>
           <input type="color" id="local-color" value="#4CAF50">
         </div>
 
         <!-- Staging Environment -->
         <div class="setting-item">
-          <label for="staging-text">Staging Environment Text</label>
-          <input type="text" id="staging-text" placeholder="Staging Environment">
-          <label for="staging-color">Staging Environment Color</label>
+          <h3>Staging Environment</h3>
+          <label for="staging-text">Text</label>
+          <input type="text" id="staging-text" placeholder="You're on STAGING env.">
+          <label for="staging-color">Color</label>
           <input type="color" id="staging-color" value="#FFC107">
         </div>
 
         <!-- Production Environment -->
         <div class="setting-item">
-          <label for="production-text">Production Environment Text</label>
-          <input type="text" id="production-text" placeholder="Production Environment">
-          <label for="production-color">Production Environment Color</label>
+          <h3>Production Environment</h3>
+          <label for="production-text">Text</label>
+          <input type="text" id="production-text" placeholder="You're on PRODUCTION env.">
+          <label for="production-color">Color</label>
           <input type="color" id="production-color" value="#F44336">
         </div>
       </div>
@@ -86,6 +89,6 @@
     </div>
   </div>
 
-  <script src="options.js"></script>
+  <script type="module" src="./options.js"></script>
 </body>
 </html>

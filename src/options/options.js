@@ -64,16 +64,16 @@
   function loadSettings() {
     chrome.storage.sync.get(['settings'], (result) => {
       const settings = result.settings || {
-        local: { text: 'Local Environment', color: '#4CAF50' },
-        staging: { text: 'Staging Environment', color: '#FFC107' },
-        production: { text: 'Production Environment', color: '#F44336' }
+        local: { text: 'You\'re on LOCAL env.', color: '#4CAF50' },
+        staging: { text: 'You\'re on STAGING env.', color: '#FFC107' },
+        production: { text: 'You\'re on PRODUCTION env.', color: '#F44336' }
       };
 
-      elements.localText.value = settings.local.text || 'Local Environment';
+      elements.localText.value = settings.local.text || 'You\'re on LOCAL env.';
       elements.localColor.value = settings.local.color || '#4CAF50';
-      elements.stagingText.value = settings.staging.text || 'Staging Environment';
+      elements.stagingText.value = settings.staging.text || 'You\'re on STAGING env.';
       elements.stagingColor.value = settings.staging.color || '#FFC107';
-      elements.productionText.value = settings.production.text || 'Production Environment';
+      elements.productionText.value = settings.production.text || 'You\'re on PRODUCTION env.';
       elements.productionColor.value = settings.production.color || '#F44336';
     });
   }

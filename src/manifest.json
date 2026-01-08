@@ -12,14 +12,12 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content.js"],
-      "css": ["styles.css"],
+      "js": ["src/content/content.js"],
       "run_at": "document_start"
     }
   ],
-  "options_page": "options.html",
+  "options_page": "src/options/options.html",
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "src/popup/popup.html"
   }
 }
-
