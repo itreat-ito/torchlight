@@ -355,7 +355,7 @@ import '../sass/options.scss';
       const url = URL.createObjectURL(blob);
       
       const date = new Date().toISOString().split('T')[0];
-      const filename = `env-detector-settings-${date}.json`;
+      const filename = `torchlight-settings-${date}.json`;
       
       const a = document.createElement('a');
       a.href = url;
