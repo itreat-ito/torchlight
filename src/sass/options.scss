@@ -175,6 +175,209 @@ h2 {
   padding-bottom: 0;
 }
 
+// Micromodal confirmation modal styles
+.micromodal-slide {
+  display: none;
+
+  &.is-open {
+    display: block;
+  }
+}
+
+// Animation keyframes
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes modalZoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes modalZoomOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+.modal__overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+// Apply animations when modal is open
+.micromodal-slide.is-open .modal__overlay {
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+// Apply animations when modal is closing (before Micromodal removes is-open)
+.micromodal-slide.is-closing .modal__overlay {
+  animation: modalFadeOut 0.2s ease-out;
+}
+
+.modal__container {
+  background-color: $white;
+  padding: 0;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transform-origin: center center;
+}
+
+// Apply animations when modal is open
+.micromodal-slide.is-open .modal__container {
+  animation: modalZoomIn 0.2s ease-out;
+}
+
+// Apply animations when modal is closing (before Micromodal removes is-open)
+.micromodal-slide.is-closing .modal__container {
+  animation: modalZoomOut 0.2s ease-out;
+}
+
+.modal__header {
+  padding: 20px 24px;
+  border-bottom: 1px solid $border-color;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal__title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: $text-color;
+}
+
+.modal__close {
+  background: transparent;
+  border: 0;
+  font-size: 28px;
+  cursor: pointer;
+  color: $text-muted;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s, color 0.2s;
+
+  &:hover,
+  &:focus {
+    background-color: $bg-color;
+    color: $text-color;
+  }
+
+  &::before {
+    content: '×';
+    font-size: 28px;
+    line-height: 1;
+  }
+}
+
+.modal__content {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+
+  p {
+    margin: 0;
+    color: $text-color;
+    line-height: 1.6;
+    font-size: 14px;
+  }
+
+  // Form styles within modal
+  .form-group {
+    margin-bottom: 20px;
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: $text-light;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid $border-color;
+      border-radius: 4px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    small {
+      display: block;
+      margin-top: 5px;
+      color: $text-muted;
+      font-size: 12px;
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 25px;
+  }
+}
+
+.modal__footer {
+  padding: 16px 24px;
+  border-top: 1px solid $border-color;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  background-color: $bg-color;
+}
+
 // Toast notification styles
 // Note: Toastify styles are imported in toast.js
 // Additional customizations can be added here if needed

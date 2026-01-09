@@ -1,6 +1,8 @@
 // Options page logic
 import '../sass/options.scss';
 import { showSuccessToast, showErrorToast } from './toast.js';
+import { showConfirmModal } from './confirm-modal.js';
+import MicroModal from 'micromodal';
 
 (function() {
   'use strict';
@@ -33,17 +35,121 @@ import { showSuccessToast, showErrorToast } from './toast.js';
     projectLocal: document.getElementById('project-local'),
     projectStaging: document.getElementById('project-staging'),
     projectProduction: document.getElementById('project-production'),
-    closeModal: document.querySelector('.close'),
     cancelProject: document.getElementById('cancel-project')
   };
 
   let editingProjectId = null;
+
+  // Function to close project modal with animation
+  const closeProjectModalWithAnimation = () => {
+    const modalElement = document.getElementById('project-modal');
+    if (modalElement && modalElement.classList.contains('is-open')) {
+      // Add closing class to trigger animation
+      modalElement.classList.add('is-closing');
+      
+      // Wait for animation to complete before actually closing
+      setTimeout(() => {
+        MicroModal.close('project-modal');
+        modalElement.classList.remove('is-closing');
+        editingProjectId = null;
+        elements.projectForm.reset();
+      }, 200);
+    } else {
+      editingProjectId = null;
+      elements.projectForm.reset();
+    }
+  };
+
+  // Initialize Micromodal for project modal
+  MicroModal.init({
+    onShow: (modal) => {
+      // Focus on first input when modal opens
+      const firstInput = modal.querySelector('#project-name');
+      if (firstInput) {
+        setTimeout(() => firstInput.focus(), 100);
+      }
+    },
+    onClose: (modal) => {
+      // Remove closing class if it exists
+      const modalElement = document.getElementById('project-modal');
+      if (modalElement) {
+        modalElement.classList.remove('is-closing');
+      }
+      // Clean up event listeners
+      if (modal._cleanupProjectModal) {
+        modal._cleanupProjectModal();
+        delete modal._cleanupProjectModal;
+      }
+      // Reset form and editing state when modal closes
+      editingProjectId = null;
+      elements.projectForm.reset();
+    },
+    openTrigger: 'data-micromodal-trigger',
+    closeTrigger: 'data-micromodal-close',
+    disableScroll: true,
+    disableFocus: false,
+    awaitOpenAnimation: false,
+    awaitCloseAnimation: false,
+  });
+
+  // Set up event handlers for project modal close buttons
+  function setupProjectModalHandlers() {
+    const modal = document.getElementById('project-modal');
+    if (!modal) return;
+
+    const overlay = modal.querySelector('.modal__overlay');
+    const closeButtons = modal.querySelectorAll('[data-micromodal-close]');
+
+    // Handle overlay click
+    const handleOverlayClick = (e) => {
+      if (e.target === overlay) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeProjectModalWithAnimation();
+      }
+    };
+
+    // Handle close buttons (except overlay)
+    const handleCloseButton = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      closeProjectModalWithAnimation();
+    };
+
+    overlay.onclick = handleOverlayClick;
+    closeButtons.forEach(btn => {
+      if (btn !== overlay) {
+        btn.onclick = handleCloseButton;
+      }
+    });
+
+    // Handle ESC key
+    const handleEscKey = (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('is-open')) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeProjectModalWithAnimation();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscKey);
+
+    // Store cleanup function
+    modal._cleanupProjectModal = () => {
+      document.removeEventListener('keydown', handleEscKey);
+      overlay.onclick = null;
+      closeButtons.forEach(btn => {
+        btn.onclick = null;
+      });
+    };
+  }
 
   // Initialize
   function init() {
     loadSettings();
     loadProjects();
     setupEventListeners();
+    setupProjectModalHandlers();
   }
 
   // Setup event listeners
@@ -58,15 +164,6 @@ import { showSuccessToast, showErrorToast } from './toast.js';
     elements.exportSettingsBtn.addEventListener('click', exportSettings);
     elements.importSettingsBtn.addEventListener('click', () => elements.importFileInput.click());
     elements.importFileInput.addEventListener('change', handleImportFile);
-
-    // Close modal
-    elements.closeModal.addEventListener('click', closeProjectModal);
-    elements.cancelProject.addEventListener('click', closeProjectModal);
-    elements.modal.addEventListener('click', (e) => {
-      if (e.target === elements.modal) {
-        closeProjectModal();
-      }
-    });
 
     // Project form submission
     elements.projectForm.addEventListener('submit', handleProjectSubmit);
@@ -226,14 +323,13 @@ import { showSuccessToast, showErrorToast } from './toast.js';
       });
     }
 
-    elements.modal.style.display = 'block';
+    // Show modal with animation
+    MicroModal.show('project-modal');
   }
 
   // Close project modal
   function closeProjectModal() {
-    elements.modal.style.display = 'none';
-    editingProjectId = null;
-    elements.projectForm.reset();
+    closeProjectModalWithAnimation();
   }
 
   // Edit project
@@ -242,8 +338,13 @@ import { showSuccessToast, showErrorToast } from './toast.js';
   }
 
   // Delete project
-  function deleteProject(projectId) {
-    if (!confirm('Are you sure you want to delete this project?')) {
+  async function deleteProject(projectId) {
+    const confirmed = await showConfirmModal(
+      'Are you sure you want to delete this project?',
+      'Delete Project'
+    );
+    
+    if (!confirmed) {
       return;
     }
 
@@ -325,7 +426,7 @@ import { showSuccessToast, showErrorToast } from './toast.js';
 
       chrome.storage.sync.set({ projects }, () => {
         loadProjects();
-        closeProjectModal();
+        closeProjectModalWithAnimation();
       });
     });
   }
@@ -394,7 +495,7 @@ import { showSuccessToast, showErrorToast } from './toast.js';
   }
 
   // Import settings
-  function importSettings(importData) {
+  async function importSettings(importData) {
     // Validate import data
     if (!validateImportData(importData)) {
       showErrorToast('Error: Invalid settings file. Missing required fields.');
@@ -402,8 +503,12 @@ import { showSuccessToast, showErrorToast } from './toast.js';
     }
 
     // Confirm import
-    const confirmMessage = 'This will replace all your current settings. Are you sure you want to continue?';
-    if (!confirm(confirmMessage)) {
+    const confirmed = await showConfirmModal(
+      'This will replace all your current settings. Are you sure you want to continue?',
+      'Import Settings'
+    );
+    
+    if (!confirmed) {
       return;
     }
 
