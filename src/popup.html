@@ -7,9 +7,14 @@
 </head>
 <body>
   <h2>torchlight</h2>
-  <div class="info">
-    <p>Environment banner is automatically displayed based on the current page domain.</p>
-    <p>Open the options page to change settings.</p>
+  <div class="toggle-container">
+    <label for="global-toggle" class="toggle-label">
+      <span>Enable Extension</span>
+      <div class="toggle-wrapper">
+        <input type="checkbox" id="global-toggle" class="toggle-switch" checked>
+        <span class="toggle-slider"></span>
+      </div>
+    </label>
   </div>
   <a href="#" id="open-options" class="btn">Open Settings</a>
   <script type="module" src="./js/popup.js"></script>

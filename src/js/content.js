@@ -125,7 +125,17 @@ import '../sass/content.scss';
   function init() {
     const domain = getDomain();
     
-    chrome.storage.sync.get(['settings', 'projects'], (result) => {
+    chrome.storage.sync.get(['extensionEnabled', 'settings', 'projects'], (result) => {
+      // 拡張機能が無効の場合は何もしない
+      if (result.extensionEnabled === false) {
+        // 既存のバナーがあれば削除
+        const existingBanner = document.getElementById('env-banner');
+        if (existingBanner) {
+          existingBanner.remove();
+        }
+        return;
+      }
+
       const settings = result.settings || {
         local: { text: 'Local Environment', color: '#4CAF50' },
         staging: { text: 'Staging Environment', color: '#FFC107' },
@@ -243,5 +253,15 @@ import '../sass/content.scss';
       setTimeout(init, 100);
     }
   }).observe(document, { subtree: true, childList: true });
+
+  // 拡張機能の有効/無効状態の更新を受け取る
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === 'updateExtensionState') {
+      // 状態が変更されたら再初期化
+      init();
+      sendResponse({ success: true });
+    }
+    return true;
+  });
 
 })();
