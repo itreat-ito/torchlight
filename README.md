@@ -1,4 +1,4 @@
-# Environment Banner Chrome Extension
+# torchlight
 
 環境（ローカル、ステージング、本番）を視覚的に区別するためのChrome拡張機能です。
 
