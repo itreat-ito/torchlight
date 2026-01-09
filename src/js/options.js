@@ -1,5 +1,6 @@
 // Options page logic
 import '../sass/options.scss';
+import { showSuccessToast, showErrorToast } from './toast.js';
 
 (function() {
   'use strict';
@@ -107,7 +108,7 @@ import '../sass/options.scss';
     };
 
     chrome.storage.sync.set({ settings }, () => {
-      alert('Common settings saved');
+      showSuccessToast('Settings saved successfully!');
     });
   }
 
@@ -276,7 +277,7 @@ import '../sass/options.scss';
 
     const name = elements.projectName.value.trim();
     if (!name) {
-      alert('Please enter a project name');
+      showErrorToast('Please enter a project name');
       return;
     }
 
@@ -365,7 +366,7 @@ import '../sass/options.scss';
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      alert('Settings exported successfully!');
+      showSuccessToast('Settings exported successfully!');
     });
   }
 
@@ -382,7 +383,7 @@ import '../sass/options.scss';
         const importData = JSON.parse(event.target.result);
         importSettings(importData);
       } catch (error) {
-        alert('Error: Invalid JSON file. Please check the file format.');
+        showErrorToast('Error: Invalid JSON file. Please check the file format.');
         console.error('Import error:', error);
       }
     };
@@ -396,7 +397,7 @@ import '../sass/options.scss';
   function importSettings(importData) {
     // Validate import data
     if (!validateImportData(importData)) {
-      alert('Error: Invalid settings file. Missing required fields.');
+      showErrorToast('Error: Invalid settings file. Missing required fields.');
       return;
     }
 
@@ -420,7 +421,7 @@ import '../sass/options.scss';
       // Reload settings and projects
       loadSettings();
       loadProjects();
-      alert('Settings imported successfully!');
+      showSuccessToast('Settings imported successfully!');
     });
   }
 

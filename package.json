@@ -13,5 +13,8 @@
     "@crxjs/vite-plugin": "^2.0.0-beta.21",
     "sass": "^1.77.0",
     "vite": "^7.3.1"
+  },
+  "dependencies": {
+    "toastify-js": "^1.12.0"
   }
 }
