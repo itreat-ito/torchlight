@@ -1,0 +1,19 @@
+# ソースファイル（配布時には含めない）
+src/
+vite.config.js
+.gitignore
+.npmignore
+
+# 開発用ファイル
+README.md
+package.json
+package-lock.json
+node_modules/
+
+# IDE設定
+.vscode/
+.idea/
+
+# OSファイル
+.DS_Store
+Thumbs.db

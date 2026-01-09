@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "description": "Display a banner to visually distinguish between local, staging, and production environments",
   "permissions": [
-    "storage"
+    "storage",
+    "tabs"
   ],
   "host_permissions": [
     "<all_urls>"
