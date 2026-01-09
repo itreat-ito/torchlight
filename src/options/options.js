@@ -18,6 +18,11 @@
     addProjectBtn: document.getElementById('add-project'),
     projectsList: document.getElementById('projects-list'),
 
+    // Data management
+    exportSettingsBtn: document.getElementById('export-settings'),
+    importSettingsBtn: document.getElementById('import-settings'),
+    importFileInput: document.getElementById('import-file'),
+
     // Modal
     modal: document.getElementById('project-modal'),
     modalTitle: document.getElementById('modal-title'),
@@ -46,6 +51,11 @@
 
     // Add project
     elements.addProjectBtn.addEventListener('click', () => openProjectModal());
+
+    // Data management
+    elements.exportSettingsBtn.addEventListener('click', exportSettings);
+    elements.importSettingsBtn.addEventListener('click', () => elements.importFileInput.click());
+    elements.importFileInput.addEventListener('change', handleImportFile);
 
     // Close modal
     elements.closeModal.addEventListener('click', closeProjectModal);
@@ -323,6 +333,121 @@
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+  }
+
+  // Export settings
+  function exportSettings() {
+    chrome.storage.sync.get(['settings', 'projects'], (result) => {
+      const exportData = {
+        version: '1.0.0',
+        exportedAt: new Date().toISOString(),
+        settings: result.settings || {
+          local: { text: 'You\'re on LOCAL env.', color: '#4CAF50' },
+          staging: { text: 'You\'re on STAGING env.', color: '#FFC107' },
+          production: { text: 'You\'re on PRODUCTION env.', color: '#F44336' }
+        },
+        projects: result.projects || []
+      };
+
+      const jsonString = JSON.stringify(exportData, null, 2);
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      
+      const date = new Date().toISOString().split('T')[0];
+      const filename = `env-detector-settings-${date}.json`;
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      alert('Settings exported successfully!');
+    });
+  }
+
+  // Handle import file selection
+  function handleImportFile(e) {
+    const file = e.target.files[0];
+    if (!file) {
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const importData = JSON.parse(event.target.result);
+        importSettings(importData);
+      } catch (error) {
+        alert('Error: Invalid JSON file. Please check the file format.');
+        console.error('Import error:', error);
+      }
+    };
+    reader.readAsText(file);
+    
+    // Reset file input to allow selecting the same file again
+    e.target.value = '';
+  }
+
+  // Import settings
+  function importSettings(importData) {
+    // Validate import data
+    if (!validateImportData(importData)) {
+      alert('Error: Invalid settings file. Missing required fields.');
+      return;
+    }
+
+    // Confirm import
+    const confirmMessage = 'This will replace all your current settings. Are you sure you want to continue?';
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    // Prepare data to import
+    const settings = importData.settings || {
+      local: { text: 'You\'re on LOCAL env.', color: '#4CAF50' },
+      staging: { text: 'You\'re on STAGING env.', color: '#FFC107' },
+      production: { text: 'You\'re on PRODUCTION env.', color: '#F44336' }
+    };
+
+    const projects = importData.projects || [];
+
+    // Save imported data
+    chrome.storage.sync.set({ settings, projects }, () => {
+      // Reload settings and projects
+      loadSettings();
+      loadProjects();
+      alert('Settings imported successfully!');
+    });
+  }
+
+  // Validate import data
+  function validateImportData(data) {
+    if (!data || typeof data !== 'object') {
+      return false;
+    }
+
+    // Check if settings exist and have required structure
+    if (data.settings) {
+      const settings = data.settings;
+      if (!settings.local || !settings.staging || !settings.production) {
+        return false;
+      }
+      if (!settings.local.text || !settings.local.color ||
+          !settings.staging.text || !settings.staging.color ||
+          !settings.production.text || !settings.production.color) {
+        return false;
+      }
+    }
+
+    // Check if projects is an array
+    if (data.projects && !Array.isArray(data.projects)) {
+      return false;
+    }
+
+    return true;
   }
 
   // Initialize

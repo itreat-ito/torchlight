@@ -10,9 +10,19 @@
   <div class="container">
     <h1>Environment Banner Settings</h1>
 
+    <!-- Data Management Section -->
+    <section class="data-management-section">
+      <h2>Export/Import</h2>
+      <div class="data-management-buttons">
+        <button id="export-settings" class="btn btn-secondary">Export</button>
+        <button id="import-settings" class="btn btn-secondary">Import</button>
+        <input type="file" id="import-file" accept=".json" style="display: none;">
+      </div>
+    </section>
+
     <!-- Common Settings Section -->
     <section class="settings-section">
-      <h2>General</h2>
+      <h2>Banner Styles</h2>
       <div class="settings-grid">
         <!-- Local Environment -->
         <div class="setting-item">
@@ -63,19 +73,19 @@
           </div>
 
           <div class="form-group">
-            <label for="project-local">Local Environment Domains</label>
+            <label for="project-local">Local Domains</label>
             <textarea id="project-local" rows="3" placeholder="localhost&#10;127.0.0.1&#10;local.example.com"></textarea>
             <small>Separate multiple domains with line breaks. Wildcards (*) can be used.</small>
           </div>
 
           <div class="form-group">
-            <label for="project-staging">Staging Environment Domains</label>
+            <label for="project-staging">Staging Domains</label>
             <textarea id="project-staging" rows="3" placeholder="staging.example.com&#10;*.staging.example.com"></textarea>
             <small>Separate multiple domains with line breaks. Wildcards (*) can be used.</small>
           </div>
 
           <div class="form-group">
-            <label for="project-production">Production Environment Domains</label>
+            <label for="project-production">Production Domains</label>
             <textarea id="project-production" rows="3" placeholder="example.com&#10;www.example.com"></textarea>
             <small>Separate multiple domains with line breaks. Wildcards (*) can be used.</small>
           </div>

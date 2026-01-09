@@ -29,6 +29,21 @@ h2 {
   padding-bottom: 10px;
 }
 
+/* データ管理セクション */
+.data-management-section {
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.data-management-buttons {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
 /* 共通設定セクション */
 .settings-section {
   background: white;
