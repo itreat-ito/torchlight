@@ -1,4 +1,5 @@
 // Options page logic
+import '../sass/options.scss';
 
 (function() {
   'use strict';

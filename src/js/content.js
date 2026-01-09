@@ -1,5 +1,5 @@
 // 環境表示バナーのコンテンツスクリプト
-import './styles.css';
+import '../sass/content.scss';
 
 (function() {
   'use strict';
