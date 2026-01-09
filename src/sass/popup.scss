@@ -27,23 +27,23 @@ h2 {
 
 .toggle-label {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
   cursor: pointer;
   user-select: none;
 
-  > span:first-child {
+  #extension-status {
     font-size: 14px;
     color: $text-color;
-    font-weight: 500;
-    margin-right: 12px;
+    font-weight: 600;
+    margin-bottom: 12px;
   }
 }
 
 .toggle-wrapper {
   position: relative;
-  width: 48px;
-  height: 26px;
+  width: 64px;
+  height: 36px;
   flex-shrink: 0;
 }
 
@@ -57,7 +57,7 @@ h2 {
     background-color: $primary-color;
 
     &::before {
-      transform: translateX(22px);
+      transform: translateX(28px);
     }
   }
 
@@ -74,17 +74,17 @@ h2 {
   right: 0;
   bottom: 0;
   background-color: #cbd5e0;
-  border-radius: 26px;
+  border-radius: 36px;
   transition: background-color 0.3s ease;
   cursor: pointer;
 
   &::before {
     content: "";
     position: absolute;
-    height: 20px;
-    width: 20px;
-    left: 3px;
-    bottom: 3px;
+    height: 28px;
+    width: 28px;
+    left: 4px;
+    bottom: 4px;
     background-color: $white;
     border-radius: 50%;
     transition: transform 0.3s ease;
