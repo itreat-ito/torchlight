@@ -1,5 +1,6 @@
 // 環境表示バナーのコンテンツスクリプト
 import '../sass/content.scss';
+import { detectEnvironment } from './domain-utils.js';
 
 (function() {
   'use strict';
@@ -14,63 +15,6 @@ import '../sass/content.scss';
   function getDomain() {
     const hostname = window.location.hostname;
     return hostname;
-  }
-
-  // ワイルドカードパターンを正規表現に変換
-  function wildcardToRegex(pattern) {
-    // エスケープが必要な文字をエスケープ
-    const escaped = pattern.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
-    // ワイルドカード * を .* に変換
-    const regex = escaped.replace(/\*/g, '.*');
-    return new RegExp('^' + regex + '$');
-  }
-
-  // ドメインマッチング（完全一致またはワイルドカード）
-  function matchesDomain(pattern, domain) {
-    if (pattern === domain) {
-      return true;
-    }
-    if (pattern.includes('*')) {
-      const regex = wildcardToRegex(pattern);
-      return regex.test(domain);
-    }
-    return false;
-  }
-
-  // 環境を判定
-  function detectEnvironment(domain, projects) {
-    for (const project of projects) {
-      // プロジェクトが無効の場合はスキップ
-      if (project.enabled === false) {
-        continue;
-      }
-      
-      // ローカル環境をチェック
-      if (project.local && Array.isArray(project.local)) {
-        for (const localDomain of project.local) {
-          if (matchesDomain(localDomain, domain)) {
-            return 'local';
-          }
-        }
-      }
-      // ステージング環境をチェック
-      if (project.staging && Array.isArray(project.staging)) {
-        for (const stagingDomain of project.staging) {
-          if (matchesDomain(stagingDomain, domain)) {
-            return 'staging';
-          }
-        }
-      }
-      // 本番環境をチェック
-      if (project.production && Array.isArray(project.production)) {
-        for (const prodDomain of project.production) {
-          if (matchesDomain(prodDomain, domain)) {
-            return 'production';
-          }
-        }
-      }
-    }
-    return null;
   }
 
   // 色の明度を計算（テキスト色の決定に使用）
