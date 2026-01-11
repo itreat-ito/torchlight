@@ -1,21 +1,21 @@
 // Domain utility functions for environment detection and URL conversion
 
-// ワイルドカードパターンを正規表現に変換
-export function wildcardToRegex(pattern) {
-  const escaped = pattern.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
-  const regex = escaped.replace(/\*/g, '.*');
-  return new RegExp('^' + regex + '$');
-}
-
-// ドメインマッチング（完全一致またはワイルドカード）
+// ドメインマッチング（部分一致）
 export function matchesDomain(pattern, domain) {
+  if (!pattern || !domain) {
+    return false;
+  }
+  
+  // 完全一致
   if (pattern === domain) {
     return true;
   }
-  if (pattern.includes('*')) {
-    const regex = wildcardToRegex(pattern);
-    return regex.test(domain);
+  
+  // 部分一致（ドメインにパターンが含まれているか）
+  if (domain.includes(pattern)) {
+    return true;
   }
+  
   return false;
 }
 
@@ -80,51 +80,40 @@ export function findMatchingProject(currentDomain, projects) {
 
 // 現在のドメインに含まれる文字列を探して、対応するターゲット環境の文字列を取得
 export function getDomainMapping(environment, currentDomain, projects, globalMappings) {
-  // 1. まず現在のドメインがどのプロジェクトに該当するかを判定
+  // 1. まず現在のドメインがどの環境にいるのかを判定
+  const currentEnv = detectEnvironment(currentDomain, projects);
+  
+  if (!currentEnv) {
+    // 現在の環境が判定できない場合はnullを返す
+    return null;
+  }
+  
+  // 2. 現在のドメインがどのプロジェクトに該当するかを判定
   const matchingProject = findMatchingProject(currentDomain, projects);
   
-  // 2. 該当プロジェクトが見つかった場合
+  // 3. 該当プロジェクトが見つかり、Domain Mappingsが設定されている場合
   if (matchingProject && matchingProject.domainMappings) {
-    // 現在の環境を判定（どの環境のDomain Mappingsが現在のドメインに含まれているか）
-    let foundCurrentEnv = null;
-    for (const env of ['local', 'staging', 'production']) {
-      const mapping = matchingProject.domainMappings[env];
-      if (mapping && mapping.trim() && currentDomain.includes(mapping)) {
-        foundCurrentEnv = env;
-        break;
-      }
-    }
+    // プロジェクト個別設定から取得（未設定の場合はグローバル設定を使用）
+    const currentMapping = matchingProject.domainMappings[currentEnv] || globalMappings?.[currentEnv];
+    const targetMapping = matchingProject.domainMappings[environment] || globalMappings?.[environment];
     
-    // 現在の環境が見つかり、ターゲット環境のDomain Mappingsが設定されている場合
-    if (foundCurrentEnv) {
-      const targetMapping = matchingProject.domainMappings[environment];
-      // ターゲット環境のDomain Mappingsが設定されている場合のみ使用
-      if (targetMapping && targetMapping.trim()) {
-        return {
-          from: matchingProject.domainMappings[foundCurrentEnv],
-          to: targetMapping
-        };
-      }
-      // ターゲット環境のDomain Mappingsが未設定の場合は、グローバル設定にフォールバック
+    // 現在の環境のDomain Mappingとターゲット環境のDomain Mappingが両方設定されている場合
+    if (currentMapping && currentMapping.trim() && targetMapping && targetMapping.trim()) {
+      return {
+        from: currentMapping.trim(),
+        to: targetMapping.trim()
+      };
     }
   }
   
-  // 3. 該当プロジェクトがない、またはDomain Mappingsが未設定の場合はグローバル設定を使用
-  // グローバル設定から現在のドメインに含まれる文字列を探す
-  let foundGlobalEnv = null;
-  for (const env of ['local', 'staging', 'production']) {
-    const mapping = globalMappings?.[env];
-    if (mapping && mapping.trim() && currentDomain.includes(mapping)) {
-      foundGlobalEnv = env;
-      break;
-    }
-  }
+  // 4. 該当プロジェクトがない、またはDomain Mappingsが未設定の場合はグローバル設定を使用
+  const currentGlobalMapping = globalMappings?.[currentEnv];
+  const targetGlobalMapping = globalMappings?.[environment];
   
-  // ターゲット環境のグローバル設定を返す
-  if (foundGlobalEnv && globalMappings && globalMappings[environment] && globalMappings[environment].trim()) {
+  if (currentGlobalMapping && currentGlobalMapping.trim() && targetGlobalMapping && targetGlobalMapping.trim()) {
     return {
-      from: globalMappings[foundGlobalEnv],
-      to: globalMappings[environment]
+      from: currentGlobalMapping.trim(),
+      to: targetGlobalMapping.trim()
     };
   }
   
@@ -137,9 +126,20 @@ export function convertDomain(domain, fromDomain, toDomain) {
     return null;
   }
   
-  // 現在のドメインにfromDomainが含まれている場合、toDomainに置換
-  if (domain.includes(fromDomain)) {
-    return domain.replace(fromDomain, toDomain);
+  const trimmedFrom = fromDomain.trim();
+  const trimmedTo = toDomain.trim();
+  
+  // ドメインの末尾にfromDomainが一致する場合
+  if (domain.endsWith(trimmedFrom)) {
+    // 末尾を置換
+    return domain.slice(0, -trimmedFrom.length) + trimmedTo;
+  }
+  
+  // ドメイン内でドット + fromDomainが出現する場合（例: "aaa.bbb.itreat-test.com" で "itreat-test.com" を検索）
+  const dotFrom = '.' + trimmedFrom;
+  if (domain.includes(dotFrom)) {
+    // ドット + fromDomainをドット + toDomainに置換
+    return domain.replace(dotFrom, '.' + trimmedTo);
   }
   
   return null;

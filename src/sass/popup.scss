@@ -134,29 +134,35 @@ body {
   }
 
   .btn-local {
+    // デフォルト値（インラインスタイルで上書き可能）
     background-color: #4CAF50;
     color: $white;
 
     &:not(:disabled):hover {
-      background-color: #45a049;
+      // ホバー時は少し暗くする
+      filter: brightness(0.9);
     }
   }
 
   .btn-staging {
+    // デフォルト値（インラインスタイルで上書き可能）
     background-color: #FFC107;
     color: $text-color;
 
     &:not(:disabled):hover {
-      background-color: #ffb300;
+      // ホバー時は少し暗くする
+      filter: brightness(0.9);
     }
   }
 
   .btn-production {
+    // デフォルト値（インラインスタイルで上書き可能）
     background-color: #F44336;
     color: $white;
 
     &:not(:disabled):hover {
-      background-color: #da190b;
+      // ホバー時は少し暗くする
+      filter: brightness(0.9);
     }
   }
 

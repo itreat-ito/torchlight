@@ -283,49 +283,58 @@ import MicroModal from 'micromodal';
             <button class="btn btn-danger delete-project" data-project-id="${project.id}">Delete</button>
           </div>
         </div>
-        <div class="project-domains">
-          <div class="domain-group">
-            <h4>Local</h4>
-            <div class="domain-list">
-              <ul>
-                ${(project.local || []).map(domain => `<li>${escapeHtml(domain)}</li>`).join('')}
-                ${(project.local || []).length === 0 ? '<li style="color: #999;">Not set</li>' : ''}
-              </ul>
+        <div class="project-domains-section">
+          <h4 class="section-title">Environment Domains</h4>
+          <div class="project-domains">
+            <div class="domain-group">
+              <h4>Local</h4>
+              <div class="domain-list">
+                <ul>
+                  ${(project.local || []).map(domain => `<li>${escapeHtml(domain)}</li>`).join('')}
+                  ${(project.local || []).length === 0 ? '<li style="color: #999;">Not set</li>' : ''}
+                </ul>
+              </div>
             </div>
-          </div>
-          <div class="domain-group">
-            <h4>Staging</h4>
-            <div class="domain-list">
-              <ul>
-                ${(project.staging || []).map(domain => `<li>${escapeHtml(domain)}</li>`).join('')}
-                ${(project.staging || []).length === 0 ? '<li style="color: #999;">Not set</li>' : ''}
-              </ul>
+            <div class="domain-group">
+              <h4>Staging</h4>
+              <div class="domain-list">
+                <ul>
+                  ${(project.staging || []).map(domain => `<li>${escapeHtml(domain)}</li>`).join('')}
+                  ${(project.staging || []).length === 0 ? '<li style="color: #999;">Not set</li>' : ''}
+                </ul>
+              </div>
             </div>
-          </div>
-          <div class="domain-group">
-            <h4>Production</h4>
-            <div class="domain-list">
-              <ul>
-                ${(project.production || []).map(domain => `<li>${escapeHtml(domain)}</li>`).join('')}
-                ${(project.production || []).length === 0 ? '<li style="color: #999;">Not set</li>' : ''}
-              </ul>
+            <div class="domain-group">
+              <h4>Production</h4>
+              <div class="domain-list">
+                <ul>
+                  ${(project.production || []).map(domain => `<li>${escapeHtml(domain)}</li>`).join('')}
+                  ${(project.production || []).length === 0 ? '<li style="color: #999;">Not set</li>' : ''}
+                </ul>
+              </div>
             </div>
           </div>
         </div>
         <div class="project-domain-mappings">
-          <h4 class="domain-mappings-title">Domain Mappings for URL Switching</h4>
-          <div class="domain-mappings-grid">
-            <div class="domain-mapping-item">
-              <span class="domain-mapping-label">Local</span>
-              <span class="domain-mapping-value">${project.domainMappings?.local && project.domainMappings.local.trim() ? escapeHtml(project.domainMappings.local) : '<span style="color: #999;">Use global setting</span>'}</span>
+          <h4 class="section-title">URL Switching Domains</h4>
+          <div class="project-domains">
+            <div class="domain-group">
+              <h4>Local</h4>
+              <div class="domain-list">
+                <div class="domain-value">${project.domainMappings?.local && project.domainMappings.local.trim() ? escapeHtml(project.domainMappings.local) : '<span style="color: #999;">Use global setting</span>'}</div>
+              </div>
             </div>
-            <div class="domain-mapping-item">
-              <span class="domain-mapping-label">Staging</span>
-              <span class="domain-mapping-value">${project.domainMappings?.staging && project.domainMappings.staging.trim() ? escapeHtml(project.domainMappings.staging) : '<span style="color: #999;">Use global setting</span>'}</span>
+            <div class="domain-group">
+              <h4>Staging</h4>
+              <div class="domain-list">
+                <div class="domain-value">${project.domainMappings?.staging && project.domainMappings.staging.trim() ? escapeHtml(project.domainMappings.staging) : '<span style="color: #999;">Use global setting</span>'}</div>
+              </div>
             </div>
-            <div class="domain-mapping-item">
-              <span class="domain-mapping-label">Production</span>
-              <span class="domain-mapping-value">${project.domainMappings?.production && project.domainMappings.production.trim() ? escapeHtml(project.domainMappings.production) : '<span style="color: #999;">Use global setting</span>'}</span>
+            <div class="domain-group">
+              <h4>Production</h4>
+              <div class="domain-list">
+                <div class="domain-value">${project.domainMappings?.production && project.domainMappings.production.trim() ? escapeHtml(project.domainMappings.production) : '<span style="color: #999;">Use global setting</span>'}</div>
+              </div>
             </div>
           </div>
         </div>

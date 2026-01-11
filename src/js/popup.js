@@ -1,6 +1,7 @@
 // Popup page logic
 import '../sass/popup.scss';
-import { detectEnvironment, convertUrl, getDomainMapping } from './domain-utils.js';
+import { detectEnvironment, convertUrl, getDomainMapping } from './common/domain.js';
+import { getLuminance, hexToRgb } from './common/color.js';
 
 // グローバルトグルの状態を読み込んで表示を更新
 const globalToggle = document.getElementById('global-toggle');
@@ -15,6 +16,32 @@ const currentTabInfo = document.getElementById('current-tab-info');
 // ステータステキストを更新する関数
 function updateStatusText(isEnabled) {
   extensionStatus.textContent = isEnabled ? 'ENABLED' : 'DISABLED';
+}
+
+// ボタンのスタイルを更新
+function updateButtonStyles(settings) {
+  const defaultSettings = {
+    local: { text: 'Local Environment', color: '#4CAF50' },
+    staging: { text: 'Staging Environment', color: '#FFC107' },
+    production: { text: 'Production Environment', color: '#F44336' }
+  };
+  
+  const envSettings = {
+    local: settings?.local || defaultSettings.local,
+    staging: settings?.staging || defaultSettings.staging,
+    production: settings?.production || defaultSettings.production
+  };
+  
+  // 各ボタンのスタイルを設定
+  [openLocalBtn, openStagingBtn, openProductionBtn].forEach((btn, index) => {
+    const env = ['local', 'staging', 'production'][index];
+    const envSetting = envSettings[env];
+    const backgroundColor = envSetting.color;
+    const luminance = getLuminance(backgroundColor);
+    
+    btn.style.backgroundColor = backgroundColor;
+    btn.style.color = luminance > 0.5 ? '#000000' : '#ffffff';
+  });
 }
 
 // 現在のタブを取得
@@ -69,12 +96,15 @@ async function updateEnvironmentButtons() {
     const urlObj = new URL(tab.url);
     const currentDomain = urlObj.hostname;
     
-    chrome.storage.sync.get(['projects', 'globalDomainMappings'], (result) => {
+    chrome.storage.sync.get(['projects', 'globalDomainMappings', 'settings'], (result) => {
       const projects = result.projects || [];
       const globalMappings = result.globalDomainMappings || {
         local: 'test',
         staging: 'itreat-test.com'
       };
+      
+      // ボタンのスタイルを更新
+      updateButtonStyles(result.settings);
       
       const currentEnv = detectEnvironment(currentDomain, projects);
       
@@ -105,11 +135,14 @@ async function updateEnvironmentButtons() {
 }
 
 // 初期状態を読み込む
-chrome.storage.sync.get(['extensionEnabled'], (result) => {
+chrome.storage.sync.get(['extensionEnabled', 'settings'], (result) => {
   // デフォルトは有効（true）
   const isEnabled = result.extensionEnabled !== false;
   globalToggle.checked = isEnabled;
   updateStatusText(isEnabled);
+  
+  // ボタンのスタイルを更新
+  updateButtonStyles(result.settings);
 });
 
 // トグルの変更を監視
@@ -154,4 +187,11 @@ document.getElementById('open-options').addEventListener('click', (e) => {
   e.preventDefault();
   chrome.runtime.openOptionsPage();
   window.close();
+});
+
+// 設定が変更されたときにボタンのスタイルを更新
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName === 'sync' && changes.settings) {
+    updateButtonStyles(changes.settings.newValue);
+  }
 });

@@ -55,8 +55,6 @@ body {
   flex-direction: column;
   gap: 8px;
 
-  // h3 styles are defined in common.scss
-
   label {
     font-weight: 700;
     color: $text-light;
@@ -104,7 +102,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 24px;
 }
 
 .project-name-wrapper {
@@ -122,6 +120,17 @@ body {
 .project-actions {
   display: flex;
   gap: 10px;
+}
+
+.project-domains-section {
+  .section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: $text-color;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
 }
 
 .project-domains {
@@ -157,6 +166,11 @@ body {
     padding: 0;
     word-break: break-all;
   }
+
+  .domain-value {
+    word-break: break-all;
+    color: $text-color;
+  }
 }
 
 .project-domain-mappings {
@@ -164,42 +178,13 @@ body {
   padding-top: 20px;
   border-top: 1px solid #e0e0e0;
 
-  .domain-mappings-title {
+  .section-title {
     font-size: 14px;
     font-weight: 600;
     color: $text-color;
     margin-bottom: 12px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-  }
-
-  .domain-mappings-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 12px;
-  }
-
-  .domain-mapping-item {
-    background: $white;
-    padding: 10px 12px;
-    border-radius: 4px;
-    border-left: 3px solid #4CAF50;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .domain-mapping-label {
-    font-size: 11px;
-    text-transform: uppercase;
-    color: $text-muted;
-    font-weight: 600;
-  }
-
-  .domain-mapping-value {
-    font-size: 13px;
-    color: $text-color;
-    word-break: break-all;
   }
 }
 
