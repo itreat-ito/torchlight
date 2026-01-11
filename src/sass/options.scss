@@ -1,7 +1,6 @@
 @use './common' as *;
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   background-color: $bg-color;
   color: $text-color;
   line-height: 1.6;
@@ -11,24 +10,6 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-}
-
-h1 {
-  margin-bottom: 30px;
-  color: #2c3e50;
-
-  &.title {
-    font-size: 2.0rem;
-    text-align: center;
-    margin-bottom: 40px;
-  }
-}
-
-h2 {
-  margin-bottom: 20px;
-  color: #34495e;
-  border-bottom: 2px solid $primary-color;
-  padding-bottom: 10px;
 }
 
 // データ管理セクション
@@ -42,7 +23,7 @@ h2 {
 
 .data-management-buttons {
   display: flex;
-  gap: 15px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
@@ -67,8 +48,10 @@ h2 {
   flex-direction: column;
   gap: 8px;
 
+  // h3 styles are defined in common.scss
+
   label {
-    font-weight: 600;
+    font-weight: 700;
     color: $text-light;
     font-size: 14px;
   }
@@ -125,7 +108,7 @@ h2 {
 
 .project-name {
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 700;
   color: #2c3e50;
 }
 
@@ -164,15 +147,9 @@ h2 {
   }
 
   li {
-    padding: 4px 0;
+    padding: 0;
     word-break: break-all;
   }
-}
-
-#modal-title {
-  margin-bottom: 20px;
-  border-bottom: none;
-  padding-bottom: 0;
 }
 
 // Micromodal confirmation modal styles
@@ -283,7 +260,7 @@ h2 {
 .modal__title {
   margin: 0;
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 700;
   color: $text-color;
 }
 
@@ -334,7 +311,7 @@ h2 {
     label {
       display: block;
       margin-bottom: 8px;
-      font-weight: 600;
+      font-weight: 700;
       color: $text-light;
     }
 

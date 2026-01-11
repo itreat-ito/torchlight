@@ -7,11 +7,10 @@
 </head>
 <body>
   <div class="container">
-    <h1 class="title">torchlight</h1>
+    <h1 class="ttl-l title">torchlight</h1>
 
-    <!-- Data Management Section -->
     <section class="data-management-section">
-      <h2>Export/Import</h2>
+      <h2 class="ttl-m">Export/Import</h2>
       <div class="data-management-buttons">
         <button id="export-settings" class="btn btn-secondary">Export</button>
         <button id="import-settings" class="btn btn-secondary">Import</button>
@@ -19,34 +18,34 @@
       </div>
     </section>
 
-    <!-- Common Settings Section -->
+    <!-- Banner Styles -->
     <section class="settings-section">
-      <h2>Banner Styles</h2>
+      <h2 class="ttl-m">Banner Styles</h2>
       <div class="settings-grid">
-        <!-- Local Environment -->
+        <!-- Local -->
         <div class="setting-item">
-          <h3>Local Environment</h3>
+          <h3 class="ttl-s">Local</h3>
           <label for="local-text">Text</label>
           <input type="text" id="local-text" placeholder="You're on LOCAL env.">
-          <label for="local-color">Color</label>
+          <label for="local-color">Background Color</label>
           <input type="color" id="local-color" value="#4CAF50">
         </div>
 
-        <!-- Staging Environment -->
+        <!-- Staging -->
         <div class="setting-item">
-          <h3>Staging Environment</h3>
+          <h3 class="ttl-s">Staging</h3>
           <label for="staging-text">Text</label>
           <input type="text" id="staging-text" placeholder="You're on STAGING env.">
-          <label for="staging-color">Color</label>
+          <label for="staging-color">Background Color</label>
           <input type="color" id="staging-color" value="#FFC107">
         </div>
 
-        <!-- Production Environment -->
+        <!-- Production -->
         <div class="setting-item">
-          <h3>Production Environment</h3>
+          <h3 class="ttl-s">Production</h3>
           <label for="production-text">Text</label>
           <input type="text" id="production-text" placeholder="You're on PRODUCTION env.">
-          <label for="production-color">Color</label>
+          <label for="production-color">Background Color</label>
           <input type="color" id="production-color" value="#F44336">
         </div>
       </div>
@@ -55,7 +54,7 @@
 
     <!-- Project Management Section -->
     <section class="projects-section">
-      <h2>Your Projects</h2>
+      <h2 class="ttl-m">Your Projects</h2>
       <button id="add-project" class="btn btn-secondary">Add Project</button>
       <div id="projects-list" class="projects-list"></div>
     </section>
