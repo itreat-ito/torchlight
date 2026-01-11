@@ -14,7 +14,7 @@
   justify-content: center;
   // Top Layer APIがサポートされている場合、z-indexは不要
   // フォールバック用にz-indexは削除（JavaScriptで動的に設定）
-  font-size: 16px;
+  font-size: 1.0rem;
   font-weight: 700;
   font-family: 'Mulish', 'M PLUS 1p', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   color: #ffffff;

@@ -33,14 +33,14 @@ body {
   label {
     font-weight: 700;
     color: $text-light;
-    font-size: 14px;
+    font-size: 0.9rem;
   }
 
   input[type="text"] {
     padding: 8px 12px;
     border: 1px solid $border-color;
     border-radius: 4px;
-    font-size: 14px;
+    font-size: 0.9rem;
   }
 
   input[type="color"] {
@@ -80,7 +80,7 @@ body {
 }
 
 .project-name {
-  font-size: 18px;
+  font-size: 1.1rem;
   font-weight: 700;
   color: #2c3e50;
 }
@@ -92,7 +92,7 @@ body {
 
 .project-domains-section {
   .section-title {
-    font-size: 14px;
+    font-size: 0.9rem;
     font-weight: 600;
     color: $text-color;
     margin-bottom: 12px;
@@ -114,7 +114,7 @@ body {
   border-left: 3px solid $primary-color;
 
   h4 {
-    font-size: 12px;
+    font-size: 0.8rem;
     text-transform: uppercase;
     color: $text-muted;
     margin-bottom: 8px;
@@ -122,7 +122,7 @@ body {
 }
 
 .domain-list {
-  font-size: 13px;
+  font-size: 0.8rem;
   color: $text-light;
 
   ul {
@@ -147,7 +147,7 @@ body {
   border-top: 1px solid #e0e0e0;
 
   .section-title {
-    font-size: 14px;
+    font-size: 0.9rem;
     font-weight: 600;
     color: $text-color;
     margin-bottom: 12px;
@@ -263,7 +263,7 @@ body {
 
 .modal__title {
   margin: 0;
-  font-size: 20px;
+  font-size: 1.3rem;
   font-weight: 700;
   color: $text-color;
 }
@@ -271,7 +271,7 @@ body {
 .modal__close {
   background: transparent;
   border: 0;
-  font-size: 28px;
+  font-size: 1.8rem;
   cursor: pointer;
   color: $text-muted;
   padding: 0;
@@ -291,7 +291,7 @@ body {
 
   &::before {
     content: '×';
-    font-size: 28px;
+    font-size: 1.8rem;
     line-height: 1;
   }
 }
@@ -305,7 +305,7 @@ body {
     margin: 0;
     color: $text-color;
     line-height: 1.6;
-    font-size: 14px;
+    font-size: 0.9rem;
   }
 
   // Form styles within modal
@@ -325,7 +325,7 @@ body {
       padding: 10px;
       border: 1px solid $border-color;
       border-radius: 4px;
-      font-size: 14px;
+      font-size: 0.9rem;
       font-family: inherit;
     }
 
@@ -337,13 +337,13 @@ body {
     small {
       display: block;
       color: $text-muted;
-      font-size: 12px;
+      font-size: 0.8rem;
     }
   }
 
   .form-description {
     color: $text-muted;
-    font-size: 13px;
+    font-size: 0.8rem;
     margin-bottom: 15px;
     line-height: 1.5;
   }
