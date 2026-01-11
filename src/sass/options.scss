@@ -12,35 +12,10 @@ body {
   padding: 20px;
 }
 
-// データ管理セクション
-.data-management-section {
-  background: $white;
-  padding: 25px;
-  border-radius: 8px;
-  box-shadow: $shadow;
-  margin-bottom: 30px;
-}
-
 .data-management-buttons {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
-}
-
-// 共通設定セクション
-.settings-section {
-  background: $white;
-  padding: 25px;
-  border-radius: 8px;
-  box-shadow: $shadow;
-  margin-bottom: 30px;
-
-  .section-description {
-    color: $text-muted;
-    font-size: 14px;
-    margin-bottom: 20px;
-    line-height: 1.6;
-  }
 }
 
 .settings-grid {
@@ -77,14 +52,6 @@ body {
   }
 }
 
-// プロジェクト管理セクション
-.projects-section {
-  background: $white;
-  padding: 25px;
-  border-radius: 8px;
-  box-shadow: $shadow;
-  margin-bottom: 30px;
-}
 
 .projects-list {
   margin-top: 20px;

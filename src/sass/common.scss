@@ -31,6 +31,22 @@ html {
   font-family: 'Mulish', 'M PLUS 1p', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
+// セクション（共通パーツ）
+.section {
+  background: $white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: $shadow;
+  margin-bottom: 30px;
+
+  .section-description {
+    color: $text-muted;
+    font-size: 14px;
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+}
+
 // 見出しスタイル
 .ttl-l {
   margin-bottom: 30px;
