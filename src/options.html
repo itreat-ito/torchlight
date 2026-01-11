@@ -25,28 +25,40 @@
         <!-- Local -->
         <div class="setting-item">
           <h3 class="ttl-s">Local</h3>
-          <label for="local-text">Text</label>
-          <input type="text" id="local-text" placeholder="You're on LOCAL env.">
-          <label for="local-color">Background Color</label>
-          <input type="color" id="local-color" value="#4CAF50">
+          <div class="form-group">
+            <label for="local-text">Text</label>
+            <input type="text" id="local-text" placeholder="You're on LOCAL env.">
+          </div>
+          <div class="form-group">
+            <label for="local-color">Background Color</label>
+            <input type="color" id="local-color" value="#4CAF50">
+          </div>
         </div>
 
         <!-- Staging -->
         <div class="setting-item">
           <h3 class="ttl-s">Staging</h3>
-          <label for="staging-text">Text</label>
-          <input type="text" id="staging-text" placeholder="You're on STAGING env.">
-          <label for="staging-color">Background Color</label>
-          <input type="color" id="staging-color" value="#FFC107">
+          <div class="form-group">
+            <label for="staging-text">Text</label>
+            <input type="text" id="staging-text" placeholder="You're on STAGING env.">
+          </div>
+          <div class="form-group">
+            <label for="staging-color">Background Color</label>
+            <input type="color" id="staging-color" value="#FFC107">
+          </div>
         </div>
 
         <!-- Production -->
         <div class="setting-item">
           <h3 class="ttl-s">Production</h3>
-          <label for="production-text">Text</label>
-          <input type="text" id="production-text" placeholder="You're on PRODUCTION env.">
-          <label for="production-color">Background Color</label>
-          <input type="color" id="production-color" value="#F44336">
+          <div class="form-group">
+            <label for="production-text">Text</label>
+            <input type="text" id="production-text" placeholder="You're on PRODUCTION env.">
+          </div>
+          <div class="form-group">
+            <label for="production-color">Background Color</label>
+            <input type="color" id="production-color" value="#F44336">
+          </div>
         </div>
       </div>
       <button id="save-settings" class="btn btn-primary">Save</button>
@@ -60,15 +72,19 @@
       <div class="settings-grid">
         <div class="setting-item">
           <h3 class="ttl-s">Local</h3>
-          <label for="global-local-domain">Domain Pattern</label>
-          <input type="text" id="global-local-domain" placeholder="test" value="test">
-          <small>Default: test</small>
+          <div class="form-group">
+            <label for="global-local-domain">Domain Pattern</label>
+            <input type="text" id="global-local-domain" placeholder="test" value="test">
+            <small>Default: test</small>
+          </div>
         </div>
         <div class="setting-item">
           <h3 class="ttl-s">Staging</h3>
-          <label for="global-staging-domain">Domain Pattern</label>
-          <input type="text" id="global-staging-domain" placeholder="itreat-test.com" value="itreat-test.com">
-          <small>Default: itreat-test.com</small>
+          <div class="form-group">
+            <label for="global-staging-domain">Domain Pattern</label>
+            <input type="text" id="global-staging-domain" placeholder="itreat-test.com" value="itreat-test.com">
+            <small>Default: itreat-test.com</small>
+          </div>
         </div>
       </div>
       <button id="save-global-mappings" class="btn btn-primary">Save</button>
@@ -96,28 +112,27 @@
                 <input type="text" id="project-name" required>
               </div>
 
+              <h3 class="ttl-s">Environment Domains</h3>
               <div class="form-group">
                 <label for="project-local">Local Domains</label>
                 <textarea id="project-local" rows="3" placeholder="localhost&#10;127.0.0.1&#10;local.example.com"></textarea>
-                <small>Separate multiple domains with line breaks. Wildcards (*) can be used.</small>
+                <small>Separate multiple domains with line breaks. Domains are matched using partial matching.</small>
               </div>
 
               <div class="form-group">
                 <label for="project-staging">Staging Domains</label>
                 <textarea id="project-staging" rows="3" placeholder="staging.example.com&#10;*.staging.example.com"></textarea>
-                <small>Separate multiple domains with line breaks. Wildcards (*) can be used.</small>
+                <small>Separate multiple domains with line breaks. Domains are matched using partial matching.</small>
               </div>
 
               <div class="form-group">
                 <label for="project-production">Production Domains</label>
                 <textarea id="project-production" rows="3" placeholder="example.com&#10;www.example.com"></textarea>
-                <small>Separate multiple domains with line breaks. Wildcards (*) can be used.</small>
+                <small>Separate multiple domains with line breaks. Domains are matched using partial matching.</small>
               </div>
 
-              <div class="form-group-divider">
-                <h3 class="ttl-s">Domain Mappings for URL Switching</h3>
-                <p class="form-description">Set domain patterns for environment switching. These patterns are used to convert URLs when switching between environments. If not set, global mappings will be used.</p>
-              </div>
+              <h3 class="ttl-s">URL Switching Domains</h3>
+              <p class="form-description">Set domain patterns for URL switching. These patterns are used to convert URLs when switching between environments. If not set, global settings will be used.</p>
 
               <div class="form-group">
                 <label for="project-domain-local">Local Domain Pattern</label>

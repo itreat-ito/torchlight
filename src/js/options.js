@@ -49,7 +49,7 @@ import MicroModal from 'micromodal';
   let editingProjectId = null;
 
   // Function to close project modal with animation
-  const closeProjectModalWithAnimation = () => {
+  const closeProjectModalWithAnimation = (callback) => {
     const modalElement = document.getElementById('project-modal');
     if (modalElement && modalElement.classList.contains('is-open')) {
       // Add closing class to trigger animation
@@ -61,10 +61,18 @@ import MicroModal from 'micromodal';
         modalElement.classList.remove('is-closing');
         editingProjectId = null;
         elements.projectForm.reset();
+        // Execute callback after modal is closed
+        if (callback && typeof callback === 'function') {
+          callback();
+        }
       }, 200);
     } else {
       editingProjectId = null;
       elements.projectForm.reset();
+      // Execute callback immediately if modal is not open
+      if (callback && typeof callback === 'function') {
+        callback();
+      }
     }
   };
 
@@ -534,7 +542,15 @@ import MicroModal from 'micromodal';
 
       chrome.storage.sync.set({ projects }, () => {
         loadProjects();
-        closeProjectModalWithAnimation();
+        const isEditing = !!editingProjectId;
+        closeProjectModalWithAnimation(() => {
+          // Show success toast after modal is closed
+          if (isEditing) {
+            showSuccessToast('Project updated successfully!');
+          } else {
+            showSuccessToast('Project added successfully!');
+          }
+        });
       });
     });
   }
