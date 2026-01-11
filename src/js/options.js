@@ -18,6 +18,11 @@ import MicroModal from 'micromodal';
     productionColor: document.getElementById('production-color'),
     saveSettingsBtn: document.getElementById('save-settings'),
 
+    // Global domain mappings
+    globalLocalDomain: document.getElementById('global-local-domain'),
+    globalStagingDomain: document.getElementById('global-staging-domain'),
+    saveGlobalMappingsBtn: document.getElementById('save-global-mappings'),
+
     // Project management
     addProjectBtn: document.getElementById('add-project'),
     projectsList: document.getElementById('projects-list'),
@@ -35,6 +40,9 @@ import MicroModal from 'micromodal';
     projectLocal: document.getElementById('project-local'),
     projectStaging: document.getElementById('project-staging'),
     projectProduction: document.getElementById('project-production'),
+    projectDomainLocal: document.getElementById('project-domain-local'),
+    projectDomainStaging: document.getElementById('project-domain-staging'),
+    projectDomainProduction: document.getElementById('project-domain-production'),
     cancelProject: document.getElementById('cancel-project')
   };
 
@@ -147,6 +155,7 @@ import MicroModal from 'micromodal';
   // Initialize
   function init() {
     loadSettings();
+    loadGlobalMappings();
     loadProjects();
     setupEventListeners();
     setupProjectModalHandlers();
@@ -156,6 +165,9 @@ import MicroModal from 'micromodal';
   function setupEventListeners() {
     // Save common settings
     elements.saveSettingsBtn.addEventListener('click', saveSettings);
+
+    // Save global domain mappings
+    elements.saveGlobalMappingsBtn.addEventListener('click', saveGlobalMappings);
 
     // Add project
     elements.addProjectBtn.addEventListener('click', () => openProjectModal());
@@ -184,6 +196,31 @@ import MicroModal from 'micromodal';
       elements.stagingColor.value = settings.staging.color || '#FFC107';
       elements.productionText.value = settings.production.text || 'You\'re on PRODUCTION env.';
       elements.productionColor.value = settings.production.color || '#F44336';
+    });
+  }
+
+  // Load global domain mappings
+  function loadGlobalMappings() {
+    chrome.storage.sync.get(['globalDomainMappings'], (result) => {
+      const mappings = result.globalDomainMappings || {
+        local: 'test',
+        staging: 'itreat-test.com'
+      };
+
+      elements.globalLocalDomain.value = mappings.local || 'test';
+      elements.globalStagingDomain.value = mappings.staging || 'itreat-test.com';
+    });
+  }
+
+  // Save global domain mappings
+  function saveGlobalMappings() {
+    const mappings = {
+      local: elements.globalLocalDomain.value.trim() || 'test',
+      staging: elements.globalStagingDomain.value.trim() || 'itreat-test.com'
+    };
+
+    chrome.storage.sync.set({ globalDomainMappings: mappings }, () => {
+      showSuccessToast('Global domain mappings saved successfully!');
     });
   }
 
@@ -275,6 +312,23 @@ import MicroModal from 'micromodal';
             </div>
           </div>
         </div>
+        <div class="project-domain-mappings">
+          <h4 class="domain-mappings-title">Domain Mappings for URL Switching</h4>
+          <div class="domain-mappings-grid">
+            <div class="domain-mapping-item">
+              <span class="domain-mapping-label">Local</span>
+              <span class="domain-mapping-value">${project.domainMappings?.local && project.domainMappings.local.trim() ? escapeHtml(project.domainMappings.local) : '<span style="color: #999;">Use global setting</span>'}</span>
+            </div>
+            <div class="domain-mapping-item">
+              <span class="domain-mapping-label">Staging</span>
+              <span class="domain-mapping-value">${project.domainMappings?.staging && project.domainMappings.staging.trim() ? escapeHtml(project.domainMappings.staging) : '<span style="color: #999;">Use global setting</span>'}</span>
+            </div>
+            <div class="domain-mapping-item">
+              <span class="domain-mapping-label">Production</span>
+              <span class="domain-mapping-value">${project.domainMappings?.production && project.domainMappings.production.trim() ? escapeHtml(project.domainMappings.production) : '<span style="color: #999;">Use global setting</span>'}</span>
+            </div>
+          </div>
+        </div>
       </div>
       `;
     }).join('');
@@ -319,8 +373,24 @@ import MicroModal from 'micromodal';
           elements.projectLocal.value = (project.local || []).join('\n');
           elements.projectStaging.value = (project.staging || []).join('\n');
           elements.projectProduction.value = (project.production || []).join('\n');
+          
+          // Load domain mappings
+          if (project.domainMappings) {
+            elements.projectDomainLocal.value = project.domainMappings.local || '';
+            elements.projectDomainStaging.value = project.domainMappings.staging || '';
+            elements.projectDomainProduction.value = project.domainMappings.production || '';
+          } else {
+            elements.projectDomainLocal.value = '';
+            elements.projectDomainStaging.value = '';
+            elements.projectDomainProduction.value = '';
+          }
         }
       });
+    } else {
+      // Reset domain mapping fields for new project
+      elements.projectDomainLocal.value = '';
+      elements.projectDomainStaging.value = '';
+      elements.projectDomainProduction.value = '';
     }
 
     // Show modal with animation
@@ -393,6 +463,22 @@ import MicroModal from 'micromodal';
     const staging = parseDomains(elements.projectStaging.value);
     const production = parseDomains(elements.projectProduction.value);
 
+    // Parse domain mappings (only if provided)
+    const domainMappings = {};
+    const localMapping = elements.projectDomainLocal.value.trim();
+    const stagingMapping = elements.projectDomainStaging.value.trim();
+    const productionMapping = elements.projectDomainProduction.value.trim();
+    
+    if (localMapping) {
+      domainMappings.local = localMapping;
+    }
+    if (stagingMapping) {
+      domainMappings.staging = stagingMapping;
+    }
+    if (productionMapping) {
+      domainMappings.production = productionMapping;
+    }
+
     chrome.storage.sync.get(['projects'], (result) => {
       const projects = result.projects || [];
 
@@ -402,7 +488,7 @@ import MicroModal from 'micromodal';
         if (index !== -1) {
           // 既存のenabled状態を保持（デフォルトはtrue）
           const existingProject = projects[index];
-          projects[index] = {
+          const updatedProject = {
             id: editingProjectId,
             name,
             local,
@@ -410,6 +496,13 @@ import MicroModal from 'micromodal';
             production,
             enabled: existingProject.enabled !== false // 既存の値があれば保持、なければtrue
           };
+          
+          // Add domain mappings only if at least one is provided
+          if (Object.keys(domainMappings).length > 0) {
+            updatedProject.domainMappings = domainMappings;
+          }
+          
+          projects[index] = updatedProject;
         }
       } else {
         // Add new
@@ -421,6 +514,12 @@ import MicroModal from 'micromodal';
           production,
           enabled: true // 新規プロジェクトはデフォルトで有効
         };
+        
+        // Add domain mappings only if at least one is provided
+        if (Object.keys(domainMappings).length > 0) {
+          newProject.domainMappings = domainMappings;
+        }
+        
         projects.push(newProject);
       }
 
@@ -440,7 +539,7 @@ import MicroModal from 'micromodal';
 
   // Export settings
   function exportSettings() {
-    chrome.storage.sync.get(['settings', 'projects'], (result) => {
+    chrome.storage.sync.get(['settings', 'projects', 'globalDomainMappings'], (result) => {
       const exportData = {
         version: '1.0.0',
         exportedAt: new Date().toISOString(),
@@ -449,7 +548,11 @@ import MicroModal from 'micromodal';
           staging: { text: 'You\'re on STAGING env.', color: '#FFC107' },
           production: { text: 'You\'re on PRODUCTION env.', color: '#F44336' }
         },
-        projects: result.projects || []
+        projects: result.projects || [],
+        globalDomainMappings: result.globalDomainMappings || {
+          local: 'test',
+          staging: 'itreat-test.com'
+        }
       };
 
       const jsonString = JSON.stringify(exportData, null, 2);
@@ -520,11 +623,16 @@ import MicroModal from 'micromodal';
     };
 
     const projects = importData.projects || [];
+    const globalDomainMappings = importData.globalDomainMappings || {
+      local: 'test',
+      staging: 'itreat-test.com'
+    };
 
     // Save imported data
-    chrome.storage.sync.set({ settings, projects }, () => {
-      // Reload settings and projects
+    chrome.storage.sync.set({ settings, projects, globalDomainMappings }, () => {
+      // Reload settings, global mappings and projects
       loadSettings();
+      loadGlobalMappings();
       loadProjects();
       showSuccessToast('Settings imported successfully!');
     });
