@@ -96,22 +96,18 @@ async function updateEnvironmentButtons() {
     const urlObj = new URL(tab.url);
     const currentDomain = urlObj.hostname;
     
-    chrome.storage.sync.get(['projects', 'globalDomainMappings', 'settings'], (result) => {
+    chrome.storage.sync.get(['projects', 'settings'], (result) => {
       const projects = result.projects || [];
-      const globalMappings = result.globalDomainMappings || {
-        local: 'test',
-        staging: 'itreat-test.com'
-      };
       
       // ボタンのスタイルを更新
       updateButtonStyles(result.settings);
       
       const currentEnv = detectEnvironment(currentDomain, projects);
       
-      // 各環境への切り替えが可能かチェック
-      const canSwitchToLocal = getDomainMapping('local', currentDomain, projects, globalMappings) !== null;
-      const canSwitchToStaging = getDomainMapping('staging', currentDomain, projects, globalMappings) !== null;
-      const canSwitchToProduction = getDomainMapping('production', currentDomain, projects, globalMappings) !== null;
+      // 各環境への切り替えが可能かチェック（プロジェクトのdomainMappingsが設定されている場合のみ）
+      const canSwitchToLocal = getDomainMapping('local', currentDomain, projects, null) !== null;
+      const canSwitchToStaging = getDomainMapping('staging', currentDomain, projects, null) !== null;
+      const canSwitchToProduction = getDomainMapping('production', currentDomain, projects, null) !== null;
       
       // ボタンの有効/無効を設定
       openLocalBtn.disabled = !canSwitchToLocal || currentEnv === 'local';

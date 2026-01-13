@@ -93,9 +93,9 @@ export function getDomainMapping(environment, currentDomain, projects, globalMap
   
   // 3. 該当プロジェクトが見つかり、Domain Mappingsが設定されている場合
   if (matchingProject && matchingProject.domainMappings) {
-    // プロジェクト個別設定から取得（未設定の場合はグローバル設定を使用）
-    const currentMapping = matchingProject.domainMappings[currentEnv] || globalMappings?.[currentEnv];
-    const targetMapping = matchingProject.domainMappings[environment] || globalMappings?.[environment];
+    // プロジェクト個別設定から取得
+    const currentMapping = matchingProject.domainMappings[currentEnv];
+    const targetMapping = matchingProject.domainMappings[environment];
     
     // 現在の環境のDomain Mappingとターゲット環境のDomain Mappingが両方設定されている場合
     if (currentMapping && currentMapping.trim() && targetMapping && targetMapping.trim()) {
@@ -106,17 +106,7 @@ export function getDomainMapping(environment, currentDomain, projects, globalMap
     }
   }
   
-  // 4. 該当プロジェクトがない、またはDomain Mappingsが未設定の場合はグローバル設定を使用
-  const currentGlobalMapping = globalMappings?.[currentEnv];
-  const targetGlobalMapping = globalMappings?.[environment];
-  
-  if (currentGlobalMapping && currentGlobalMapping.trim() && targetGlobalMapping && targetGlobalMapping.trim()) {
-    return {
-      from: currentGlobalMapping.trim(),
-      to: targetGlobalMapping.trim()
-    };
-  }
-  
+  // 4. プロジェクトのDomain Mappingsが未設定の場合はnullを返す（URL Switching不可）
   return null;
 }
 
@@ -152,14 +142,10 @@ export function convertUrl(url, targetEnvironment) {
     const currentDomain = urlObj.hostname;
     
     return new Promise((resolve) => {
-      chrome.storage.sync.get(['projects', 'globalDomainMappings'], (result) => {
+      chrome.storage.sync.get(['projects'], (result) => {
         const projects = result.projects || [];
-        const globalMappings = result.globalDomainMappings || {
-          local: 'test',
-          staging: 'itreat-test.com'
-        };
         
-        const mapping = getDomainMapping(targetEnvironment, currentDomain, projects, globalMappings);
+        const mapping = getDomainMapping(targetEnvironment, currentDomain, projects, null);
         if (!mapping || !mapping.from || !mapping.to) {
           resolve(null);
           return;

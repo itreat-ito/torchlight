@@ -19,10 +19,11 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
     productionColor: document.getElementById('production-color'),
     saveSettingsBtn: document.getElementById('save-settings'),
 
-    // Global domain mappings
-    globalLocalDomain: document.getElementById('global-local-domain'),
-    globalStagingDomain: document.getElementById('global-staging-domain'),
-    saveGlobalMappingsBtn: document.getElementById('save-global-mappings'),
+    // Keyboard shortcuts
+    shortcutLocal: document.getElementById('shortcut-local'),
+    shortcutStaging: document.getElementById('shortcut-staging'),
+    shortcutProduction: document.getElementById('shortcut-production'),
+    saveShortcutsBtn: document.getElementById('save-shortcuts'),
 
     // Project management
     addProjectBtn: document.getElementById('add-project'),
@@ -175,7 +176,6 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
   // Initialize
   function init() {
     loadSettings();
-    loadGlobalMappings();
     loadProjects();
     loadKeyboardShortcuts();
     setupEventListeners();
@@ -194,8 +194,8 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
     // Save common settings
     elements.saveSettingsBtn.addEventListener('click', saveSettings);
 
-    // Save global domain mappings (includes keyboard shortcuts)
-    elements.saveGlobalMappingsBtn.addEventListener('click', saveGlobalMappingsAndShortcuts);
+    // Save keyboard shortcuts
+    elements.saveShortcutsBtn.addEventListener('click', saveKeyboardShortcuts);
 
     // Add project
     elements.addProjectBtn.addEventListener('click', () => openProjectModal());
@@ -294,59 +294,6 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
     });
   }
 
-  // Load global domain mappings
-  function loadGlobalMappings() {
-    chrome.storage.sync.get(['globalDomainMappings'], (result) => {
-      const mappings = result.globalDomainMappings || {
-        local: 'test',
-        staging: 'itreat-test.com'
-      };
-
-      elements.globalLocalDomain.value = mappings.local || 'test';
-      elements.globalStagingDomain.value = mappings.staging || 'itreat-test.com';
-    });
-  }
-
-  // Save global domain mappings
-  function saveGlobalMappings() {
-    const mappings = {
-      local: elements.globalLocalDomain.value.trim() || 'test',
-      staging: elements.globalStagingDomain.value.trim() || 'itreat-test.com'
-    };
-
-    chrome.storage.sync.set({ globalDomainMappings: mappings }, () => {
-      showSuccessToast('Global domain mappings saved successfully!');
-    });
-  }
-
-  // Save global domain mappings and keyboard shortcuts
-  function saveGlobalMappingsAndShortcuts() {
-    const mappings = {
-      local: elements.globalLocalDomain.value.trim() || 'test',
-      staging: elements.globalStagingDomain.value.trim() || 'itreat-test.com'
-    };
-
-    const shortcuts = {
-      local: normalizeShortcut(elements.shortcutLocal.value) || 'Ctrl+Shift+1',
-      staging: normalizeShortcut(elements.shortcutStaging.value) || 'Ctrl+Shift+2',
-      production: normalizeShortcut(elements.shortcutProduction.value) || 'Ctrl+Shift+3'
-    };
-
-    chrome.storage.sync.set({ globalDomainMappings: mappings, keyboardShortcuts: shortcuts }, () => {
-      // すべてのタブにメッセージを送信してショートカット設定を更新
-      chrome.tabs.query({}, (tabs) => {
-        tabs.forEach((tab) => {
-          chrome.tabs.sendMessage(tab.id, {
-            action: 'updateKeyboardShortcuts',
-            shortcuts: shortcuts
-          }).catch(() => {
-            // メッセージ送信に失敗しても無視（コンテンツスクリプトが読み込まれていないタブなど）
-          });
-        });
-      });
-      showSuccessToast('Settings saved successfully!');
-    });
-  }
 
   // Save common settings
   function saveSettings() {
@@ -445,19 +392,19 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
             <div class="domain-group">
               <h4>Local</h4>
               <div class="domain-list">
-                <div class="domain-value">${project.domainMappings?.local && project.domainMappings.local.trim() ? escapeHtml(project.domainMappings.local) : '<span style="color: #999;">Use global setting</span>'}</div>
+                <div class="domain-value">${project.domainMappings?.local && project.domainMappings.local.trim() ? escapeHtml(project.domainMappings.local) : '<span style="color: #999;">Not set</span>'}</div>
               </div>
             </div>
             <div class="domain-group">
               <h4>Staging</h4>
               <div class="domain-list">
-                <div class="domain-value">${project.domainMappings?.staging && project.domainMappings.staging.trim() ? escapeHtml(project.domainMappings.staging) : '<span style="color: #999;">Use global setting</span>'}</div>
+                <div class="domain-value">${project.domainMappings?.staging && project.domainMappings.staging.trim() ? escapeHtml(project.domainMappings.staging) : '<span style="color: #999;">Not set</span>'}</div>
               </div>
             </div>
             <div class="domain-group">
               <h4>Production</h4>
               <div class="domain-list">
-                <div class="domain-value">${project.domainMappings?.production && project.domainMappings.production.trim() ? escapeHtml(project.domainMappings.production) : '<span style="color: #999;">Use global setting</span>'}</div>
+                <div class="domain-value">${project.domainMappings?.production && project.domainMappings.production.trim() ? escapeHtml(project.domainMappings.production) : '<span style="color: #999;">Not set</span>'}</div>
               </div>
             </div>
           </div>
@@ -680,7 +627,7 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
 
   // Export settings
   function exportSettings() {
-    chrome.storage.sync.get(['settings', 'projects', 'globalDomainMappings', 'keyboardShortcuts'], (result) => {
+    chrome.storage.sync.get(['settings', 'projects', 'keyboardShortcuts'], (result) => {
       const exportData = {
         version: '1.0.0',
         exportedAt: new Date().toISOString(),
@@ -690,10 +637,6 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
           production: { text: 'You\'re on PRODUCTION env.', color: '#F44336' }
         },
         projects: result.projects || [],
-        globalDomainMappings: result.globalDomainMappings || {
-          local: 'test',
-          staging: 'itreat-test.com'
-        },
         keyboardShortcuts: result.keyboardShortcuts || {
           local: 'Ctrl+Shift+1',
           staging: 'Ctrl+Shift+2',
@@ -769,10 +712,6 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
     };
 
     const projects = importData.projects || [];
-    const globalDomainMappings = importData.globalDomainMappings || {
-      local: 'test',
-      staging: 'itreat-test.com'
-    };
     const keyboardShortcuts = importData.keyboardShortcuts || {
       local: 'Ctrl+Shift+1',
       staging: 'Ctrl+Shift+2',
@@ -780,10 +719,9 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
     };
 
     // Save imported data
-    chrome.storage.sync.set({ settings, projects, globalDomainMappings, keyboardShortcuts }, () => {
-      // Reload settings, global mappings, projects and keyboard shortcuts
+    chrome.storage.sync.set({ settings, projects, keyboardShortcuts }, () => {
+      // Reload settings, projects and keyboard shortcuts
       loadSettings();
-      loadGlobalMappings();
       loadProjects();
       loadKeyboardShortcuts();
       showSuccessToast('Settings imported successfully!');

@@ -95,15 +95,10 @@
           <!-- URL Switching -->
           <section class="section">
             <h2 class="ttl-m">URL Switching</h2>
-            <p class="section-description">Set default domain patterns and keyboard shortcuts for URL switching. Domain patterns will be used when project-specific mappings are not set. Keyboard shortcuts allow you to quickly switch between environments.</p>
+            <p class="section-description">Set keyboard shortcuts to quickly switch between environments.</p>
             <div class="settings-grid">
               <div class="setting-item">
                 <h3 class="ttl-s">Local</h3>
-                <div class="form-group">
-                  <label for="global-local-domain">Domain Pattern</label>
-                  <input type="text" id="global-local-domain" placeholder="test" value="test">
-                  <small>Default: test</small>
-                </div>
                 <div class="form-group">
                   <label for="shortcut-local">Hotkey</label>
                   <input type="text" id="shortcut-local" placeholder="Ctrl+Shift+1" readonly>
@@ -113,11 +108,6 @@
               <div class="setting-item">
                 <h3 class="ttl-s">Staging</h3>
                 <div class="form-group">
-                  <label for="global-staging-domain">Domain Pattern</label>
-                  <input type="text" id="global-staging-domain" placeholder="itreat-test.com" value="itreat-test.com">
-                  <small>Default: itreat-test.com</small>
-                </div>
-                <div class="form-group">
                   <label for="shortcut-staging">Hotkey</label>
                   <input type="text" id="shortcut-staging" placeholder="Ctrl+Shift+2" readonly>
                   <small>Click and press the key combination to set</small>
@@ -126,18 +116,13 @@
               <div class="setting-item">
                 <h3 class="ttl-s">Production</h3>
                 <div class="form-group">
-                  <label for="global-production-domain">Domain Pattern</label>
-                  <input type="text" id="global-production-domain" placeholder="Production domain" disabled>
-                  <small>Please configure in project-specific settings</small>
-                </div>
-                <div class="form-group">
                   <label for="shortcut-production">Hotkey</label>
                   <input type="text" id="shortcut-production" placeholder="Ctrl+Shift+3" readonly>
                   <small>Click and press the key combination to set</small>
                 </div>
               </div>
             </div>
-            <button id="save-global-mappings" class="btn btn-primary">Save</button>
+            <button id="save-shortcuts" class="btn btn-primary">Save</button>
           </section>
 
           <!-- Export/Import Section -->
@@ -172,20 +157,20 @@
               <div class="form-group">
                 <label for="project-local">Local Domains</label>
                 <textarea id="project-local" rows="3"
-                  placeholder="localhost&#10;127.0.0.1&#10;local.example.com"></textarea>
+                  placeholder="example.test&#10;127.0.0.1"></textarea>
                 <small>Separate multiple domains with line breaks. Domains are matched using partial matching.</small>
               </div>
 
               <div class="form-group">
                 <label for="project-staging">Staging Domains</label>
                 <textarea id="project-staging" rows="3"
-                  placeholder="staging.example.com&#10;*.staging.example.com"></textarea>
+                  placeholder="example.itreat-test.com"></textarea>
                 <small>Separate multiple domains with line breaks. Domains are matched using partial matching.</small>
               </div>
 
               <div class="form-group">
                 <label for="project-production">Production Domains</label>
-                <textarea id="project-production" rows="3" placeholder="example.com&#10;www.example.com"></textarea>
+                <textarea id="project-production" rows="3" placeholder="example.com"></textarea>
                 <small>Separate multiple domains with line breaks. Domains are matched using partial matching.</small>
               </div>
 
@@ -195,21 +180,21 @@
 
               <div class="form-group">
                 <label for="project-domain-local">Local Domain Pattern</label>
-                <input type="text" id="project-domain-local" placeholder=".test">
-                <small>Pattern for local environment (e.g., .test). Leave empty to use global setting.</small>
+                <input type="text" id="project-domain-local" placeholder="example.test">
+                <small>Pattern for local environment (e.g., example.test). Leave empty to use global setting.</small>
               </div>
 
               <div class="form-group">
                 <label for="project-domain-staging">Staging Domain Pattern</label>
-                <input type="text" id="project-domain-staging" placeholder=".itreat-test.com">
-                <small>Pattern for staging environment (e.g., .itreat-test.com). Leave empty to use global
+                <input type="text" id="project-domain-staging" placeholder="example.itreat-test.com">
+                <small>Pattern for staging environment (e.g., example.itreat-test.com). Leave empty to use global
                   setting.</small>
               </div>
 
               <div class="form-group">
                 <label for="project-domain-production">Production Domain Pattern</label>
-                <input type="text" id="project-domain-production" placeholder=".example.com">
-                <small>Pattern for production environment (e.g., .example.com). Leave empty to use global
+                <input type="text" id="project-domain-production" placeholder="example.com">
+                <small>Pattern for production environment (e.g., example.com). Leave empty to use global
                   setting.</small>
               </div>
 
