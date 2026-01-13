@@ -45,11 +45,56 @@ import { matchesShortcut, isInputFocused } from './common/keyboard.js';
     return banner;
   }
 
+  // 元のページタイトルを保存（プレフィックスなし）
+  let originalTitle = document.title;
+
+  // ページタイトルを更新
+  function updatePageTitle(environment, pageTitles) {
+    if (!environment || !pageTitles) {
+      // 環境が検出できない場合は元のタイトルに戻す
+      if (originalTitle) {
+        document.title = originalTitle;
+      }
+      return;
+    }
+
+    const prefix = pageTitles[environment];
+    if (!prefix || !prefix.trim()) {
+      // プレフィックスが設定されていない場合は元のタイトルに戻す
+      if (originalTitle) {
+        document.title = originalTitle;
+      }
+      return;
+    }
+
+    // 元のタイトルが保存されていない場合は現在のタイトルを保存
+    // ただし、既にプレフィックスが付いている場合は除外
+    if (!originalTitle || originalTitle === document.title) {
+      const existingPrefixes = Object.values(pageTitles).filter(p => p && p.trim());
+      let isPrefixed = false;
+      for (const existingPrefix of existingPrefixes) {
+        if (document.title.startsWith(existingPrefix)) {
+          isPrefixed = true;
+          // 既存のプレフィックスを除去して元のタイトルを取得
+          originalTitle = document.title.substring(existingPrefix.length).trim();
+          break;
+        }
+      }
+      if (!isPrefixed) {
+        originalTitle = document.title;
+      }
+    }
+
+    // 新しいプレフィックスを追加
+    const titleWithoutPrefix = originalTitle || document.title;
+    document.title = prefix + (titleWithoutPrefix ? ' ' + titleWithoutPrefix : titleWithoutPrefix);
+  }
+
   // メイン処理
   function init() {
     const domain = getDomain();
     
-    chrome.storage.sync.get(['extensionEnabled', 'settings', 'projects'], (result) => {
+    chrome.storage.sync.get(['extensionEnabled', 'settings', 'projects', 'pageTitles'], (result) => {
       // 拡張機能が無効の場合は何もしない
       if (result.extensionEnabled === false) {
         // 既存のバナーがあれば削除
@@ -66,10 +111,18 @@ import { matchesShortcut, isInputFocused } from './common/keyboard.js';
         production: { text: 'Production Environment', color: '#F44336' }
       };
       const projects = result.projects || [];
+      const pageTitles = result.pageTitles || {
+        local: '',
+        staging: '',
+        production: ''
+      };
 
       const environment = detectEnvironment(domain, projects);
       
       if (environment) {
+        // ページタイトルを更新
+        updatePageTitle(environment, pageTitles);
+
         const banner = createBanner(environment, settings);
         if (banner) {
           // DOMが準備できているか確認
@@ -174,6 +227,8 @@ import { matchesShortcut, isInputFocused } from './common/keyboard.js';
     const url = location.href;
     if (url !== lastUrl) {
       lastUrl = url;
+      // ページ遷移時に元のタイトルをリセット
+      originalTitle = null;
       setTimeout(init, 100);
     }
   }).observe(document, { subtree: true, childList: true });
@@ -187,6 +242,10 @@ import { matchesShortcut, isInputFocused } from './common/keyboard.js';
     } else if (message.action === 'updateKeyboardShortcuts') {
       // ショートカット設定が変更されたら再設定
       setupKeyboardShortcuts();
+      sendResponse({ success: true });
+    } else if (message.action === 'updatePageTitles') {
+      // ページタイトル設定が変更されたら再初期化
+      init();
       sendResponse({ success: true });
     }
     return true;

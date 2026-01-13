@@ -19,6 +19,12 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
     productionColor: document.getElementById('production-color'),
     saveSettingsBtn: document.getElementById('save-settings'),
 
+    // Page titles
+    pageTitleLocal: document.getElementById('page-title-local'),
+    pageTitleStaging: document.getElementById('page-title-staging'),
+    pageTitleProduction: document.getElementById('page-title-production'),
+    savePageTitlesBtn: document.getElementById('save-page-titles'),
+
     // Keyboard shortcuts
     shortcutLocal: document.getElementById('shortcut-local'),
     shortcutStaging: document.getElementById('shortcut-staging'),
@@ -173,6 +179,7 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
   // Initialize
   function init() {
     loadSettings();
+    loadPageTitles();
     loadProjects();
     loadKeyboardShortcuts();
     setupEventListeners();
@@ -190,6 +197,9 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
   function setupEventListeners() {
     // Save common settings
     elements.saveSettingsBtn.addEventListener('click', saveSettings);
+
+    // Save page titles
+    elements.savePageTitlesBtn.addEventListener('click', savePageTitles);
 
     // Save keyboard shortcuts
     elements.saveShortcutsBtn.addEventListener('click', saveKeyboardShortcuts);
@@ -311,6 +321,45 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
 
     chrome.storage.sync.set({ settings }, () => {
       showSuccessToast('Settings saved successfully!');
+    });
+  }
+
+  // Load page titles
+  function loadPageTitles() {
+    chrome.storage.sync.get(['pageTitles'], (result) => {
+      const pageTitles = result.pageTitles || {
+        local: '',
+        staging: '',
+        production: ''
+      };
+
+      elements.pageTitleLocal.value = pageTitles.local || '';
+      elements.pageTitleStaging.value = pageTitles.staging || '';
+      elements.pageTitleProduction.value = pageTitles.production || '';
+    });
+  }
+
+  // Save page titles
+  function savePageTitles() {
+    const pageTitles = {
+      local: elements.pageTitleLocal.value.trim() || '',
+      staging: elements.pageTitleStaging.value.trim() || '',
+      production: elements.pageTitleProduction.value.trim() || ''
+    };
+
+    chrome.storage.sync.set({ pageTitles }, () => {
+      // すべてのタブにメッセージを送信してページタイトル設定を更新
+      chrome.tabs.query({}, (tabs) => {
+        tabs.forEach((tab) => {
+          chrome.tabs.sendMessage(tab.id, {
+            action: 'updatePageTitles',
+            pageTitles: pageTitles
+          }).catch(() => {
+            // メッセージ送信に失敗しても無視（コンテンツスクリプトが読み込まれていないタブなど）
+          });
+        });
+      });
+      showSuccessToast('Page titles saved successfully!');
     });
   }
 
@@ -553,7 +602,7 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
 
   // Export settings
   function exportSettings() {
-    chrome.storage.sync.get(['settings', 'projects', 'keyboardShortcuts'], (result) => {
+    chrome.storage.sync.get(['settings', 'projects', 'keyboardShortcuts', 'pageTitles'], (result) => {
       const exportData = {
         version: '1.0.0',
         exportedAt: new Date().toISOString(),
@@ -567,6 +616,11 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
           local: 'Ctrl+Shift+1',
           staging: 'Ctrl+Shift+2',
           production: 'Ctrl+Shift+3'
+        },
+        pageTitles: result.pageTitles || {
+          local: '',
+          staging: '',
+          production: ''
         }
       };
 
@@ -643,11 +697,17 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
       staging: 'Ctrl+Shift+2',
       production: 'Ctrl+Shift+3'
     };
+    const pageTitles = importData.pageTitles || {
+      local: '',
+      staging: '',
+      production: ''
+    };
 
     // Save imported data
-    chrome.storage.sync.set({ settings, projects, keyboardShortcuts }, () => {
-      // Reload settings, projects and keyboard shortcuts
+    chrome.storage.sync.set({ settings, projects, keyboardShortcuts, pageTitles }, () => {
+      // Reload settings, page titles, projects and keyboard shortcuts
       loadSettings();
+      loadPageTitles();
       loadProjects();
       loadKeyboardShortcuts();
       showSuccessToast('Settings imported successfully!');

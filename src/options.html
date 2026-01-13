@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Settings | torchlight</title>
+  <title>torchlight</title>
 </head>
 
 <body>
@@ -91,6 +91,38 @@
             <button id="save-settings" class="btn btn-primary">Save</button>
           </section>
 
+          <!-- Page Title -->
+          <section class="section">
+            <h2 class="ttl-m">Page Title</h2>
+            <p class="section-description">Set a prefix to be added to the page title when accessing each environment.</p>
+            <div class="settings-grid">
+              <div class="setting-item">
+                <h3 class="ttl-s">Local</h3>
+                <div class="form-group">
+                  <label for="page-title-local">Prefix</label>
+                  <input type="text" id="page-title-local" placeholder="[LOCAL]">
+                  <small>This text will be prepended to the page title</small>
+                </div>
+              </div>
+              <div class="setting-item">
+                <h3 class="ttl-s">Staging</h3>
+                <div class="form-group">
+                  <label for="page-title-staging">Prefix</label>
+                  <input type="text" id="page-title-staging" placeholder="[STAGING]">
+                  <small>This text will be prepended to the page title</small>
+                </div>
+              </div>
+              <div class="setting-item">
+                <h3 class="ttl-s">Production</h3>
+                <div class="form-group">
+                  <label for="page-title-production">Prefix</label>
+                  <input type="text" id="page-title-production" placeholder="[PRODUCTION]">
+                  <small>This text will be prepended to the page title</small>
+                </div>
+              </div>
+            </div>
+            <button id="save-page-titles" class="btn btn-primary">Save</button>
+          </section>
 
           <!-- URL Switching -->
           <section class="section">
