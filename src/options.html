@@ -25,7 +25,7 @@
             </li>
             <li>
               <a href="#" class="sidebar-item" data-page="global-settings" id="nav-global-settings">
-                Global Settings
+                Settings
               </a>
             </li>
           </ul>
@@ -155,47 +155,21 @@
 
               <h3 class="ttl-s">Environment Domains</h3>
               <div class="form-group">
-                <label for="project-local">Local Domains</label>
-                <textarea id="project-local" rows="3"
-                  placeholder="example.test&#10;127.0.0.1"></textarea>
-                <small>Separate multiple domains with line breaks. Domains are matched using partial matching.</small>
+                <label for="project-local">Local Domain</label>
+                <input type="text" id="project-local" placeholder="example.test">
+                <small>Domain for local environment. Used for environment detection and URL switching.</small>
               </div>
 
               <div class="form-group">
-                <label for="project-staging">Staging Domains</label>
-                <textarea id="project-staging" rows="3"
-                  placeholder="example.itreat-test.com"></textarea>
-                <small>Separate multiple domains with line breaks. Domains are matched using partial matching.</small>
+                <label for="project-staging">Staging Domain</label>
+                <input type="text" id="project-staging" placeholder="example.itreat-test.com">
+                <small>Domain for staging environment. Used for environment detection and URL switching.</small>
               </div>
 
               <div class="form-group">
-                <label for="project-production">Production Domains</label>
-                <textarea id="project-production" rows="3" placeholder="example.com"></textarea>
-                <small>Separate multiple domains with line breaks. Domains are matched using partial matching.</small>
-              </div>
-
-              <h3 class="ttl-s">URL Switching Domains</h3>
-              <p class="form-description">Set domain patterns for URL switching. These patterns are used to convert URLs
-                when switching between environments. If not set, global settings will be used.</p>
-
-              <div class="form-group">
-                <label for="project-domain-local">Local Domain Pattern</label>
-                <input type="text" id="project-domain-local" placeholder="example.test">
-                <small>Pattern for local environment (e.g., example.test). Leave empty to use global setting.</small>
-              </div>
-
-              <div class="form-group">
-                <label for="project-domain-staging">Staging Domain Pattern</label>
-                <input type="text" id="project-domain-staging" placeholder="example.itreat-test.com">
-                <small>Pattern for staging environment (e.g., example.itreat-test.com). Leave empty to use global
-                  setting.</small>
-              </div>
-
-              <div class="form-group">
-                <label for="project-domain-production">Production Domain Pattern</label>
-                <input type="text" id="project-domain-production" placeholder="example.com">
-                <small>Pattern for production environment (e.g., example.com). Leave empty to use global
-                  setting.</small>
+                <label for="project-production">Production Domain</label>
+                <input type="text" id="project-production" placeholder="example.com">
+                <small>Domain for production environment. Used for environment detection and URL switching.</small>
               </div>
 
               <div class="form-actions">

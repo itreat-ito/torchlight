@@ -91,13 +91,16 @@ export function getDomainMapping(environment, currentDomain, projects, globalMap
   // 2. 現在のドメインがどのプロジェクトに該当するかを判定
   const matchingProject = findMatchingProject(currentDomain, projects);
   
-  // 3. 該当プロジェクトが見つかり、Domain Mappingsが設定されている場合
-  if (matchingProject && matchingProject.domainMappings) {
-    // プロジェクト個別設定から取得
-    const currentMapping = matchingProject.domainMappings[currentEnv];
-    const targetMapping = matchingProject.domainMappings[environment];
+  // 3. 該当プロジェクトが見つかり、Environment Domainsが設定されている場合
+  if (matchingProject) {
+    // Environment Domainsから取得（配列の最初の要素を使用）
+    const currentDomainList = matchingProject[currentEnv] || [];
+    const targetDomainList = matchingProject[environment] || [];
     
-    // 現在の環境のDomain Mappingとターゲット環境のDomain Mappingが両方設定されている場合
+    const currentMapping = currentDomainList.length > 0 ? currentDomainList[0] : null;
+    const targetMapping = targetDomainList.length > 0 ? targetDomainList[0] : null;
+    
+    // 現在の環境のDomainとターゲット環境のDomainが両方設定されている場合
     if (currentMapping && currentMapping.trim() && targetMapping && targetMapping.trim()) {
       return {
         from: currentMapping.trim(),
@@ -106,7 +109,7 @@ export function getDomainMapping(environment, currentDomain, projects, globalMap
     }
   }
   
-  // 4. プロジェクトのDomain Mappingsが未設定の場合はnullを返す（URL Switching不可）
+  // 4. プロジェクトのEnvironment Domainsが未設定の場合はnullを返す（URL Switching不可）
   return null;
 }
 

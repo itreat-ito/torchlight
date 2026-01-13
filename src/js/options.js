@@ -53,9 +53,6 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
     projectLocal: document.getElementById('project-local'),
     projectStaging: document.getElementById('project-staging'),
     projectProduction: document.getElementById('project-production'),
-    projectDomainLocal: document.getElementById('project-domain-local'),
-    projectDomainStaging: document.getElementById('project-domain-staging'),
-    projectDomainProduction: document.getElementById('project-domain-production'),
     cancelProject: document.getElementById('cancel-project')
   };
 
@@ -355,56 +352,23 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
           </div>
         </div>
         <div class="project-domains-section">
-          <h4 class="section-title">Environment Domains</h4>
           <div class="project-domains">
             <div class="domain-group">
               <h4>Local</h4>
               <div class="domain-list">
-                <ul>
-                  ${(project.local || []).map(domain => `<li>${escapeHtml(domain)}</li>`).join('')}
-                  ${(project.local || []).length === 0 ? '<li style="color: #999;">Not set</li>' : ''}
-                </ul>
+                <div class="domain-value">${project.local && project.local.length > 0 && project.local[0] ? escapeHtml(project.local[0]) : '<span style="color: #999;">Not set</span>'}</div>
               </div>
             </div>
             <div class="domain-group">
               <h4>Staging</h4>
               <div class="domain-list">
-                <ul>
-                  ${(project.staging || []).map(domain => `<li>${escapeHtml(domain)}</li>`).join('')}
-                  ${(project.staging || []).length === 0 ? '<li style="color: #999;">Not set</li>' : ''}
-                </ul>
+                <div class="domain-value">${project.staging && project.staging.length > 0 && project.staging[0] ? escapeHtml(project.staging[0]) : '<span style="color: #999;">Not set</span>'}</div>
               </div>
             </div>
             <div class="domain-group">
               <h4>Production</h4>
               <div class="domain-list">
-                <ul>
-                  ${(project.production || []).map(domain => `<li>${escapeHtml(domain)}</li>`).join('')}
-                  ${(project.production || []).length === 0 ? '<li style="color: #999;">Not set</li>' : ''}
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="project-domain-mappings">
-          <h4 class="section-title">URL Switching Domains</h4>
-          <div class="project-domains">
-            <div class="domain-group">
-              <h4>Local</h4>
-              <div class="domain-list">
-                <div class="domain-value">${project.domainMappings?.local && project.domainMappings.local.trim() ? escapeHtml(project.domainMappings.local) : '<span style="color: #999;">Not set</span>'}</div>
-              </div>
-            </div>
-            <div class="domain-group">
-              <h4>Staging</h4>
-              <div class="domain-list">
-                <div class="domain-value">${project.domainMappings?.staging && project.domainMappings.staging.trim() ? escapeHtml(project.domainMappings.staging) : '<span style="color: #999;">Not set</span>'}</div>
-              </div>
-            </div>
-            <div class="domain-group">
-              <h4>Production</h4>
-              <div class="domain-list">
-                <div class="domain-value">${project.domainMappings?.production && project.domainMappings.production.trim() ? escapeHtml(project.domainMappings.production) : '<span style="color: #999;">Not set</span>'}</div>
+                <div class="domain-value">${project.production && project.production.length > 0 && project.production[0] ? escapeHtml(project.production[0]) : '<span style="color: #999;">Not set</span>'}</div>
               </div>
             </div>
           </div>
@@ -450,27 +414,17 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
         const project = projects.find(p => p.id === projectId);
         if (project) {
           elements.projectName.value = project.name || '';
-          elements.projectLocal.value = (project.local || []).join('\n');
-          elements.projectStaging.value = (project.staging || []).join('\n');
-          elements.projectProduction.value = (project.production || []).join('\n');
-          
-          // Load domain mappings
-          if (project.domainMappings) {
-            elements.projectDomainLocal.value = project.domainMappings.local || '';
-            elements.projectDomainStaging.value = project.domainMappings.staging || '';
-            elements.projectDomainProduction.value = project.domainMappings.production || '';
-          } else {
-            elements.projectDomainLocal.value = '';
-            elements.projectDomainStaging.value = '';
-            elements.projectDomainProduction.value = '';
-          }
+          // 単一ドメインとして扱う（配列の最初の要素、または後方互換性のため）
+          elements.projectLocal.value = (project.local && project.local.length > 0) ? project.local[0] : '';
+          elements.projectStaging.value = (project.staging && project.staging.length > 0) ? project.staging[0] : '';
+          elements.projectProduction.value = (project.production && project.production.length > 0) ? project.production[0] : '';
         }
       });
     } else {
-      // Reset domain mapping fields for new project
-      elements.projectDomainLocal.value = '';
-      elements.projectDomainStaging.value = '';
-      elements.projectDomainProduction.value = '';
+      // Reset fields for new project
+      elements.projectLocal.value = '';
+      elements.projectStaging.value = '';
+      elements.projectProduction.value = '';
     }
 
     // Show modal with animation
@@ -532,32 +486,14 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
       return;
     }
 
-    // Parse domains (separated by line breaks or commas)
-    const parseDomains = (text) => {
-      return text.split(/[\n,]/)
-        .map(d => d.trim())
-        .filter(d => d.length > 0);
-    };
-
-    const local = parseDomains(elements.projectLocal.value);
-    const staging = parseDomains(elements.projectStaging.value);
-    const production = parseDomains(elements.projectProduction.value);
-
-    // Parse domain mappings (only if provided)
-    const domainMappings = {};
-    const localMapping = elements.projectDomainLocal.value.trim();
-    const stagingMapping = elements.projectDomainStaging.value.trim();
-    const productionMapping = elements.projectDomainProduction.value.trim();
+    // 単一ドメインとして取得（配列として保存して後方互換性を保つ）
+    const localValue = elements.projectLocal.value.trim();
+    const stagingValue = elements.projectStaging.value.trim();
+    const productionValue = elements.projectProduction.value.trim();
     
-    if (localMapping) {
-      domainMappings.local = localMapping;
-    }
-    if (stagingMapping) {
-      domainMappings.staging = stagingMapping;
-    }
-    if (productionMapping) {
-      domainMappings.production = productionMapping;
-    }
+    const local = localValue ? [localValue] : [];
+    const staging = stagingValue ? [stagingValue] : [];
+    const production = productionValue ? [productionValue] : [];
 
     chrome.storage.sync.get(['projects'], (result) => {
       const projects = result.projects || [];
@@ -577,11 +513,6 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
             enabled: existingProject.enabled !== false // 既存の値があれば保持、なければtrue
           };
           
-          // Add domain mappings only if at least one is provided
-          if (Object.keys(domainMappings).length > 0) {
-            updatedProject.domainMappings = domainMappings;
-          }
-          
           projects[index] = updatedProject;
         }
       } else {
@@ -594,11 +525,6 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
           production,
           enabled: true // 新規プロジェクトはデフォルトで有効
         };
-        
-        // Add domain mappings only if at least one is provided
-        if (Object.keys(domainMappings).length > 0) {
-          newProject.domainMappings = domainMappings;
-        }
         
         projects.push(newProject);
       }
