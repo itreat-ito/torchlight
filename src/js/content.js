@@ -1,7 +1,8 @@
 // 環境表示バナーのコンテンツスクリプト
 import '../sass/content.scss';
-import { detectEnvironment } from './common/domain.js';
+import { detectEnvironment, convertUrl } from './common/domain.js';
 import { getLuminance, hexToRgb } from './common/color.js';
+import { matchesShortcut, isInputFocused } from './common/keyboard.js';
 
 (function() {
   'use strict';
@@ -183,8 +184,96 @@ import { getLuminance, hexToRgb } from './common/color.js';
       // 状態が変更されたら再初期化
       init();
       sendResponse({ success: true });
+    } else if (message.action === 'updateKeyboardShortcuts') {
+      // ショートカット設定が変更されたら再設定
+      setupKeyboardShortcuts();
+      sendResponse({ success: true });
     }
     return true;
   });
+
+  // キーボードショートカットの設定
+  let keyboardShortcutHandler = null;
+
+  // 環境切り替え処理
+  async function switchEnvironment(environment) {
+    const currentUrl = window.location.href;
+    
+    // chrome:// や chrome-extension:// などの特殊なURLは処理しない
+    if (!currentUrl.startsWith('http://') && !currentUrl.startsWith('https://')) {
+      return;
+    }
+    
+    const newUrl = await convertUrl(currentUrl, environment);
+    if (newUrl) {
+      // 新しいタブで開く
+      window.open(newUrl, '_blank');
+    }
+  }
+
+  // キーボードショートカットのハンドラーを設定
+  function setupKeyboardShortcuts() {
+    // 既存のハンドラーを削除
+    if (keyboardShortcutHandler) {
+      document.removeEventListener('keydown', keyboardShortcutHandler);
+      keyboardShortcutHandler = null;
+    }
+
+    // ショートカット設定を読み込む
+    chrome.storage.sync.get(['extensionEnabled', 'keyboardShortcuts'], (result) => {
+      // 拡張機能が無効の場合は何もしない
+      if (result.extensionEnabled === false) {
+        return;
+      }
+
+      const shortcuts = result.keyboardShortcuts || {
+        local: 'Ctrl+Shift+1',
+        staging: 'Ctrl+Shift+2',
+        production: 'Ctrl+Shift+3'
+      };
+
+      // キーボードイベントハンドラーを作成
+      keyboardShortcutHandler = (event) => {
+        // 入力フィールドにフォーカスがある場合は無視
+        if (isInputFocused(event)) {
+          return;
+        }
+
+        // ショートカットが一致するかチェック
+        if (matchesShortcut(shortcuts.local, event)) {
+          switchEnvironment('local');
+          event.preventDefault();
+          event.stopPropagation();
+        } else if (matchesShortcut(shortcuts.staging, event)) {
+          switchEnvironment('staging');
+          event.preventDefault();
+          event.stopPropagation();
+        } else if (matchesShortcut(shortcuts.production, event)) {
+          switchEnvironment('production');
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      };
+
+      // イベントリスナーを追加
+      document.addEventListener('keydown', keyboardShortcutHandler, true);
+    });
+  }
+
+  // 初期化時にキーボードショートカットを設定
+  setupKeyboardShortcuts();
+
+  // ページ遷移時にも再設定（SPA対応）
+  let lastUrlForShortcuts = location.href;
+  new MutationObserver(() => {
+    const url = location.href;
+    if (url !== lastUrlForShortcuts) {
+      lastUrlForShortcuts = url;
+      // 少し遅延してから再設定（ページ読み込みを待つ）
+      setTimeout(() => {
+        setupKeyboardShortcuts();
+      }, 100);
+    }
+  }).observe(document, { subtree: true, childList: true });
 
 })();

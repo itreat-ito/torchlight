@@ -3,6 +3,7 @@ import '../sass/options.scss';
 import { showSuccessToast, showErrorToast } from './toast.js';
 import { showConfirmModal } from './confirm-modal.js';
 import MicroModal from 'micromodal';
+import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
 
 (function() {
   'use strict';
@@ -31,6 +32,12 @@ import MicroModal from 'micromodal';
     exportSettingsBtn: document.getElementById('export-settings'),
     importSettingsBtn: document.getElementById('import-settings'),
     importFileInput: document.getElementById('import-file'),
+
+    // Keyboard shortcuts
+    shortcutLocal: document.getElementById('shortcut-local'),
+    shortcutStaging: document.getElementById('shortcut-staging'),
+    shortcutProduction: document.getElementById('shortcut-production'),
+    saveShortcutsBtn: document.getElementById('save-shortcuts'),
 
     // Modal
     modal: document.getElementById('project-modal'),
@@ -165,8 +172,10 @@ import MicroModal from 'micromodal';
     loadSettings();
     loadGlobalMappings();
     loadProjects();
+    loadKeyboardShortcuts();
     setupEventListeners();
     setupProjectModalHandlers();
+    setupKeyboardShortcutInputs();
   }
 
   // Setup event listeners
@@ -176,6 +185,9 @@ import MicroModal from 'micromodal';
 
     // Save global domain mappings
     elements.saveGlobalMappingsBtn.addEventListener('click', saveGlobalMappings);
+
+    // Save keyboard shortcuts
+    elements.saveShortcutsBtn.addEventListener('click', saveKeyboardShortcuts);
 
     // Add project
     elements.addProjectBtn.addEventListener('click', () => openProjectModal());
@@ -564,7 +576,7 @@ import MicroModal from 'micromodal';
 
   // Export settings
   function exportSettings() {
-    chrome.storage.sync.get(['settings', 'projects', 'globalDomainMappings'], (result) => {
+    chrome.storage.sync.get(['settings', 'projects', 'globalDomainMappings', 'keyboardShortcuts'], (result) => {
       const exportData = {
         version: '1.0.0',
         exportedAt: new Date().toISOString(),
@@ -577,6 +589,11 @@ import MicroModal from 'micromodal';
         globalDomainMappings: result.globalDomainMappings || {
           local: 'test',
           staging: 'itreat-test.com'
+        },
+        keyboardShortcuts: result.keyboardShortcuts || {
+          local: 'Ctrl+Shift+1',
+          staging: 'Ctrl+Shift+2',
+          production: 'Ctrl+Shift+3'
         }
       };
 
@@ -652,13 +669,19 @@ import MicroModal from 'micromodal';
       local: 'test',
       staging: 'itreat-test.com'
     };
+    const keyboardShortcuts = importData.keyboardShortcuts || {
+      local: 'Ctrl+Shift+1',
+      staging: 'Ctrl+Shift+2',
+      production: 'Ctrl+Shift+3'
+    };
 
     // Save imported data
-    chrome.storage.sync.set({ settings, projects, globalDomainMappings }, () => {
-      // Reload settings, global mappings and projects
+    chrome.storage.sync.set({ settings, projects, globalDomainMappings, keyboardShortcuts }, () => {
+      // Reload settings, global mappings, projects and keyboard shortcuts
       loadSettings();
       loadGlobalMappings();
       loadProjects();
+      loadKeyboardShortcuts();
       showSuccessToast('Settings imported successfully!');
     });
   }
@@ -688,6 +711,117 @@ import MicroModal from 'micromodal';
     }
 
     return true;
+  }
+
+  // Load keyboard shortcuts
+  function loadKeyboardShortcuts() {
+    chrome.storage.sync.get(['keyboardShortcuts'], (result) => {
+      const shortcuts = result.keyboardShortcuts || {
+        local: 'Ctrl+Shift+1',
+        staging: 'Ctrl+Shift+2',
+        production: 'Ctrl+Shift+3'
+      };
+
+      elements.shortcutLocal.value = shortcuts.local || 'Ctrl+Shift+1';
+      elements.shortcutStaging.value = shortcuts.staging || 'Ctrl+Shift+2';
+      elements.shortcutProduction.value = shortcuts.production || 'Ctrl+Shift+3';
+    });
+  }
+
+  // Save keyboard shortcuts
+  function saveKeyboardShortcuts() {
+    const shortcuts = {
+      local: normalizeShortcut(elements.shortcutLocal.value) || 'Ctrl+Shift+1',
+      staging: normalizeShortcut(elements.shortcutStaging.value) || 'Ctrl+Shift+2',
+      production: normalizeShortcut(elements.shortcutProduction.value) || 'Ctrl+Shift+3'
+    };
+
+    chrome.storage.sync.set({ keyboardShortcuts: shortcuts }, () => {
+      // すべてのタブにメッセージを送信してショートカット設定を更新
+      chrome.tabs.query({}, (tabs) => {
+        tabs.forEach((tab) => {
+          chrome.tabs.sendMessage(tab.id, {
+            action: 'updateKeyboardShortcuts',
+            shortcuts: shortcuts
+          }).catch(() => {
+            // メッセージ送信に失敗しても無視（コンテンツスクリプトが読み込まれていないタブなど）
+          });
+        });
+      });
+      showSuccessToast('Keyboard shortcuts saved successfully!');
+    });
+  }
+
+  // Setup keyboard shortcut input handlers
+  function setupKeyboardShortcutInputs() {
+    const shortcutInputs = [
+      { element: elements.shortcutLocal, env: 'local' },
+      { element: elements.shortcutStaging, env: 'staging' },
+      { element: elements.shortcutProduction, env: 'production' }
+    ];
+
+    shortcutInputs.forEach(({ element, env }) => {
+      let isCapturing = false;
+
+      // フォーカス時にキー入力をキャプチャ開始
+      element.addEventListener('focus', () => {
+        isCapturing = true;
+        element.value = '';
+        element.placeholder = 'Press key combination...';
+        element.style.backgroundColor = '#fff3cd';
+      });
+
+      // フォーカスが外れた時にキャプチャ終了
+      element.addEventListener('blur', () => {
+        isCapturing = false;
+        element.style.backgroundColor = '';
+        
+        // 値が空の場合はデフォルト値を設定
+        if (!element.value.trim()) {
+          const defaults = {
+            local: 'Ctrl+Shift+1',
+            staging: 'Ctrl+Shift+2',
+            production: 'Ctrl+Shift+3'
+          };
+          element.value = defaults[env];
+        }
+        
+        element.placeholder = `Ctrl+Shift+${env === 'local' ? '1' : env === 'staging' ? '2' : '3'}`;
+      });
+
+      // キーダウンイベントでキーコンビネーションをキャプチャ
+      element.addEventListener('keydown', (e) => {
+        if (!isCapturing) {
+          return;
+        }
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        // 修飾キーのみの場合は無視
+        if (['Control', 'Shift', 'Alt', 'Meta'].includes(e.key)) {
+          return;
+        }
+
+        const combination = getKeyCombination(e);
+        if (combination) {
+          element.value = combination;
+          element.blur(); // 自動的にフォーカスを外す
+        }
+      });
+
+      // キーアップイベントで修飾キーのみの場合は無視
+      element.addEventListener('keyup', (e) => {
+        if (!isCapturing) {
+          return;
+        }
+
+        // 修飾キーのみの場合は何もしない
+        if (['Control', 'Shift', 'Alt', 'Meta'].includes(e.key)) {
+          return;
+        }
+      });
+    });
   }
 
   // Initialize
