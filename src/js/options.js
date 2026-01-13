@@ -37,7 +37,6 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
     shortcutLocal: document.getElementById('shortcut-local'),
     shortcutStaging: document.getElementById('shortcut-staging'),
     shortcutProduction: document.getElementById('shortcut-production'),
-    saveShortcutsBtn: document.getElementById('save-shortcuts'),
 
     // Navigation
     navProjects: document.getElementById('nav-projects'),
@@ -195,11 +194,8 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
     // Save common settings
     elements.saveSettingsBtn.addEventListener('click', saveSettings);
 
-    // Save global domain mappings
-    elements.saveGlobalMappingsBtn.addEventListener('click', saveGlobalMappings);
-
-    // Save keyboard shortcuts
-    elements.saveShortcutsBtn.addEventListener('click', saveKeyboardShortcuts);
+    // Save global domain mappings (includes keyboard shortcuts)
+    elements.saveGlobalMappingsBtn.addEventListener('click', saveGlobalMappingsAndShortcuts);
 
     // Add project
     elements.addProjectBtn.addEventListener('click', () => openProjectModal());
@@ -320,6 +316,35 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
 
     chrome.storage.sync.set({ globalDomainMappings: mappings }, () => {
       showSuccessToast('Global domain mappings saved successfully!');
+    });
+  }
+
+  // Save global domain mappings and keyboard shortcuts
+  function saveGlobalMappingsAndShortcuts() {
+    const mappings = {
+      local: elements.globalLocalDomain.value.trim() || 'test',
+      staging: elements.globalStagingDomain.value.trim() || 'itreat-test.com'
+    };
+
+    const shortcuts = {
+      local: normalizeShortcut(elements.shortcutLocal.value) || 'Ctrl+Shift+1',
+      staging: normalizeShortcut(elements.shortcutStaging.value) || 'Ctrl+Shift+2',
+      production: normalizeShortcut(elements.shortcutProduction.value) || 'Ctrl+Shift+3'
+    };
+
+    chrome.storage.sync.set({ globalDomainMappings: mappings, keyboardShortcuts: shortcuts }, () => {
+      // すべてのタブにメッセージを送信してショートカット設定を更新
+      chrome.tabs.query({}, (tabs) => {
+        tabs.forEach((tab) => {
+          chrome.tabs.sendMessage(tab.id, {
+            action: 'updateKeyboardShortcuts',
+            shortcuts: shortcuts
+          }).catch(() => {
+            // メッセージ送信に失敗しても無視（コンテンツスクリプトが読み込まれていないタブなど）
+          });
+        });
+      });
+      showSuccessToast('Settings saved successfully!');
     });
   }
 
