@@ -41,9 +41,9 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
 
     // Navigation
     navProjects: document.getElementById('nav-projects'),
-    navGlobalSettings: document.getElementById('nav-global-settings'),
+    navSettings: document.getElementById('nav-settings'),
     pageProjects: document.getElementById('page-projects'),
-    pageGlobalSettings: document.getElementById('page-global-settings'),
+    pageSettings: document.getElementById('page-settings'),
 
     // Modal
     modal: document.getElementById('project-modal'),
@@ -216,10 +216,10 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
       });
     }
 
-    if (elements.navGlobalSettings) {
-      elements.navGlobalSettings.addEventListener('click', (e) => {
+    if (elements.navSettings) {
+      elements.navSettings.addEventListener('click', (e) => {
         e.preventDefault();
-        showPage('global-settings');
+        showPage('settings');
       });
     }
   }
@@ -245,9 +245,9 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
     if (pageId === 'projects') {
       targetPage = elements.pageProjects;
       targetNav = elements.navProjects;
-    } else if (pageId === 'global-settings') {
-      targetPage = elements.pageGlobalSettings;
-      targetNav = elements.navGlobalSettings;
+    } else if (pageId === 'settings') {
+      targetPage = elements.pageSettings;
+      targetNav = elements.navSettings;
     }
 
     if (targetPage) {
@@ -265,7 +265,7 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
   // URLハッシュからページを読み込む
   function loadPageFromHash() {
     const hash = window.location.hash.replace('#', '');
-    if (hash === 'projects' || hash === 'global-settings') {
+    if (hash === 'projects' || hash === 'settings') {
       showPage(hash);
     } else {
       // デフォルトでYour Projectsページを表示
