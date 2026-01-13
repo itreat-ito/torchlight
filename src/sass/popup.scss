@@ -5,6 +5,18 @@ body {
   padding: 20px;
 }
 
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 16px;
+  margin-bottom: 24px;
+  img {
+    max-width: 144px;
+  }
+}
+
 .title {
   font-size: 1.4rem;
   text-align: center;
@@ -135,7 +147,7 @@ body {
 
   .btn-local {
     // デフォルト値（インラインスタイルで上書き可能）
-    background-color: #4CAF50;
+    background-color: #42a4ff;
     color: $white;
 
     &:not(:disabled):hover {
