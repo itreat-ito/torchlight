@@ -48,6 +48,7 @@
           <!-- Banner Styles -->
           <section class="section">
             <h2 class="ttl-m">Banner Styles</h2>
+            <p class="section-description">Customize the banner text and background color displayed at the top of the page for each environment.</p>
             <div class="settings-grid">
               <!-- Local -->
               <div class="setting-item">
@@ -93,7 +94,7 @@
 
           <!-- Page Title -->
           <section class="section">
-            <h2 class="ttl-m">Page Title</h2>
+            <h2 class="ttl-m">Page Titles</h2>
             <p class="section-description">Set a prefix to be added to the page title when accessing each environment.</p>
             <div class="settings-grid">
               <div class="setting-item">
@@ -101,7 +102,6 @@
                 <div class="form-group">
                   <label for="page-title-local">Prefix</label>
                   <input type="text" id="page-title-local" placeholder="[LOCAL]">
-                  <small>This text will be prepended to the page title</small>
                 </div>
               </div>
               <div class="setting-item">
@@ -109,7 +109,6 @@
                 <div class="form-group">
                   <label for="page-title-staging">Prefix</label>
                   <input type="text" id="page-title-staging" placeholder="[STAGING]">
-                  <small>This text will be prepended to the page title</small>
                 </div>
               </div>
               <div class="setting-item">
@@ -117,7 +116,6 @@
                 <div class="form-group">
                   <label for="page-title-production">Prefix</label>
                   <input type="text" id="page-title-production" placeholder="[PRODUCTION]">
-                  <small>This text will be prepended to the page title</small>
                 </div>
               </div>
             </div>
@@ -187,21 +185,18 @@
 
               <h3 class="ttl-s">Environment Domains</h3>
               <div class="form-group">
-                <label for="project-local">Local Domain</label>
+                <label for="project-local">Local</label>
                 <input type="text" id="project-local" placeholder="example.test">
-                <small>Domain for local environment. Used for environment detection and URL switching.</small>
               </div>
 
               <div class="form-group">
-                <label for="project-staging">Staging Domain</label>
+                <label for="project-staging">Staging</label>
                 <input type="text" id="project-staging" placeholder="example.itreat-test.com">
-                <small>Domain for staging environment. Used for environment detection and URL switching.</small>
               </div>
 
               <div class="form-group">
-                <label for="project-production">Production Domain</label>
+                <label for="project-production">Production</label>
                 <input type="text" id="project-production" placeholder="example.com">
-                <small>Domain for production environment. Used for environment detection and URL switching.</small>
               </div>
 
               <div class="form-actions">
