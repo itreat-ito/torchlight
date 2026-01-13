@@ -39,6 +39,12 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
     shortcutProduction: document.getElementById('shortcut-production'),
     saveShortcutsBtn: document.getElementById('save-shortcuts'),
 
+    // Navigation
+    navProjects: document.getElementById('nav-projects'),
+    navGlobalSettings: document.getElementById('nav-global-settings'),
+    pageProjects: document.getElementById('page-projects'),
+    pageGlobalSettings: document.getElementById('page-global-settings'),
+
     // Modal
     modal: document.getElementById('project-modal'),
     modalTitle: document.getElementById('modal-title'),
@@ -176,6 +182,12 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
     setupEventListeners();
     setupProjectModalHandlers();
     setupKeyboardShortcutInputs();
+    setupNavigation();
+    // URLハッシュからページを読み込む、またはデフォルトでYour Projectsページを表示
+    loadPageFromHash();
+
+    // ハッシュ変更イベントをリッスン
+    window.addEventListener('hashchange', loadPageFromHash);
   }
 
   // Setup event listeners
@@ -199,6 +211,73 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
 
     // Project form submission
     elements.projectForm.addEventListener('submit', handleProjectSubmit);
+  }
+
+  // Setup navigation
+  function setupNavigation() {
+    // サイドバーメニューのクリックイベント
+    if (elements.navProjects) {
+      elements.navProjects.addEventListener('click', (e) => {
+        e.preventDefault();
+        showPage('projects');
+      });
+    }
+
+    if (elements.navGlobalSettings) {
+      elements.navGlobalSettings.addEventListener('click', (e) => {
+        e.preventDefault();
+        showPage('global-settings');
+      });
+    }
+  }
+
+  // Show page
+  function showPage(pageId) {
+    // すべてのページを非表示
+    const pages = document.querySelectorAll('.page');
+    pages.forEach(page => {
+      page.classList.remove('active');
+    });
+
+    // すべてのナビゲーションアイテムからactiveクラスを削除
+    const navItems = document.querySelectorAll('.sidebar-item');
+    navItems.forEach(item => {
+      item.classList.remove('active');
+    });
+
+    // 指定されたページを表示
+    let targetPage = null;
+    let targetNav = null;
+
+    if (pageId === 'projects') {
+      targetPage = elements.pageProjects;
+      targetNav = elements.navProjects;
+    } else if (pageId === 'global-settings') {
+      targetPage = elements.pageGlobalSettings;
+      targetNav = elements.navGlobalSettings;
+    }
+
+    if (targetPage) {
+      targetPage.classList.add('active');
+    }
+
+    if (targetNav) {
+      targetNav.classList.add('active');
+    }
+
+    // URLハッシュを更新（オプション）
+    window.location.hash = pageId;
+  }
+
+  // URLハッシュからページを読み込む
+  function loadPageFromHash() {
+    const hash = window.location.hash.replace('#', '');
+    if (hash === 'projects' || hash === 'global-settings') {
+      showPage(hash);
+    } else {
+      // デフォルトでYour Projectsページを表示
+      showPage('projects');
+    }
   }
 
   // Load common settings
