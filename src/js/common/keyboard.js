@@ -1,5 +1,80 @@
 // Keyboard utility functions for shortcut detection
 
+// event.codeから実際のキー名を取得
+function getKeyFromCode(code) {
+  if (!code) return null;
+  
+  // Digit0-Digit9 → 0-9
+  if (code.startsWith('Digit')) {
+    return code.replace('Digit', '');
+  }
+  
+  // KeyA-KeyZ → A-Z
+  if (code.startsWith('Key')) {
+    return code.replace('Key', '');
+  }
+  
+  // Numpad0-Numpad9 → 0-9
+  if (code.startsWith('Numpad')) {
+    return code.replace('Numpad', '');
+  }
+  
+  // その他の特殊キーはcodeをそのまま使用
+  // ただし、よく使われるキーは読みやすい名前に変換
+  const keyMap = {
+    'Space': 'Space',
+    'Enter': 'Enter',
+    'Escape': 'Escape',
+    'Tab': 'Tab',
+    'Backspace': 'Backspace',
+    'Delete': 'Delete',
+    'ArrowUp': 'ArrowUp',
+    'ArrowDown': 'ArrowDown',
+    'ArrowLeft': 'ArrowLeft',
+    'ArrowRight': 'ArrowRight',
+    'Home': 'Home',
+    'End': 'End',
+    'PageUp': 'PageUp',
+    'PageDown': 'PageDown',
+    'Insert': 'Insert',
+    'F1': 'F1',
+    'F2': 'F2',
+    'F3': 'F3',
+    'F4': 'F4',
+    'F5': 'F5',
+    'F6': 'F6',
+    'F7': 'F7',
+    'F8': 'F8',
+    'F9': 'F9',
+    'F10': 'F10',
+    'F11': 'F11',
+    'F12': 'F12',
+    'Comma': ',',
+    'Period': '.',
+    'Slash': '/',
+    'Backslash': '\\',
+    'Semicolon': ';',
+    'Quote': "'",
+    'BracketLeft': '[',
+    'BracketRight': ']',
+    'Minus': '-',
+    'Equal': '=',
+    'Backquote': '`'
+  };
+  
+  if (keyMap[code]) {
+    return keyMap[code];
+  }
+  
+  // F1-F12の処理
+  if (/^F\d+$/.test(code)) {
+    return code;
+  }
+  
+  // その他のキーはcodeをそのまま返す
+  return code;
+}
+
 // キーイベントからキーコンビネーション文字列を生成
 export function getKeyCombination(event) {
   const parts = [];
@@ -15,21 +90,14 @@ export function getKeyCombination(event) {
     parts.push('Alt');
   }
   
-  // 修飾キー以外のキーを追加
-  if (event.key && !['Control', 'Shift', 'Alt', 'Meta'].includes(event.key)) {
-    // 特殊キーの処理
-    let key = event.key;
-    
-    // 数字キーはそのまま
-    if (/^[0-9]$/.test(key)) {
-      parts.push(key);
-    }
+  // event.codeを使用して物理的なキーを取得（修飾キーの影響を受けない）
+  const key = getKeyFromCode(event.code);
+  
+  if (key && !['Control', 'Shift', 'Alt', 'Meta'].includes(key)) {
     // アルファベットは大文字に統一
-    else if (/^[a-zA-Z]$/.test(key)) {
-      parts.push(key.toUpperCase());
-    }
-    // その他のキー（F1-F12、Enter、Spaceなど）はそのまま
-    else {
+    if (/^[A-Z]$/.test(key)) {
+      parts.push(key);
+    } else {
       parts.push(key);
     }
   }
