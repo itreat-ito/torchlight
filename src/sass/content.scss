@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Mulish:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Mulish:wght@200..1000&display=swap');
 
 // 環境表示バナーのスタイル
 // Top Layer API: popover属性を使用して最上位レイヤーに配置
@@ -12,15 +12,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  // Top Layer APIがサポートされている場合、z-indexは不要
-  // フォールバック用にz-indexは削除（JavaScriptで動的に設定）
-  font-size: 1.0rem;
-  font-weight: 700;
+  font-size: 1.6rem;
+  font-weight: bold;
   font-family: 'Mulish', 'M PLUS 1p', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   color: #ffffff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   animation: fadeIn 0.3s ease-in;
-  // popover属性を持つ要素のデフォルトスタイルをリセット
   margin: 0;
   padding: 0;
   border: none;

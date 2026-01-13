@@ -21,7 +21,7 @@ function updateStatusText(isEnabled) {
 // ボタンのスタイルを更新
 function updateButtonStyles(settings) {
   const defaultSettings = {
-    local: { text: 'Local Environment', color: '#4CAF50' },
+    local: { text: 'Local Environment', color: '#42a4ff' },
     staging: { text: 'Staging Environment', color: '#FFC107' },
     production: { text: 'Production Environment', color: '#F44336' }
   };

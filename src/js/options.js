@@ -193,13 +193,13 @@ import MicroModal from 'micromodal';
   function loadSettings() {
     chrome.storage.sync.get(['settings'], (result) => {
       const settings = result.settings || {
-        local: { text: 'You\'re on LOCAL env.', color: '#4CAF50' },
+        local: { text: 'You\'re on LOCAL env.', color: '#42a4ff' },
         staging: { text: 'You\'re on STAGING env.', color: '#FFC107' },
         production: { text: 'You\'re on PRODUCTION env.', color: '#F44336' }
       };
 
       elements.localText.value = settings.local.text || 'You\'re on LOCAL env.';
-      elements.localColor.value = settings.local.color || '#4CAF50';
+      elements.localColor.value = settings.local.color || '#42a4ff';
       elements.stagingText.value = settings.staging.text || 'You\'re on STAGING env.';
       elements.stagingColor.value = settings.staging.color || '#FFC107';
       elements.productionText.value = settings.production.text || 'You\'re on PRODUCTION env.';
@@ -569,7 +569,7 @@ import MicroModal from 'micromodal';
         version: '1.0.0',
         exportedAt: new Date().toISOString(),
         settings: result.settings || {
-          local: { text: 'You\'re on LOCAL env.', color: '#4CAF50' },
+          local: { text: 'You\'re on LOCAL env.', color: '#42a4ff' },
           staging: { text: 'You\'re on STAGING env.', color: '#FFC107' },
           production: { text: 'You\'re on PRODUCTION env.', color: '#F44336' }
         },
@@ -642,7 +642,7 @@ import MicroModal from 'micromodal';
 
     // Prepare data to import
     const settings = importData.settings || {
-      local: { text: 'You\'re on LOCAL env.', color: '#4CAF50' },
+      local: { text: 'You\'re on LOCAL env.', color: '#42a4ff' },
       staging: { text: 'You\'re on STAGING env.', color: '#FFC107' },
       production: { text: 'You\'re on PRODUCTION env.', color: '#F44336' }
     };
