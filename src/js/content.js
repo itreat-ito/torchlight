@@ -106,9 +106,9 @@ import { matchesShortcut, isInputFocused } from './common/keyboard.js';
       }
 
       const settings = result.settings || {
-        local: { text: 'Local Environment', color: '#42a4ff' },
-        staging: { text: 'Staging Environment', color: '#FFC107' },
-        production: { text: 'Production Environment', color: '#F44336' }
+        local: { text: 'You\'re on LOCAL env.', color: '#42a4ff' },
+        staging: { text: 'You\'re on STAGING env.', color: '#FFC107' },
+        production: { text: 'You\'re on PRODUCTION env.', color: '#F44336' }
       };
       const projects = result.projects || [];
       const pageTitles = result.pageTitles || {

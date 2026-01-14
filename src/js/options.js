@@ -376,8 +376,8 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
     if (projects.length === 0) {
       elements.projectsList.innerHTML = `
         <div class="empty-state">
-          <p>No projects registered</p>
-          <p>Click "Add Project" button to add one</p>
+          <p>No projects found</p>
+          <p>Click "Add Project" button to add a new project</p>
         </div>
       `;
       return;

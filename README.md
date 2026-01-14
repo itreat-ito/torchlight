@@ -48,7 +48,7 @@ npm run package
 ## プロジェクト構造
 
 ```
-env-detector/
+torchlight/
 ├── src/                    # ソースコード
 │   ├── content/           # コンテンツスクリプト
 │   │   ├── content.js
