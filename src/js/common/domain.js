@@ -1,18 +1,31 @@
 // Domain utility functions for environment detection and URL conversion
 
+// ポート番号を除去してドメインを正規化
+function normalizeDomain(domain) {
+  if (!domain) {
+    return domain;
+  }
+  // ポート番号（:数字）を除去
+  return domain.replace(/:\d+$/, '');
+}
+
 // ドメインマッチング（部分一致）
 export function matchesDomain(pattern, domain) {
   if (!pattern || !domain) {
     return false;
   }
   
+  // ポート番号を除去して正規化
+  const normalizedPattern = normalizeDomain(pattern);
+  const normalizedDomain = normalizeDomain(domain);
+  
   // 完全一致
-  if (pattern === domain) {
+  if (normalizedPattern === normalizedDomain) {
     return true;
   }
   
   // 部分一致（ドメインにパターンが含まれているか）
-  if (domain.includes(pattern)) {
+  if (normalizedDomain.includes(normalizedPattern)) {
     return true;
   }
   
@@ -119,20 +132,22 @@ export function convertDomain(domain, fromDomain, toDomain) {
     return null;
   }
   
-  const trimmedFrom = fromDomain.trim();
-  const trimmedTo = toDomain.trim();
+  // ポート番号を除去して正規化
+  const trimmedFrom = normalizeDomain(fromDomain.trim());
+  const trimmedTo = normalizeDomain(toDomain.trim());
+  const normalizedDomain = normalizeDomain(domain);
   
   // ドメインの末尾にfromDomainが一致する場合
-  if (domain.endsWith(trimmedFrom)) {
+  if (normalizedDomain.endsWith(trimmedFrom)) {
     // 末尾を置換
-    return domain.slice(0, -trimmedFrom.length) + trimmedTo;
+    return normalizedDomain.slice(0, -trimmedFrom.length) + trimmedTo;
   }
   
   // ドメイン内でドット + fromDomainが出現する場合（例: "aaa.bbb.itreat-test.com" で "itreat-test.com" を検索）
   const dotFrom = '.' + trimmedFrom;
-  if (domain.includes(dotFrom)) {
+  if (normalizedDomain.includes(dotFrom)) {
     // ドット + fromDomainをドット + toDomainに置換
-    return domain.replace(dotFrom, '.' + trimmedTo);
+    return normalizedDomain.replace(dotFrom, '.' + trimmedTo);
   }
   
   return null;
