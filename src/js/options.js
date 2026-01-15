@@ -4,6 +4,7 @@ import { showSuccessToast, showErrorToast } from './toast.js';
 import { showConfirmModal } from './confirm-modal.js';
 import MicroModal from 'micromodal';
 import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
+import { initI18n, t, saveLanguage, loadLanguage, translateElements } from './common/i18n.js';
 
 (function() {
   'use strict';
@@ -59,7 +60,10 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
     projectLocal: document.getElementById('project-local'),
     projectStaging: document.getElementById('project-staging'),
     projectProduction: document.getElementById('project-production'),
-    cancelProject: document.getElementById('cancel-project')
+    cancelProject: document.getElementById('cancel-project'),
+    
+    // Language selector
+    languageSelect: document.getElementById('language-select')
   };
 
   let editingProjectId = null;
@@ -177,7 +181,13 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
   }
 
   // Initialize
-  function init() {
+  async function init() {
+    // Initialize i18n first
+    await initI18n();
+    
+    // Setup language selector
+    setupLanguageSelector();
+    
     loadSettings();
     loadPageTitles();
     loadProjects();
@@ -191,6 +201,68 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
 
     // ハッシュ変更イベントをリッスン
     window.addEventListener('hashchange', loadPageFromHash);
+  }
+  
+  // Setup language selector
+  async function setupLanguageSelector() {
+    if (!elements.languageSelect) return;
+    
+    // Load current language and set selector value
+    const currentLang = await loadLanguage();
+    elements.languageSelect.value = currentLang;
+    
+    // Translate language selector options
+    const options = elements.languageSelect.querySelectorAll('option');
+    options.forEach(option => {
+      const key = option.getAttribute('data-i18n');
+      if (key) {
+        option.textContent = t(key);
+      }
+    });
+    
+    // Translate label
+    const label = elements.languageSelect.previousElementSibling;
+    if (label && label.tagName === 'LABEL') {
+      const labelKey = label.getAttribute('data-i18n');
+      if (labelKey) {
+        label.textContent = t(labelKey);
+      }
+    }
+    
+    // Add change event listener
+    elements.languageSelect.addEventListener('change', async (e) => {
+      const newLang = e.target.value;
+      await saveLanguage(newLang);
+      // Retranslate all elements
+      translateElements();
+      // Retranslate dynamic content
+      retranslateDynamicContent();
+    });
+  }
+  
+  // Retranslate dynamic content that was set by JavaScript
+  function retranslateDynamicContent() {
+    // Retranslate modal title if modal is open
+    if (editingProjectId) {
+      elements.modalTitle.textContent = t('modal.project.edit');
+    } else {
+      elements.modalTitle.textContent = t('modal.project.add');
+    }
+    
+    // Retranslate modal content if modal is open
+    const modal = document.getElementById('project-modal');
+    if (modal && modal.classList.contains('is-open')) {
+      translateElements(modal);
+    }
+    
+    // Retranslate language selector
+    setupLanguageSelector();
+    
+    // Retranslate projects list
+    chrome.storage.sync.get(['projects'], (result) => {
+      const projects = result.projects || [];
+      renderProjects(projects);
+    });
   }
 
   // Setup event listeners
@@ -320,7 +392,7 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
     };
 
     chrome.storage.sync.set({ settings }, () => {
-      showSuccessToast('Settings saved successfully!');
+      showSuccessToast(t('message.settingsSaved'));
     });
   }
 
@@ -359,7 +431,7 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
           });
         });
       });
-      showSuccessToast('Page titles saved successfully!');
+      showSuccessToast(t('message.pageTitlesSaved'));
     });
   }
 
@@ -376,10 +448,12 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
     if (projects.length === 0) {
       elements.projectsList.innerHTML = `
         <div class="empty-state">
-          <p>No projects found</p>
-          <p>Click "Add Project" button to add a new project</p>
+          <p data-i18n="projects.empty.title">No projects found</p>
+          <p data-i18n="projects.empty.description">Click "Add Project" button to add a new project</p>
         </div>
       `;
+      // Translate the empty state
+      translateElements(elements.projectsList);
       return;
     }
 
@@ -396,28 +470,28 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
             <div class="project-name">${escapeHtml(project.name)}</div>
           </div>
           <div class="project-actions">
-            <button class="btn btn-edit edit-project" data-project-id="${project.id}">Edit</button>
-            <button class="btn btn-danger delete-project" data-project-id="${project.id}">Delete</button>
+            <button class="btn btn-edit edit-project" data-project-id="${project.id}" data-i18n="projects.edit">Edit</button>
+            <button class="btn btn-danger delete-project" data-project-id="${project.id}" data-i18n="projects.delete">Delete</button>
           </div>
         </div>
         <div class="project-domains-section">
           <div class="project-domains">
             <div class="domain-group">
-              <h4>Local</h4>
+              <h4 data-i18n="projects.local">Local</h4>
               <div class="domain-list">
-                <div class="domain-value">${project.local && project.local.length > 0 && project.local[0] ? escapeHtml(project.local[0]) : '<span style="color: #999;">Not set</span>'}</div>
+                <div class="domain-value">${project.local && project.local.length > 0 && project.local[0] ? escapeHtml(project.local[0]) : `<span style="color: #999;" data-i18n="projects.notSet">Not set</span>`}</div>
               </div>
             </div>
             <div class="domain-group">
-              <h4>Staging</h4>
+              <h4 data-i18n="projects.staging">Staging</h4>
               <div class="domain-list">
-                <div class="domain-value">${project.staging && project.staging.length > 0 && project.staging[0] ? escapeHtml(project.staging[0]) : '<span style="color: #999;">Not set</span>'}</div>
+                <div class="domain-value">${project.staging && project.staging.length > 0 && project.staging[0] ? escapeHtml(project.staging[0]) : `<span style="color: #999;" data-i18n="projects.notSet">Not set</span>`}</div>
               </div>
             </div>
             <div class="domain-group">
-              <h4>Production</h4>
+              <h4 data-i18n="projects.production">Production</h4>
               <div class="domain-list">
-                <div class="domain-value">${project.production && project.production.length > 0 && project.production[0] ? escapeHtml(project.production[0]) : '<span style="color: #999;">Not set</span>'}</div>
+                <div class="domain-value">${project.production && project.production.length > 0 && project.production[0] ? escapeHtml(project.production[0]) : `<span style="color: #999;" data-i18n="projects.notSet">Not set</span>`}</div>
               </div>
             </div>
           </div>
@@ -425,6 +499,9 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
       </div>
       `;
     }).join('');
+    
+    // Translate the rendered projects
+    translateElements(elements.projectsList);
 
     // Edit and delete button event listeners
     document.querySelectorAll('.edit-project').forEach(btn => {
@@ -454,7 +531,7 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
   // Open project modal
   function openProjectModal(projectId = null) {
     editingProjectId = projectId;
-    elements.modalTitle.textContent = projectId ? 'Edit Project' : 'Add Project';
+    elements.modalTitle.textContent = projectId ? t('modal.project.edit') : t('modal.project.add');
     elements.projectForm.reset();
 
     if (projectId) {
@@ -493,8 +570,8 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
   // Delete project
   async function deleteProject(projectId) {
     const confirmed = await showConfirmModal(
-      'Are you sure you want to delete this project?',
-      'Delete Project'
+      t('message.confirmDelete'),
+      t('message.confirmDeleteTitle')
     );
     
     if (!confirmed) {
@@ -531,7 +608,7 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
 
     const name = elements.projectName.value.trim();
     if (!name) {
-      showErrorToast('Please enter a project name');
+      showErrorToast(t('message.enterProjectName'));
       return;
     }
 
@@ -584,9 +661,9 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
         closeProjectModalWithAnimation(() => {
           // Show success toast after modal is closed
           if (isEditing) {
-            showSuccessToast('Project updated successfully!');
+            showSuccessToast(t('message.projectUpdated'));
           } else {
-            showSuccessToast('Project added successfully!');
+            showSuccessToast(t('message.projectAdded'));
           }
         });
       });
@@ -639,7 +716,7 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      showSuccessToast('Settings exported successfully!');
+      showSuccessToast(t('message.settingsExported'));
     });
   }
 
@@ -656,7 +733,7 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
         const importData = JSON.parse(event.target.result);
         importSettings(importData);
       } catch (error) {
-        showErrorToast('Error: Invalid JSON file. Please check the file format.');
+        showErrorToast(t('message.invalidJson'));
         console.error('Import error:', error);
       }
     };
@@ -670,14 +747,14 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
   async function importSettings(importData) {
     // Validate import data
     if (!validateImportData(importData)) {
-      showErrorToast('Error: Invalid settings file. Missing required fields.');
+      showErrorToast(t('message.invalidSettings'));
       return;
     }
 
     // Confirm import
     const confirmed = await showConfirmModal(
-      'This will replace all your current settings. Are you sure you want to continue?',
-      'Import Settings'
+      t('message.confirmImport'),
+      t('message.confirmImportTitle')
     );
     
     if (!confirmed) {
@@ -710,7 +787,7 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
       loadPageTitles();
       loadProjects();
       loadKeyboardShortcuts();
-      showSuccessToast('Settings imported successfully!');
+      showSuccessToast(t('message.settingsImported'));
     });
   }
 
@@ -776,7 +853,7 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
           });
         });
       });
-      showSuccessToast('Keyboard shortcuts saved successfully!');
+      showSuccessToast(t('message.shortcutsSaved'));
     });
   }
 
@@ -795,7 +872,7 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
       element.addEventListener('focus', () => {
         isCapturing = true;
         element.value = '';
-        element.placeholder = 'Press key combination...';
+        element.placeholder = t('placeholder.shortcut');
         element.style.backgroundColor = '#fff3cd';
       });
 

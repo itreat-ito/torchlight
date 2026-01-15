@@ -2,6 +2,7 @@
 import '../sass/popup.scss';
 import { detectEnvironment, convertUrl, getDomainMapping } from './common/domain.js';
 import { getLuminance, hexToRgb } from './common/color.js';
+import { initI18n, t, translateElements } from './common/i18n.js';
 
 // グローバルトグルの状態を読み込んで表示を更新
 const globalToggle = document.getElementById('global-toggle');
@@ -15,7 +16,7 @@ const currentTabInfo = document.getElementById('current-tab-info');
 
 // ステータステキストを更新する関数
 function updateStatusText(isEnabled) {
-  extensionStatus.textContent = isEnabled ? 'ENABLED' : 'DISABLED';
+  extensionStatus.textContent = isEnabled ? t('popup.enabled') : t('popup.disabled');
 }
 
 // ボタンのスタイルを更新
@@ -79,7 +80,7 @@ async function updateEnvironmentButtons() {
     openLocalBtn.disabled = true;
     openStagingBtn.disabled = true;
     openProductionBtn.disabled = true;
-    currentTabInfo.textContent = 'Unable to detect current environment';
+    currentTabInfo.textContent = t('popup.unableToDetect');
     return;
   }
   
@@ -88,7 +89,7 @@ async function updateEnvironmentButtons() {
     openLocalBtn.disabled = true;
     openStagingBtn.disabled = true;
     openProductionBtn.disabled = true;
-    currentTabInfo.textContent = 'Not a web page';
+    currentTabInfo.textContent = t('popup.notWebPage');
     return;
   }
   
@@ -116,9 +117,9 @@ async function updateEnvironmentButtons() {
       
       // 現在のタブ情報を表示
       if (currentEnv) {
-        currentTabInfo.textContent = `Current: ${currentEnv.toUpperCase()}`;
+        currentTabInfo.textContent = `${t('popup.current')}: ${currentEnv.toUpperCase()}`;
       } else {
-        currentTabInfo.textContent = `Domain: ${currentDomain}`;
+        currentTabInfo.textContent = `${t('popup.domain')}: ${currentDomain}`;
       }
     });
   } catch (error) {
@@ -126,68 +127,85 @@ async function updateEnvironmentButtons() {
     openLocalBtn.disabled = true;
     openStagingBtn.disabled = true;
     openProductionBtn.disabled = true;
-    currentTabInfo.textContent = 'Error detecting environment';
+    currentTabInfo.textContent = t('popup.error');
   }
 }
 
-// 初期状態を読み込む
-chrome.storage.sync.get(['extensionEnabled', 'settings'], (result) => {
-  // デフォルトは有効（true）
-  const isEnabled = result.extensionEnabled !== false;
-  globalToggle.checked = isEnabled;
-  updateStatusText(isEnabled);
+// 初期化
+(async function() {
+  // Initialize i18n first
+  await initI18n();
   
-  // ボタンのスタイルを更新
-  updateButtonStyles(result.settings);
-});
-
-// トグルの変更を監視
-globalToggle.addEventListener('change', (e) => {
-  const isEnabled = e.target.checked;
-  updateStatusText(isEnabled);
-  chrome.storage.sync.set({ extensionEnabled: isEnabled }, () => {
-    // すべてのタブにメッセージを送信して状態を更新
-    chrome.tabs.query({}, (tabs) => {
-      tabs.forEach((tab) => {
-        chrome.tabs.sendMessage(tab.id, {
-          action: 'updateExtensionState',
-          enabled: isEnabled
-        }).catch(() => {
-          // メッセージ送信に失敗しても無視（コンテンツスクリプトが読み込まれていないタブなど）
+  // Translate all elements
+  translateElements();
+  
+  // 初期状態を読み込む
+  chrome.storage.sync.get(['extensionEnabled', 'settings'], (result) => {
+    // デフォルトは有効（true）
+    const isEnabled = result.extensionEnabled !== false;
+    globalToggle.checked = isEnabled;
+    updateStatusText(isEnabled);
+    
+    // ボタンのスタイルを更新
+    updateButtonStyles(result.settings);
+  });
+  
+  // トグルの変更を監視
+  globalToggle.addEventListener('change', (e) => {
+    const isEnabled = e.target.checked;
+    updateStatusText(isEnabled);
+    chrome.storage.sync.set({ extensionEnabled: isEnabled }, () => {
+      // すべてのタブにメッセージを送信して状態を更新
+      chrome.tabs.query({}, (tabs) => {
+        tabs.forEach((tab) => {
+          chrome.tabs.sendMessage(tab.id, {
+            action: 'updateExtensionState',
+            enabled: isEnabled
+          }).catch(() => {
+            // メッセージ送信に失敗しても無視（コンテンツスクリプトが読み込まれていないタブなど）
+          });
         });
       });
     });
   });
-});
 
-// 環境切り替えボタンのイベントリスナー
-openLocalBtn.addEventListener('click', () => openInEnvironment('local'));
-openStagingBtn.addEventListener('click', () => openInEnvironment('staging'));
-openProductionBtn.addEventListener('click', () => openInEnvironment('production'));
+  // 環境切り替えボタンのイベントリスナー
+  openLocalBtn.addEventListener('click', () => openInEnvironment('local'));
+  openStagingBtn.addEventListener('click', () => openInEnvironment('staging'));
+  openProductionBtn.addEventListener('click', () => openInEnvironment('production'));
 
-// 環境切り替えボタンの状態を更新
-updateEnvironmentButtons();
+  // 環境切り替えボタンの状態を更新
+  updateEnvironmentButtons();
 
-// タブが変更されたときにボタン状態を更新
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (changeInfo.status === 'complete') {
-    getCurrentTab().then((currentTab) => {
-      if (currentTab && currentTab.id === tabId) {
+  // タブが変更されたときにボタン状態を更新
+  chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    if (changeInfo.status === 'complete') {
+      getCurrentTab().then((currentTab) => {
+        if (currentTab && currentTab.id === tabId) {
+          updateEnvironmentButtons();
+        }
+      });
+    }
+  });
+
+  document.getElementById('open-options').addEventListener('click', (e) => {
+    e.preventDefault();
+    chrome.runtime.openOptionsPage();
+    window.close();
+  });
+
+  // 設定が変更されたときにボタンのスタイルを更新
+  chrome.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName === 'sync') {
+      if (changes.settings) {
+        updateButtonStyles(changes.settings.newValue);
+      }
+      // Language change
+      if (changes.language) {
+        translateElements();
+        updateStatusText(globalToggle.checked);
         updateEnvironmentButtons();
       }
-    });
-  }
-});
-
-document.getElementById('open-options').addEventListener('click', (e) => {
-  e.preventDefault();
-  chrome.runtime.openOptionsPage();
-  window.close();
-});
-
-// 設定が変更されたときにボタンのスタイルを更新
-chrome.storage.onChanged.addListener((changes, areaName) => {
-  if (areaName === 'sync' && changes.settings) {
-    updateButtonStyles(changes.settings.newValue);
-  }
-});
+    }
+  });
+})();

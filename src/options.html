@@ -19,17 +19,25 @@
         <nav class="sidebar-nav">
           <ul class="sidebar-menu">
             <li>
-              <a href="#" class="sidebar-item" data-page="projects" id="nav-projects">
+              <a href="#" class="sidebar-item" data-page="projects" id="nav-projects" data-i18n="nav.projects">
                 Your Projects
               </a>
             </li>
             <li>
-              <a href="#" class="sidebar-item" data-page="settings" id="nav-settings">
+              <a href="#" class="sidebar-item" data-page="settings" id="nav-settings" data-i18n="nav.settings">
                 Settings
               </a>
             </li>
           </ul>
         </nav>
+        <!-- Language Selector -->
+        <div class="language-selector">
+          <label for="language-select" data-i18n="language.title">Language</label>
+          <select id="language-select" class="language-select">
+            <option value="en" data-i18n="language.english">English</option>
+            <option value="ja" data-i18n="language.japanese">日本語</option>
+          </select>
+        </div>
       </aside>
 
       <!-- Main Content Area -->
@@ -38,7 +46,7 @@
         <div class="page" id="page-projects">
           <!-- Project Management Section -->
           <section class="section">
-            <button id="add-project" class="btn btn-secondary">Add Project</button>
+            <button id="add-project" class="btn btn-secondary" data-i18n="projects.add">Add Project</button>
             <div id="projects-list" class="projects-list"></div>
           </section>
         </div>
@@ -47,120 +55,120 @@
         <div class="page" id="page-settings">
           <!-- Banner Styles -->
           <section class="section">
-            <h2 class="ttl-m">Banner Styles</h2>
-            <p class="section-description">Customize the banner text and background color displayed at the top of the page for each environment.</p>
+            <h2 class="ttl-m" data-i18n="settings.banner.title">Banner Styles</h2>
+            <p class="section-description" data-i18n="settings.banner.description">Customize the banner text and background color displayed at the top of the page for each environment.</p>
             <div class="settings-grid">
               <!-- Local -->
               <div class="setting-item">
-                <h3 class="ttl-s">Local</h3>
+                <h3 class="ttl-s" data-i18n="settings.banner.local">Local</h3>
                 <div class="form-group">
-                  <label for="local-text">Text</label>
-                  <input type="text" id="local-text" placeholder="You're on LOCAL env.">
+                  <label for="local-text" data-i18n="settings.banner.text">Text</label>
+                  <input type="text" id="local-text" data-i18n-placeholder="placeholder.localText" placeholder="You're on LOCAL env.">
                 </div>
                 <div class="form-group">
-                  <label for="local-color">Background Color</label>
+                  <label for="local-color" data-i18n="settings.banner.color">Background Color</label>
                   <input type="color" id="local-color" value="#42a4ff">
                 </div>
               </div>
 
               <!-- Staging -->
               <div class="setting-item">
-                <h3 class="ttl-s">Staging</h3>
+                <h3 class="ttl-s" data-i18n="settings.banner.staging">Staging</h3>
                 <div class="form-group">
-                  <label for="staging-text">Text</label>
-                  <input type="text" id="staging-text" placeholder="You're on STAGING env.">
+                  <label for="staging-text" data-i18n="settings.banner.text">Text</label>
+                  <input type="text" id="staging-text" data-i18n-placeholder="placeholder.stagingText" placeholder="You're on STAGING env.">
                 </div>
                 <div class="form-group">
-                  <label for="staging-color">Background Color</label>
+                  <label for="staging-color" data-i18n="settings.banner.color">Background Color</label>
                   <input type="color" id="staging-color" value="#FFC107">
                 </div>
               </div>
 
               <!-- Production -->
               <div class="setting-item">
-                <h3 class="ttl-s">Production</h3>
+                <h3 class="ttl-s" data-i18n="settings.banner.production">Production</h3>
                 <div class="form-group">
-                  <label for="production-text">Text</label>
-                  <input type="text" id="production-text" placeholder="You're on PRODUCTION env.">
+                  <label for="production-text" data-i18n="settings.banner.text">Text</label>
+                  <input type="text" id="production-text" data-i18n-placeholder="placeholder.productionText" placeholder="You're on PRODUCTION env.">
                 </div>
                 <div class="form-group">
-                  <label for="production-color">Background Color</label>
+                  <label for="production-color" data-i18n="settings.banner.color">Background Color</label>
                   <input type="color" id="production-color" value="#F44336">
                 </div>
               </div>
             </div>
-            <button id="save-settings" class="btn btn-primary">Save</button>
+            <button id="save-settings" class="btn btn-primary" data-i18n="settings.banner.save">Save</button>
           </section>
 
           <!-- Page Title -->
           <section class="section">
-            <h2 class="ttl-m">Page Titles</h2>
-            <p class="section-description">Set a prefix to be added to the page title when accessing each environment.</p>
+            <h2 class="ttl-m" data-i18n="settings.pageTitle.title">Page Titles</h2>
+            <p class="section-description" data-i18n="settings.pageTitle.description">Set a prefix to be added to the page title when accessing each environment.</p>
             <div class="settings-grid">
               <div class="setting-item">
-                <h3 class="ttl-s">Local</h3>
+                <h3 class="ttl-s" data-i18n="settings.pageTitle.local">Local</h3>
                 <div class="form-group">
-                  <label for="page-title-local">Prefix</label>
-                  <input type="text" id="page-title-local" placeholder="[LOCAL]">
+                  <label for="page-title-local" data-i18n="settings.pageTitle.prefix">Prefix</label>
+                  <input type="text" id="page-title-local" data-i18n-placeholder="placeholder.pageTitleLocal" placeholder="[LOCAL]">
                 </div>
               </div>
               <div class="setting-item">
-                <h3 class="ttl-s">Staging</h3>
+                <h3 class="ttl-s" data-i18n="settings.pageTitle.staging">Staging</h3>
                 <div class="form-group">
-                  <label for="page-title-staging">Prefix</label>
-                  <input type="text" id="page-title-staging" placeholder="[STAGING]">
+                  <label for="page-title-staging" data-i18n="settings.pageTitle.prefix">Prefix</label>
+                  <input type="text" id="page-title-staging" data-i18n-placeholder="placeholder.pageTitleStaging" placeholder="[STAGING]">
                 </div>
               </div>
               <div class="setting-item">
-                <h3 class="ttl-s">Production</h3>
+                <h3 class="ttl-s" data-i18n="settings.pageTitle.production">Production</h3>
                 <div class="form-group">
-                  <label for="page-title-production">Prefix</label>
-                  <input type="text" id="page-title-production" placeholder="[PRODUCTION]">
+                  <label for="page-title-production" data-i18n="settings.pageTitle.prefix">Prefix</label>
+                  <input type="text" id="page-title-production" data-i18n-placeholder="placeholder.pageTitleProduction" placeholder="[PRODUCTION]">
                 </div>
               </div>
             </div>
-            <button id="save-page-titles" class="btn btn-primary">Save</button>
+            <button id="save-page-titles" class="btn btn-primary" data-i18n="settings.pageTitle.save">Save</button>
           </section>
 
           <!-- URL Switching -->
           <section class="section">
-            <h2 class="ttl-m">URL Switching</h2>
-            <p class="section-description">Set keyboard shortcuts to quickly switch between environments.</p>
+            <h2 class="ttl-m" data-i18n="settings.shortcuts.title">URL Switching</h2>
+            <p class="section-description" data-i18n="settings.shortcuts.description">Set keyboard shortcuts to quickly switch between environments.</p>
             <div class="settings-grid">
               <div class="setting-item">
-                <h3 class="ttl-s">Local</h3>
+                <h3 class="ttl-s" data-i18n="settings.shortcuts.local">Local</h3>
                 <div class="form-group">
-                  <label for="shortcut-local">Hotkey</label>
+                  <label for="shortcut-local" data-i18n="settings.shortcuts.hotkey">Hotkey</label>
                   <input type="text" id="shortcut-local" placeholder="Ctrl+Shift+1" readonly>
-                  <small>Click and press the key combination to set</small>
+                  <small data-i18n="settings.shortcuts.hotkeyHint">Click and press the key combination to set</small>
                 </div>
               </div>
               <div class="setting-item">
-                <h3 class="ttl-s">Staging</h3>
+                <h3 class="ttl-s" data-i18n="settings.shortcuts.staging">Staging</h3>
                 <div class="form-group">
-                  <label for="shortcut-staging">Hotkey</label>
+                  <label for="shortcut-staging" data-i18n="settings.shortcuts.hotkey">Hotkey</label>
                   <input type="text" id="shortcut-staging" placeholder="Ctrl+Shift+2" readonly>
-                  <small>Click and press the key combination to set</small>
+                  <small data-i18n="settings.shortcuts.hotkeyHint">Click and press the key combination to set</small>
                 </div>
               </div>
               <div class="setting-item">
-                <h3 class="ttl-s">Production</h3>
+                <h3 class="ttl-s" data-i18n="settings.shortcuts.production">Production</h3>
                 <div class="form-group">
-                  <label for="shortcut-production">Hotkey</label>
+                  <label for="shortcut-production" data-i18n="settings.shortcuts.hotkey">Hotkey</label>
                   <input type="text" id="shortcut-production" placeholder="Ctrl+Shift+3" readonly>
-                  <small>Click and press the key combination to set</small>
+                  <small data-i18n="settings.shortcuts.hotkeyHint">Click and press the key combination to set</small>
                 </div>
               </div>
             </div>
-            <button id="save-shortcuts" class="btn btn-primary">Save</button>
+            <button id="save-shortcuts" class="btn btn-primary" data-i18n="settings.shortcuts.save">Save</button>
           </section>
 
           <!-- Export/Import Section -->
           <section class="section">
-            <h2 class="ttl-m">Export/Import</h2>
+            <h2 class="ttl-m" data-i18n="settings.export.title">Export/Import</h2>
             <div class="data-management-buttons">
-              <button id="export-settings" class="btn btn-secondary">Export</button>
-              <button id="import-settings" class="btn btn-secondary">Import</button>
+              <button id="export-settings" class="btn btn-secondary" data-i18n="settings.export.export">Export</button>
+              <button id="import-settings" class="btn btn-secondary" data-i18n="settings.export.import">Import</button>
               <input type="file" id="import-file" accept=".json" style="display: none;">
             </div>
           </section>
@@ -173,36 +181,36 @@
       <div class="modal__overlay" tabindex="-1" data-micromodal-close>
         <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-title">
           <header class="modal__header">
-            <h2 class="modal__title" id="modal-title">Add Project</h2>
+            <h2 class="modal__title" id="modal-title" data-i18n="modal.project.add">Add Project</h2>
             <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
           </header>
           <main class="modal__content">
             <form id="project-form">
               <div class="form-group">
-                <label for="project-name">Project Name</label>
+                <label for="project-name" data-i18n="modal.project.name">Project Name</label>
                 <input type="text" id="project-name" required>
               </div>
 
-              <h3 class="ttl-s">Environment Domains</h3>
+              <h3 class="ttl-s" data-i18n="modal.project.envDomains">Environment Domains</h3>
               <div class="form-group">
-                <label for="project-local">Local</label>
-                <input type="text" id="project-local" placeholder="example.test">
+                <label for="project-local" data-i18n="modal.project.local">Local</label>
+                <input type="text" id="project-local" data-i18n-placeholder="placeholder.projectLocal" placeholder="example.test">
               </div>
 
               <div class="form-group">
-                <label for="project-staging">Staging</label>
-                <input type="text" id="project-staging" placeholder="example.itreat-test.com">
+                <label for="project-staging" data-i18n="modal.project.staging">Staging</label>
+                <input type="text" id="project-staging" data-i18n-placeholder="placeholder.projectStaging" placeholder="example.itreat-test.com">
               </div>
 
               <div class="form-group">
-                <label for="project-production">Production</label>
-                <input type="text" id="project-production" placeholder="example.com">
+                <label for="project-production" data-i18n="modal.project.production">Production</label>
+                <input type="text" id="project-production" data-i18n-placeholder="placeholder.projectProduction" placeholder="example.com">
               </div>
 
               <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="submit" class="btn btn-primary" data-i18n="modal.project.save">Save</button>
                 <button type="button" id="cancel-project" class="btn btn-secondary"
-                  data-micromodal-close>Cancel</button>
+                  data-micromodal-close data-i18n="modal.project.cancel">Cancel</button>
               </div>
             </form>
           </main>
@@ -215,15 +223,15 @@
       <div class="modal__overlay" tabindex="-1" data-micromodal-close>
         <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
           <header class="modal__header">
-            <h2 class="modal__title" id="confirm-modal-title">Confirm</h2>
+            <h2 class="modal__title" id="confirm-modal-title" data-i18n="message.confirm">Confirm</h2>
             <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
           </header>
           <main class="modal__content" id="confirm-modal-content">
             <p></p>
           </main>
           <footer class="modal__footer">
-            <button class="btn btn-secondary" data-micromodal-close>Cancel</button>
-            <button class="btn btn-primary" id="confirm-modal-ok">OK</button>
+            <button class="btn btn-secondary" data-micromodal-close data-i18n="message.cancel">Cancel</button>
+            <button class="btn btn-primary" id="confirm-modal-ok" data-i18n="message.ok">OK</button>
           </footer>
         </div>
       </div>

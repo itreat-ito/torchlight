@@ -76,6 +76,46 @@ body {
   }
 }
 
+// Language Selector
+.language-selector {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid $border-color;
+  position: sticky;
+  top: calc(100vh - 120px);
+  
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 700;
+    color: $text-light;
+    font-size: 0.9rem;
+  }
+  
+  .language-select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid $border-color;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    background-color: $white;
+    color: $text-color;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    
+    &:hover {
+      border-color: $primary-color;
+    }
+    
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+    }
+  }
+}
+
 // Main Content
 .main-content {
   flex: 1;

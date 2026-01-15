@@ -145,6 +145,10 @@ textarea {
   font-family: inherit;
 }
 
+select {
+  appearance: none;
+}
+
 // モーダル
 .modal {
   display: none;
