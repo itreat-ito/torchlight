@@ -92,6 +92,10 @@ html {
 
 // ボタン
 .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
@@ -123,7 +127,7 @@ html {
     background-color: $danger-color;
     color: $white;
     padding: 6px 12px;
-    font-size: 0.8rem;
+    font-size: .9rem;
 
     &:hover {
       background-color: $danger-hover;
@@ -134,10 +138,22 @@ html {
     background-color: $edit-color;
     color: $white;
     padding: 6px 12px;
-    font-size: 0.8rem;
+    font-size: .9rem;
 
     &:hover {
       background-color: $edit-hover;
+    }
+  }
+
+  .btn-icon {
+    width: 24px;
+    height: 24px;
+    stroke-width: 2;
+
+    &-small {
+      width: 14px;
+      height: 14px;
+      stroke-width: 2;
     }
   }
 }

@@ -49,7 +49,10 @@
         <div class="page" id="page-projects">
           <!-- Project Management Section -->
           <section class="section">
-            <button id="add-project" class="btn btn-secondary" data-i18n="projects.add">Add Project</button>
+            <button id="add-project" class="btn btn-secondary">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="btn-icon"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+              <span data-i18n="projects.add">Add Project</span>
+            </button>
             <div id="projects-list" class="projects-list"></div>
           </section>
         </div>
@@ -83,7 +86,7 @@
                 </div>
                 <div class="form-group">
                   <label for="staging-color" data-i18n="settings.banner.color">Background Color</label>
-                  <input type="text" id="staging-color" data-coloris value="#FFC107">
+                  <input type="text" id="staging-color" data-coloris">
                 </div>
               </div>
 
@@ -96,7 +99,7 @@
                 </div>
                 <div class="form-group">
                   <label for="production-color" data-i18n="settings.banner.color">Background Color</label>
-                  <input type="text" id="production-color" data-coloris value="#F44336">
+                  <input type="text" id="production-color" data-coloris>
                 </div>
               </div>
             </div>
