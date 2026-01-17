@@ -81,8 +81,6 @@ body {
   margin-top: 30px;
   padding-top: 20px;
   border-top: 1px solid $border-color;
-  position: sticky;
-  top: calc(100vh - 120px);
   
   label {
     display: block;
@@ -101,7 +99,7 @@ body {
     border-radius: 6px;
     background-color: $white;
     color: $text-color;
-    padding: 10px 12px;
+    padding: 12px 16px;
     cursor: pointer;
     transition: border-color 0.2s, box-shadow 0.2s;
     
@@ -133,12 +131,12 @@ body {
       border-radius: 6px;
       background-color: $white;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      margin-bottom: 8px;
+      margin-top: 4px;
       padding: 4px;
       
       // Animation: fade in/out with subtle slide (downward)
       opacity: 0;
-      transform: translateY(4px);
+      transform: translateY(-4px);
       transition: all 0.3s ease, opacity 0.3s ease, transform 0.3s ease, display 0.3s allow-discrete, overlay 0.3s allow-discrete;
     }
     
@@ -152,30 +150,21 @@ body {
     @starting-style {
       &::picker(select):popover-open {
         opacity: 0;
-        transform: translateY(4px);
+        transform: translateY(-4px);
       }
     }
     
     // Option styling
     option {
       margin-bottom: 4px;
-      padding: 10px 12px;
+      padding: 12px 16px;
       color: $text-color;
+      border-radius: 6px;
       transition: background-color 0.15s ease;
       
       &:hover,
       &:focus {
         background-color: color.scale($bg-color, $lightness: 2%, $space: hsl);
-      }
-      
-      // First and last option border radius
-      &:first-of-type {
-        border-radius: 6px 6px 0 0;
-      }
-      
-      &:last-of-type {
-        margin-bottom: 0;
-        border-radius: 0 0 6px 6px;
       }
       
       // Selected option styling
