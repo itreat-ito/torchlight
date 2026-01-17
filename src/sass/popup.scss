@@ -189,18 +189,7 @@ body {
 }
 
 #open-options {
-  display: block;
   width: 100%;
-  padding: 10px;
-  margin-top: 15px;
-  background-color: $primary-color;
-  color: $white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 700;
-  text-align: center;
   text-decoration: none;
 
   &:hover {
