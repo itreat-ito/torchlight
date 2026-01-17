@@ -82,7 +82,7 @@ const translations = {
     // Messages
     'message.bannerStylesSaved': 'Banner styles saved successfully!',
     'message.pageTitlesSaved': 'Page titles saved successfully!',
-    'message.shortcutsSaved': 'Keyboard shortcuts saved successfully!',
+    'message.urlSwitchingSaved': 'URL switching saved successfully!',
     'message.projectAdded': 'Project added successfully!',
     'message.projectUpdated': 'Project updated successfully!',
     'message.projectDeleted': 'Project deleted successfully!',
@@ -191,7 +191,7 @@ const translations = {
     // Messages
     'message.bannerStylesSaved': 'バナースタイルを保存しました',
     'message.pageTitlesSaved': 'ページタイトルを保存しました',
-    'message.shortcutsSaved': 'URL切り替えを保存しました',
+    'message.urlSwitchingSaved': 'URL切り替えを保存しました',
     'message.projectAdded': 'プロジェクトを追加しました',
     'message.projectUpdated': 'プロジェクトを更新しました',
     'message.projectDeleted': 'プロジェクトを削除しました',

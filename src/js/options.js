@@ -908,7 +908,7 @@ import '@melloware/coloris/dist/coloris.css';
           });
         });
       });
-      showSuccessToast(t('message.shortcutsSaved'));
+      showSuccessToast(t('message.urlSwitchingSaved'));
     });
   }
 
