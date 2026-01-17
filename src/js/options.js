@@ -440,7 +440,7 @@ import '@melloware/coloris/dist/coloris.css';
     };
 
     chrome.storage.sync.set({ settings }, () => {
-      showSuccessToast(t('message.settingsSaved'));
+      showSuccessToast(t('message.bannerStylesSaved'));
     });
   }
 
@@ -560,14 +560,14 @@ import '@melloware/coloris/dist/coloris.css';
     // Edit and delete button event listeners
     document.querySelectorAll('.edit-project').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const projectId = e.target.getAttribute('data-project-id');
+        const projectId = e.currentTarget.getAttribute('data-project-id');
         editProject(projectId);
       });
     });
 
     document.querySelectorAll('.delete-project').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const projectId = e.target.getAttribute('data-project-id');
+        const projectId = e.currentTarget.getAttribute('data-project-id');
         deleteProject(projectId);
       });
     });
@@ -637,6 +637,7 @@ import '@melloware/coloris/dist/coloris.css';
       const filtered = projects.filter(p => p.id !== projectId);
       chrome.storage.sync.set({ projects: filtered }, () => {
         loadProjects();
+        showSuccessToast(t('message.projectDeleted'));
       });
     });
   }

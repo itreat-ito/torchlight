@@ -80,11 +80,12 @@ const translations = {
     'popup.error': 'Error detecting environment',
     
     // Messages
-    'message.settingsSaved': 'Settings saved successfully!',
+    'message.bannerStylesSaved': 'Banner styles saved successfully!',
     'message.pageTitlesSaved': 'Page titles saved successfully!',
     'message.shortcutsSaved': 'Keyboard shortcuts saved successfully!',
     'message.projectAdded': 'Project added successfully!',
     'message.projectUpdated': 'Project updated successfully!',
+    'message.projectDeleted': 'Project deleted successfully!',
     'message.settingsExported': 'Settings exported successfully!',
     'message.settingsImported': 'Settings imported successfully!',
     'message.enterProjectName': 'Please enter a project name',
@@ -188,11 +189,12 @@ const translations = {
     'popup.error': '環境の検出でエラーが発生しました',
     
     // Messages
-    'message.settingsSaved': 'バナースタイルを保存しました',
+    'message.bannerStylesSaved': 'バナースタイルを保存しました',
     'message.pageTitlesSaved': 'ページタイトルを保存しました',
     'message.shortcutsSaved': 'URL切り替えを保存しました',
     'message.projectAdded': 'プロジェクトを追加しました',
     'message.projectUpdated': 'プロジェクトを更新しました',
+    'message.projectDeleted': 'プロジェクトを削除しました',
     'message.settingsExported': '設定のエクスポートが完了しました',
     'message.settingsImported': '設定のインポートが完了しました',
     'message.enterProjectName': 'プロジェクト名を入力してください',
