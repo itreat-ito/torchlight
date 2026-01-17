@@ -14,8 +14,9 @@ export function showSuccessToast(message) {
     position: 'right',
     stopOnFocus: true,
     style: {
-      background: 'linear-gradient(to right, #4CAF50, #45a049)',
+      background: 'linear-gradient(to right, #fd79ae, #ffa17d)',
       fontSize: '.9rem',
+      fontWeight: '700',
       borderRadius: '4px',
       boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
     },
@@ -36,6 +37,7 @@ export function showErrorToast(message) {
     style: {
       background: 'linear-gradient(to right, #F44336, #d32f2f)',
       fontSize: '.9rem',
+      fontWeight: '700',
       borderRadius: '4px',
       boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
     },
@@ -56,6 +58,7 @@ export function showInfoToast(message) {
     style: {
       background: 'linear-gradient(to right, #3498db, #2980b9)',
       fontSize: '.9rem',
+      fontWeight: '700',
       borderRadius: '4px',
       boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
     },
