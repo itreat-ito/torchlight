@@ -5,6 +5,8 @@ import { showConfirmModal } from './confirm-modal.js';
 import MicroModal from 'micromodal';
 import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
 import { initI18n, t, saveLanguage, loadLanguage, translateElements } from './common/i18n.js';
+import Coloris from '@melloware/coloris';
+import '@melloware/coloris/dist/coloris.css';
 
 (function() {
   'use strict';
@@ -65,6 +67,37 @@ import { initI18n, t, saveLanguage, loadLanguage, translateElements } from './co
     // Language selector
     languageSelect: document.getElementById('language-select')
   };
+
+  // Initialize
+  async function init() {
+    // Initialize i18n first
+    await initI18n();
+    
+    // Initialize Coloris
+    initColoris();
+
+    // Setup language selector
+    setupLanguageSelector();
+    
+    // Colorisの初期化が完了してDOM構造が変更された後に設定を読み込む
+    // requestAnimationFrameを使用して、次のフレームで実行することで確実に反映される
+    requestAnimationFrame(() => {
+      loadSettings();
+    });
+    
+    loadPageTitles();
+    loadProjects();
+    loadKeyboardShortcuts();
+    setupEventListeners();
+    setupProjectModalHandlers();
+    setupKeyboardShortcutInputs();
+    setupNavigation();
+    // URLハッシュからページを読み込む、またはデフォルトでYour Projectsページを表示
+    loadPageFromHash();
+
+    // ハッシュ変更イベントをリッスン
+    window.addEventListener('hashchange', loadPageFromHash);
+  }
 
   let editingProjectId = null;
 
@@ -180,27 +213,28 @@ import { initI18n, t, saveLanguage, loadLanguage, translateElements } from './co
     };
   }
 
-  // Initialize
-  async function init() {
-    // Initialize i18n first
-    await initI18n();
+  // Initialize Coloris
+  function initColoris() {
+    Coloris.init();
     
-    // Setup language selector
-    setupLanguageSelector();
-    
-    loadSettings();
-    loadPageTitles();
-    loadProjects();
-    loadKeyboardShortcuts();
-    setupEventListeners();
-    setupProjectModalHandlers();
-    setupKeyboardShortcutInputs();
-    setupNavigation();
-    // URLハッシュからページを読み込む、またはデフォルトでYour Projectsページを表示
-    loadPageFromHash();
-
-    // ハッシュ変更イベントをリッスン
-    window.addEventListener('hashchange', loadPageFromHash);
+    // Configure Coloris options
+    Coloris({
+      el: '[data-coloris]',
+      theme: 'polaroid',
+      themeMode: 'light',
+      format: 'hex',
+      formatToggle: false,
+      margin: 4,
+      alpha: false,
+      clearButton: false,
+      clearLabel: 'Clear',
+      swatchesOnly: false,
+      selectInput: true,
+      wrap: true,
+      rtl: false,
+      focusInput: true,
+      selectInput: true
+    });
   }
   
   // Setup language selector
@@ -365,11 +399,25 @@ import { initI18n, t, saveLanguage, loadLanguage, translateElements } from './co
       };
 
       elements.localText.value = settings.local.text || 'You\'re on LOCAL env.';
-      elements.localColor.value = settings.local.color || '#42a4ff';
+      
+      // Colorisが初期化された後のinput要素に値を設定
+      // ColorisがDOM構造を変更しているため、値を設定した後にinputイベントを発火してColorisに通知
+      if (elements.localColor) {
+        elements.localColor.value = settings.local.color || '#42a4ff';
+        elements.localColor.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+      
       elements.stagingText.value = settings.staging.text || 'You\'re on STAGING env.';
-      elements.stagingColor.value = settings.staging.color || '#FFC107';
+      if (elements.stagingColor) {
+        elements.stagingColor.value = settings.staging.color || '#FFC107';
+        elements.stagingColor.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+      
       elements.productionText.value = settings.production.text || 'You\'re on PRODUCTION env.';
-      elements.productionColor.value = settings.production.color || '#F44336';
+      if (elements.productionColor) {
+        elements.productionColor.value = settings.production.color || '#F44336';
+        elements.productionColor.dispatchEvent(new Event('input', { bubbles: true }));
+      }
     });
   }
 

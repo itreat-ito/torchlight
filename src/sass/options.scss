@@ -96,11 +96,7 @@ body {
     width: 100%;
     font-size: 0.9rem;
     font-family: inherit;
-    
-    // Opt-in to customizable select
     appearance: base-select;
-    
-    // Select button styling
     border: 1px solid $border-color;
     border-radius: 6px;
     background-color: $white;
@@ -241,6 +237,12 @@ body {
   flex-direction: column;
   gap: 8px;
 
+  .clr-field {
+    width: 100%;
+    border-radius: 4px;
+    overflow: clip;
+  }
+
   label {
     font-weight: 700;
     color: $text-light;
@@ -262,7 +264,6 @@ body {
     cursor: pointer;
   }
 }
-
 
 .projects-list {
   margin-top: 20px;
