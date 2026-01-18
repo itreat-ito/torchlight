@@ -65,7 +65,17 @@ import '@melloware/coloris/dist/coloris.css';
     cancelProject: document.getElementById('cancel-project'),
     
     // Language selector
-    languageSelect: document.getElementById('language-select')
+    languageSelect: document.getElementById('language-select'),
+
+    // Banner customization
+    bannerFontSize: document.getElementById('banner-font-size'),
+    bannerFontSizeValue: document.getElementById('banner-font-size-value'),
+    bannerPosition: document.getElementById('banner-position'),
+    bannerOpacity: document.getElementById('banner-opacity'),
+    bannerOpacityValue: document.getElementById('banner-opacity-value'),
+    bannerBlur: document.getElementById('banner-blur'),
+    bannerBlurValue: document.getElementById('banner-blur-value'),
+    saveBannerCustomizationBtn: document.getElementById('save-banner-customization')
   };
 
   // Initialize
@@ -88,6 +98,7 @@ import '@melloware/coloris/dist/coloris.css';
     loadPageTitles();
     loadProjects();
     loadKeyboardShortcuts();
+    loadBannerCustomization();
     setupEventListeners();
     setupProjectModalHandlers();
     setupKeyboardShortcutInputs();
@@ -299,6 +310,19 @@ import '@melloware/coloris/dist/coloris.css';
     });
   }
 
+  // Update slider track fill (left side of thumb)
+  function updateSliderTrackFill(slider) {
+    if (!slider) return;
+    
+    const min = parseFloat(slider.min) || 0;
+    const max = parseFloat(slider.max) || 100;
+    const value = parseFloat(slider.value) || min;
+    const percentage = ((value - min) / (max - min)) * 100;
+    
+    // Use linear-gradient to fill left side with primary color
+    slider.style.background = `linear-gradient(to right, #4476e2 ${percentage}%, #ddd ${percentage}%)`;
+  }
+
   // Setup event listeners
   function setupEventListeners() {
     // Save common settings
@@ -309,6 +333,46 @@ import '@melloware/coloris/dist/coloris.css';
 
     // Save keyboard shortcuts
     elements.saveShortcutsBtn.addEventListener('click', saveKeyboardShortcuts);
+
+    // Save banner customization
+    elements.saveBannerCustomizationBtn.addEventListener('click', saveBannerCustomization);
+
+    // Update slider values in real-time and track fill
+    if (elements.bannerFontSize) {
+      // Initialize track fill
+      updateSliderTrackFill(elements.bannerFontSize);
+      
+      elements.bannerFontSize.addEventListener('input', (e) => {
+        if (elements.bannerFontSizeValue) {
+          elements.bannerFontSizeValue.textContent = e.target.value + 'px';
+        }
+        updateSliderTrackFill(e.target);
+      });
+    }
+
+    if (elements.bannerOpacity) {
+      // Initialize track fill
+      updateSliderTrackFill(elements.bannerOpacity);
+      
+      elements.bannerOpacity.addEventListener('input', (e) => {
+        if (elements.bannerOpacityValue) {
+          elements.bannerOpacityValue.textContent = e.target.value + '%';
+        }
+        updateSliderTrackFill(e.target);
+      });
+    }
+
+    if (elements.bannerBlur) {
+      // Initialize track fill
+      updateSliderTrackFill(elements.bannerBlur);
+      
+      elements.bannerBlur.addEventListener('input', (e) => {
+        if (elements.bannerBlurValue) {
+          elements.bannerBlurValue.textContent = e.target.value + 'px';
+        }
+        updateSliderTrackFill(e.target);
+      });
+    }
 
     // Add project
     elements.addProjectBtn.addEventListener('click', () => openProjectModal());
@@ -734,7 +798,7 @@ import '@melloware/coloris/dist/coloris.css';
 
   // Export settings
   function exportSettings() {
-    chrome.storage.sync.get(['settings', 'projects', 'keyboardShortcuts', 'pageTitles'], (result) => {
+    chrome.storage.sync.get(['settings', 'projects', 'keyboardShortcuts', 'pageTitles', 'bannerCustomization'], (result) => {
       const exportData = {
         version: '1.0.0',
         exportedAt: new Date().toISOString(),
@@ -753,6 +817,12 @@ import '@melloware/coloris/dist/coloris.css';
           local: '',
           staging: '',
           production: ''
+        },
+        bannerCustomization: result.bannerCustomization || {
+          fontSize: 18,
+          position: 'top',
+          opacity: 100,
+          blur: 0
         }
       };
 
@@ -834,14 +904,21 @@ import '@melloware/coloris/dist/coloris.css';
       staging: '',
       production: ''
     };
+    const bannerCustomization = importData.bannerCustomization || {
+      fontSize: 18,
+      position: 'top',
+      opacity: 100,
+      blur: 0
+    };
 
     // Save imported data
-    chrome.storage.sync.set({ settings, projects, keyboardShortcuts, pageTitles }, () => {
-      // Reload settings, page titles, projects and keyboard shortcuts
+    chrome.storage.sync.set({ settings, projects, keyboardShortcuts, pageTitles, bannerCustomization }, () => {
+      // Reload settings, page titles, projects, keyboard shortcuts and banner customization
       loadSettings();
       loadPageTitles();
       loadProjects();
       loadKeyboardShortcuts();
+      loadBannerCustomization();
       showSuccessToast(t('message.settingsImported'));
     });
   }
@@ -909,6 +986,68 @@ import '@melloware/coloris/dist/coloris.css';
         });
       });
       showSuccessToast(t('message.urlSwitchingSaved'));
+    });
+  }
+
+  // Load banner customization
+  function loadBannerCustomization() {
+    chrome.storage.sync.get(['bannerCustomization'], (result) => {
+      const customization = result.bannerCustomization || {
+        fontSize: 18,
+        position: 'top',
+        opacity: 100,
+        blur: 0
+      };
+
+      if (elements.bannerFontSize) {
+        elements.bannerFontSize.value = customization.fontSize || 18;
+        if (elements.bannerFontSizeValue) {
+          elements.bannerFontSizeValue.textContent = (customization.fontSize || 18) + 'px';
+        }
+        updateSliderTrackFill(elements.bannerFontSize);
+      }
+      if (elements.bannerPosition) {
+        elements.bannerPosition.value = customization.position || 'top';
+      }
+      if (elements.bannerOpacity) {
+        elements.bannerOpacity.value = customization.opacity !== undefined ? customization.opacity : 100;
+        if (elements.bannerOpacityValue) {
+          elements.bannerOpacityValue.textContent = (customization.opacity !== undefined ? customization.opacity : 100) + '%';
+        }
+        updateSliderTrackFill(elements.bannerOpacity);
+      }
+      if (elements.bannerBlur) {
+        elements.bannerBlur.value = customization.blur !== undefined ? customization.blur : 0;
+        if (elements.bannerBlurValue) {
+          elements.bannerBlurValue.textContent = (customization.blur !== undefined ? customization.blur : 0) + 'px';
+        }
+        updateSliderTrackFill(elements.bannerBlur);
+      }
+    });
+  }
+
+  // Save banner customization
+  function saveBannerCustomization() {
+    const customization = {
+      fontSize: parseInt(elements.bannerFontSize.value) || 18,
+      position: elements.bannerPosition.value || 'top',
+      opacity: parseInt(elements.bannerOpacity.value) || 100,
+      blur: parseInt(elements.bannerBlur.value) || 0
+    };
+
+    chrome.storage.sync.set({ bannerCustomization: customization }, () => {
+      // すべてのタブにメッセージを送信してバナーカスタマイズ設定を更新
+      chrome.tabs.query({}, (tabs) => {
+        tabs.forEach((tab) => {
+          chrome.tabs.sendMessage(tab.id, {
+            action: 'updateBannerCustomization',
+            customization: customization
+          }).catch(() => {
+            // メッセージ送信に失敗しても無視（コンテンツスクリプトが読み込まれていないタブなど）
+          });
+        });
+      });
+      showSuccessToast(t('message.bannerCustomizationSaved'));
     });
   }
 

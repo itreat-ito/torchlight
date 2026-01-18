@@ -23,7 +23,15 @@
   padding: 0;
   border: none;
   background: transparent;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.2s ease-in-out, backdrop-filter 0.2s ease-in-out;
+
+  // 下部に表示する場合
+  &[data-position="bottom"] {
+    top: auto;
+    bottom: 0;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
+    animation: fadeInBottom 0.3s ease-in;
+  }
 
   // Top Layer API: popover属性を持つ要素のスタイル
   &[popover] {
@@ -59,6 +67,17 @@
   from {
     opacity: 0;
     transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInBottom {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
   to {
     opacity: 1;

@@ -21,7 +21,7 @@ import { matchesShortcut, isInputFocused } from './common/keyboard.js';
 
 
   // バナーを作成
-  function createBanner(environment, settings) {
+  function createBanner(environment, settings, customization) {
     const envSettings = settings[environment];
     if (!envSettings) return null;
 
@@ -29,13 +29,56 @@ import { matchesShortcut, isInputFocused } from './common/keyboard.js';
     banner.id = 'env-banner';
     banner.className = 'env-banner';
     banner.textContent = envSettings.text || `${environment}環境`;
-    banner.style.backgroundColor = envSettings.color || '#666666';
+    
+    // カスタマイズ設定を適用
+    const custom = customization || {
+      fontSize: 18,
+      position: 'top',
+      opacity: 100,
+      blur: 0
+    };
+    
+    // 背景色と透明度を設定
+    const baseColor = envSettings.color || '#666666';
+    const opacity = custom.opacity !== undefined ? custom.opacity : 100;
+    const opacityDecimal = opacity / 100;
+    
+    // RGB値を取得してrgba形式に変換
+    const rgb = hexToRgb(baseColor);
+    if (rgb) {
+      banner.style.backgroundColor = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacityDecimal})`;
+    } else {
+      banner.style.backgroundColor = baseColor;
+      banner.style.opacity = opacityDecimal.toString();
+    }
+    
+    // backdrop-filter: blurを設定
+    if (custom.blur !== undefined && custom.blur > 0) {
+      banner.style.backdropFilter = `blur(${custom.blur}px)`;
+      banner.style.webkitBackdropFilter = `blur(${custom.blur}px)`;
+    }
+    
+    // フォントサイズを設定
+    if (custom.fontSize !== undefined) {
+      banner.style.fontSize = `${custom.fontSize}px`;
+    }
+    
+    // 表示位置を設定
+    if (custom.position === 'bottom') {
+      banner.style.top = 'auto';
+      banner.style.bottom = '0';
+      banner.setAttribute('data-position', 'bottom');
+    } else {
+      banner.style.top = '0';
+      banner.style.bottom = 'auto';
+      banner.setAttribute('data-position', 'top');
+    }
     
     // Top Layer API: popover属性を使用して最上位レイヤーに配置
     banner.setAttribute('popover', 'manual');
 
     // テキスト色を決定（明度に基づく）
-    const luminance = getLuminance(envSettings.color);
+    const luminance = getLuminance(baseColor);
     if (luminance > 0.5) {
       banner.classList.add('dark-text');
     } else {
@@ -94,7 +137,7 @@ import { matchesShortcut, isInputFocused } from './common/keyboard.js';
   function init() {
     const domain = getDomain();
     
-    chrome.storage.sync.get(['extensionEnabled', 'settings', 'projects', 'pageTitles'], (result) => {
+    chrome.storage.sync.get(['extensionEnabled', 'settings', 'projects', 'pageTitles', 'bannerCustomization'], (result) => {
       // 拡張機能が無効の場合は何もしない
       if (result.extensionEnabled === false) {
         // 既存のバナーがあれば削除
@@ -116,6 +159,12 @@ import { matchesShortcut, isInputFocused } from './common/keyboard.js';
         staging: '',
         production: ''
       };
+      const bannerCustomization = result.bannerCustomization || {
+        fontSize: 18,
+        position: 'top',
+        opacity: 100,
+        blur: 0
+      };
 
       const environment = detectEnvironment(domain, projects);
       
@@ -123,7 +172,7 @@ import { matchesShortcut, isInputFocused } from './common/keyboard.js';
         // ページタイトルを更新
         updatePageTitle(environment, pageTitles);
 
-        const banner = createBanner(environment, settings);
+        const banner = createBanner(environment, settings, bannerCustomization);
         if (banner) {
           // DOMが準備できているか確認
           if (document.body) {
@@ -181,10 +230,15 @@ import { matchesShortcut, isInputFocused } from './common/keyboard.js';
     const HIDE_THRESHOLD = 60; // バナーの高さ + 余白（マウスカーソルがこの範囲内に入ると非表示）
     let hideTimeout = null;
     let isHidden = false;
+    
+    // バナーの位置を取得
+    const position = banner.getAttribute('data-position') || 'top';
+    const isBottom = position === 'bottom';
 
     // マウスカーソルの位置を監視
     document.addEventListener('mousemove', (e) => {
       const mouseY = e.clientY;
+      const windowHeight = window.innerHeight;
       
       // 既存のタイムアウトをクリア
       if (hideTimeout) {
@@ -193,7 +247,16 @@ import { matchesShortcut, isInputFocused } from './common/keyboard.js';
       }
 
       // バナーの近く（バナーの上も含む）にマウスカーソルがある場合は非表示
-      if (mouseY <= HIDE_THRESHOLD) {
+      let shouldHide = false;
+      if (isBottom) {
+        // 下部に表示する場合：画面下部に近い場合に非表示
+        shouldHide = mouseY >= (windowHeight - HIDE_THRESHOLD);
+      } else {
+        // 上部に表示する場合：画面上部に近い場合に非表示
+        shouldHide = mouseY <= HIDE_THRESHOLD;
+      }
+
+      if (shouldHide) {
         if (!isHidden) {
           // バナーを非表示（pointer-eventsをnoneにしてクリック可能にする）
           banner.style.pointerEvents = 'none';
@@ -245,6 +308,10 @@ import { matchesShortcut, isInputFocused } from './common/keyboard.js';
       sendResponse({ success: true });
     } else if (message.action === 'updatePageTitles') {
       // ページタイトル設定が変更されたら再初期化
+      init();
+      sendResponse({ success: true });
+    } else if (message.action === 'updateBannerCustomization') {
+      // バナーカスタマイズ設定が変更されたら再初期化
       init();
       sendResponse({ success: true });
     }

@@ -39,6 +39,16 @@ const translations = {
     'settings.banner.color': 'Background Color',
     'settings.banner.save': 'Save',
     
+    'settings.bannerCustomization.title': 'Banner Customization',
+    'settings.bannerCustomization.description': 'Customize the appearance and position of the banner for all environments.',
+    'settings.bannerCustomization.fontSize': 'Font Size',
+    'settings.bannerCustomization.position': 'Position',
+    'settings.bannerCustomization.positionTop': 'Top',
+    'settings.bannerCustomization.positionBottom': 'Bottom',
+    'settings.bannerCustomization.opacity': 'Background Opacity',
+    'settings.bannerCustomization.blur': 'Backdrop Blur',
+    'settings.bannerCustomization.save': 'Save',
+    
     'settings.pageTitle.title': 'Page Titles',
     'settings.pageTitle.description': 'Set a prefix to be added to the page title when accessing each environment.',
     'settings.pageTitle.local': 'Local',
@@ -81,6 +91,7 @@ const translations = {
     
     // Messages
     'message.bannerStylesSaved': 'Banner styles saved successfully!',
+    'message.bannerCustomizationSaved': 'Banner customization saved successfully!',
     'message.pageTitlesSaved': 'Page titles saved successfully!',
     'message.urlSwitchingSaved': 'URL switching saved successfully!',
     'message.projectAdded': 'Project added successfully!',
@@ -148,6 +159,16 @@ const translations = {
     'settings.banner.color': '背景色',
     'settings.banner.save': '保存',
     
+    'settings.bannerCustomization.title': 'バナー詳細設定',
+    'settings.bannerCustomization.description': 'すべての環境で共通のバナーの外観と位置をカスタマイズします。',
+    'settings.bannerCustomization.fontSize': 'フォントサイズ (px)',
+    'settings.bannerCustomization.position': '表示位置',
+    'settings.bannerCustomization.positionTop': '上部',
+    'settings.bannerCustomization.positionBottom': '下部',
+    'settings.bannerCustomization.opacity': '背景透明度',
+    'settings.bannerCustomization.blur': '背景ぼかし (px)',
+    'settings.bannerCustomization.save': '保存',
+    
     'settings.pageTitle.title': 'ページタイトル',
     'settings.pageTitle.description': '各環境にアクセスした時のページタイトルに追加するプレフィックスを設定します。',
     'settings.pageTitle.local': 'ローカル',
@@ -190,6 +211,7 @@ const translations = {
     
     // Messages
     'message.bannerStylesSaved': 'バナースタイルを保存しました',
+    'message.bannerCustomizationSaved': 'バナー詳細設定を保存しました',
     'message.pageTitlesSaved': 'ページタイトルを保存しました',
     'message.urlSwitchingSaved': 'URL切り替えを保存しました',
     'message.projectAdded': 'プロジェクトを追加しました',

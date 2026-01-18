@@ -32,7 +32,7 @@
           <!-- Language Selector -->
           <div class="language-selector">
             <label for="language-select" data-i18n="language.title">Language</label>
-            <select id="language-select" class="language-select">
+            <select id="language-select" class="select-styled">
               <button>
                 <selectedcontent></selectedcontent>
               </button>
@@ -104,6 +104,51 @@
               </div>
             </div>
             <button id="save-settings" class="btn btn-primary" data-i18n="settings.banner.save">Save</button>
+          </section>
+
+          <!-- Banner Customization -->
+          <section class="section">
+            <h2 class="ttl-m" data-i18n="settings.bannerCustomization.title">Banner Customization</h2>
+            <p class="section-description" data-i18n="settings.bannerCustomization.description">Customize the appearance and position of the banner for all environments.</p>
+            <div class="settings-grid banner-customization-grid">
+              <div class="setting-item">
+                <div class="form-group">
+                  <label for="banner-font-size" data-i18n="settings.bannerCustomization.fontSize">Font Size</label>
+                  <div class="slider-container">
+                    <input type="range" id="banner-font-size" min="10" max="32" value="18" step="1">
+                    <span id="banner-font-size-value">18px</span>
+                  </div>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div class="form-group">
+                  <label for="banner-position" data-i18n="settings.bannerCustomization.position">Position</label>
+                  <select id="banner-position" class="select-styled select-styled-slim">
+                    <option value="top" data-i18n="settings.bannerCustomization.positionTop">Top</option>
+                    <option value="bottom" data-i18n="settings.bannerCustomization.positionBottom">Bottom</option>
+                  </select>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div class="form-group">
+                  <label for="banner-opacity" data-i18n="settings.bannerCustomization.opacity">Background Opacity</label>
+                  <div class="slider-container">
+                    <input type="range" id="banner-opacity" min="0" max="100" value="100" step="1">
+                    <span id="banner-opacity-value">100%</span>
+                  </div>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div class="form-group">
+                  <label for="banner-blur" data-i18n="settings.bannerCustomization.blur">Backdrop Blur</label>
+                  <div class="slider-container">
+                    <input type="range" id="banner-blur" min="0" max="20" value="0" step="1">
+                    <span id="banner-blur-value">0px</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button id="save-banner-customization" class="btn btn-primary" data-i18n="settings.bannerCustomization.save">Save</button>
           </section>
 
           <!-- Page Title -->
