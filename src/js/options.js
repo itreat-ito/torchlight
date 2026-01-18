@@ -394,8 +394,8 @@ import '@melloware/coloris/dist/coloris.css';
     chrome.storage.sync.get(['settings'], (result) => {
       const settings = result.settings || {
         local: { text: 'You\'re on LOCAL env.', color: '#42a4ff' },
-        staging: { text: 'You\'re on STAGING env.', color: '#FFC107' },
-        production: { text: 'You\'re on PRODUCTION env.', color: '#F44336' }
+        staging: { text: 'You\'re on STAGING env.', color: '#ffc107' },
+        production: { text: 'You\'re on PRODUCTION env.', color: '#f44336' }
       };
 
       elements.localText.value = settings.local.text || 'You\'re on LOCAL env.';
@@ -409,13 +409,13 @@ import '@melloware/coloris/dist/coloris.css';
       
       elements.stagingText.value = settings.staging.text || 'You\'re on STAGING env.';
       if (elements.stagingColor) {
-        elements.stagingColor.value = settings.staging.color || '#FFC107';
+        elements.stagingColor.value = settings.staging.color || '#ffc107';
         elements.stagingColor.dispatchEvent(new Event('input', { bubbles: true }));
       }
       
       elements.productionText.value = settings.production.text || 'You\'re on PRODUCTION env.';
       if (elements.productionColor) {
-        elements.productionColor.value = settings.production.color || '#F44336';
+        elements.productionColor.value = settings.production.color || '#f44336';
         elements.productionColor.dispatchEvent(new Event('input', { bubbles: true }));
       }
     });
@@ -740,8 +740,8 @@ import '@melloware/coloris/dist/coloris.css';
         exportedAt: new Date().toISOString(),
         settings: result.settings || {
           local: { text: 'You\'re on LOCAL env.', color: '#42a4ff' },
-          staging: { text: 'You\'re on STAGING env.', color: '#FFC107' },
-          production: { text: 'You\'re on PRODUCTION env.', color: '#F44336' }
+          staging: { text: 'You\'re on STAGING env.', color: '#ffc107' },
+          production: { text: 'You\'re on PRODUCTION env.', color: '#f44336' }
         },
         projects: result.projects || [],
         keyboardShortcuts: result.keyboardShortcuts || {
@@ -819,8 +819,8 @@ import '@melloware/coloris/dist/coloris.css';
     // Prepare data to import
     const settings = importData.settings || {
       local: { text: 'You\'re on LOCAL env.', color: '#42a4ff' },
-      staging: { text: 'You\'re on STAGING env.', color: '#FFC107' },
-      production: { text: 'You\'re on PRODUCTION env.', color: '#F44336' }
+      staging: { text: 'You\'re on STAGING env.', color: '#ffc107' },
+      production: { text: 'You\'re on PRODUCTION env.', color: '#f44336' }
     };
 
     const projects = importData.projects || [];

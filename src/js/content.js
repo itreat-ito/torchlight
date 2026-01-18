@@ -107,8 +107,8 @@ import { matchesShortcut, isInputFocused } from './common/keyboard.js';
 
       const settings = result.settings || {
         local: { text: 'You\'re on LOCAL env.', color: '#42a4ff' },
-        staging: { text: 'You\'re on STAGING env.', color: '#FFC107' },
-        production: { text: 'You\'re on PRODUCTION env.', color: '#F44336' }
+        staging: { text: 'You\'re on STAGING env.', color: '#ffc107' },
+        production: { text: 'You\'re on PRODUCTION env.', color: '#f44336' }
       };
       const projects = result.projects || [];
       const pageTitles = result.pageTitles || {

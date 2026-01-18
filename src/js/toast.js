@@ -35,7 +35,7 @@ export function showErrorToast(message) {
     position: 'right',
     stopOnFocus: true,
     style: {
-      background: 'linear-gradient(to right, #F44336, #d32f2f)',
+      background: 'linear-gradient(to right, #f44336, #d32f2f)',
       fontSize: '.9rem',
       fontWeight: '700',
       borderRadius: '4px',
