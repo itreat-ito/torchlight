@@ -1,78 +1,66 @@
-# torchlight
+<div align="center" style="margin:16px 0 48px;">
+  <img src="src/images/logo_text.svg" alt="torchlight" width="240">
+</div>
 
-環境（ローカル、ステージング、本番）を視覚的に区別するためのChrome拡張機能です。
+A Chrome extension that displays customizable banners to visually distinguish between local, staging, and production environments.
 
-## セットアップ
+## Features
 
-### 依存関係のインストール
+- **Environment Detection**: Automatically detects and displays the current environment (local, staging, or production) based on the domain
+- **Customizable Banners**: Configure text, colors, font size, position, opacity, and blur effects for each environment
+- **Project Management**: Manage multiple projects with different domain mappings
+- **Environment Switching**: Quickly switch between environments with keyboard shortcuts or popup buttons
+- **URL Conversion**: Automatically convert URLs when switching between environments
+- **Settings Export/Import**: Backup and restore your configuration
+- **Internationalization**: Supports multiple languages (English, Japanese)
+
+## Setup
+
+### Install Dependencies
 
 ```bash
 npm install
 ```
 
-### 開発モード
+### Development Mode
 
 ```bash
 npm run dev
 ```
 
-開発モードでは、`dist`ディレクトリにビルドされた拡張機能が生成されます。Chromeの拡張機能管理画面から、`dist`ディレクトリを読み込んでください。
+In development mode, the extension is built to the `dist` directory. Load the `dist` directory from Chrome's extension management page.
 
-### 本番ビルド
+### Production Build
 
 ```bash
 npm run build
 ```
 
-`dist`ディレクトリに最適化された拡張機能が生成されます。
+This generates an optimized extension in the `dist` directory.
 
-### 配布用パッケージの作成
+### Create Distribution Package
 
 ```bash
 npm run package
 ```
 
-このコマンドを実行すると、`dist`ディレクトリの内容を`torchlight-extension.zip`として圧縮します。
-このzipファイルにはソースコード（`src`ディレクトリ）は含まれません。
+This command creates a `torchlight-extension.zip` file containing the contents of the `dist` directory. The source code (`src` directory) is not included in the zip file.
 
-**配布手順：**
-1. `npm run package`を実行してzipファイルを作成
-2. `torchlight-extension.zip`と`INSTALL.md`を一緒に配布
-3. 受け取った人は`INSTALL.md`の手順に従ってインストール
+**Distribution Steps:**
+1. Run `npm run package` to create the zip file
+2. Distribute `torchlight-extension.zip` along with `INSTALL.md`
+3. Recipients should follow the instructions in `INSTALL.md` to install
 
-**更新時の注意：**
-- 更新を配布する場合は、`src/manifest.json`の`version`フィールドを更新してください（例: `1.0.0` → `1.0.1`）
-- 受け取った人は`INSTALL.md`の「拡張機能の更新方法」に従って更新できます
-- 拡張機能を削除せずに更新する限り、ユーザーの設定（プロジェクト情報やカラー設定）は保持されます
+**Update Notes:**
+- When distributing updates, update the `version` field in `src/manifest.json` (e.g., `1.0.0` → `1.1.0`)
+- Recipients can update the extension by following the "Extension Update Method" section in `INSTALL.md`
+- User settings (project information and color settings) are preserved as long as the extension is updated without being removed
 
-## プロジェクト構造
+## Usage
 
-```
-torchlight/
-├── src/                    # ソースコード
-│   ├── content/           # コンテンツスクリプト
-│   │   ├── content.js
-│   │   └── styles.css
-│   ├── popup/             # ポップアップ
-│   │   ├── popup.js
-│   │   └── popup.html
-│   ├── options/           # オプションページ
-│   │   ├── options.js
-│   │   ├── options.html
-│   │   └── options.css
-│   └── manifest.json      # 拡張機能マニフェスト
-├── dist/                  # ビルド出力（gitignore）
-├── vite.config.js         # Vite設定
-└── package.json
-```
-
-## 技術スタック
-
-- **Vite**: ビルドツール
-- **@crxjs/vite-plugin**: Chrome拡張機能用Viteプラグイン
-
-## 開発
-
-- ソースコードは`src`ディレクトリに配置されています
-- Viteが自動的にJSとCSSをバンドルします
-- 開発モードでは、ファイル変更時に自動的にリロードされます
+1. Install the extension following the instructions in `INSTALL.md`
+2. Click the extension icon to open the popup
+3. Configure your projects and environment settings in the options page (right-click the extension icon → Options)
+4. Set up domain mappings for each project to enable automatic environment detection
+5. Customize banner appearance (text, colors, position, opacity, etc.) for each environment
+6. Use keyboard shortcuts or popup buttons to quickly switch between environments
