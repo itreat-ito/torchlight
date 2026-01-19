@@ -97,11 +97,11 @@ async function updateEnvironmentButtons() {
     const urlObj = new URL(tab.url);
     const currentDomain = urlObj.hostname;
     
-    chrome.storage.sync.get(['projects', 'settings'], (result) => {
+    chrome.storage.sync.get(['projects', 'bannerAppearance'], (result) => {
       const projects = result.projects || [];
       
       // ボタンのスタイルを更新
-      updateButtonStyles(result.settings);
+      updateButtonStyles(result.bannerAppearance);
       
       const currentEnv = detectEnvironment(currentDomain, projects);
       
@@ -140,14 +140,14 @@ async function updateEnvironmentButtons() {
   translateElements();
   
   // 初期状態を読み込む
-  chrome.storage.sync.get(['extensionEnabled', 'settings'], (result) => {
+  chrome.storage.sync.get(['extensionEnabled', 'bannerAppearance'], (result) => {
     // デフォルトは有効（true）
     const isEnabled = result.extensionEnabled !== false;
     globalToggle.checked = isEnabled;
     updateStatusText(isEnabled);
     
     // ボタンのスタイルを更新
-    updateButtonStyles(result.settings);
+    updateButtonStyles(result.bannerAppearance);
   });
   
   // トグルの変更を監視
@@ -197,8 +197,8 @@ async function updateEnvironmentButtons() {
   // 設定が変更されたときにボタンのスタイルを更新
   chrome.storage.onChanged.addListener((changes, areaName) => {
     if (areaName === 'sync') {
-      if (changes.settings) {
-        updateButtonStyles(changes.settings.newValue);
+      if (changes.bannerAppearance) {
+        updateButtonStyles(changes.bannerAppearance.newValue);
       }
       // Language change
       if (changes.language) {

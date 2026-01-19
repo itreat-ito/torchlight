@@ -35,7 +35,8 @@ import { matchesShortcut, isInputFocused } from './common/keyboard.js';
       fontSize: 18,
       position: 'top',
       opacity: 100,
-      blur: 0
+      blur: 0,
+      height: 40
     };
     
     // 背景色と透明度を設定
@@ -61,6 +62,12 @@ import { matchesShortcut, isInputFocused } from './common/keyboard.js';
     // フォントサイズを設定
     if (custom.fontSize !== undefined) {
       banner.style.fontSize = `${custom.fontSize}px`;
+    }
+    
+    // バナーの高さを設定
+    if (custom.height !== undefined) {
+      banner.style.height = `${custom.height}px`;
+      banner.style.lineHeight = `${custom.height}px`;
     }
     
     // 表示位置を設定
@@ -137,7 +144,7 @@ import { matchesShortcut, isInputFocused } from './common/keyboard.js';
   function init() {
     const domain = getDomain();
     
-    chrome.storage.sync.get(['extensionEnabled', 'settings', 'projects', 'pageTitles', 'bannerCustomization'], (result) => {
+    chrome.storage.sync.get(['extensionEnabled', 'bannerAppearance', 'projects', 'pageTitles'], (result) => {
       // 拡張機能が無効の場合は何もしない
       if (result.extensionEnabled === false) {
         // 既存のバナーがあれば削除
@@ -148,22 +155,37 @@ import { matchesShortcut, isInputFocused } from './common/keyboard.js';
         return;
       }
 
-      const settings = result.settings || {
+      const bannerAppearance = result.bannerAppearance || {
         local: { text: 'You\'re on LOCAL env.', color: '#42a4ff' },
         staging: { text: 'You\'re on STAGING env.', color: '#ffc107' },
-        production: { text: 'You\'re on PRODUCTION env.', color: '#f44336' }
+        production: { text: 'You\'re on PRODUCTION env.', color: '#f44336' },
+        baseSettings: {
+          fontSize: 18,
+          position: 'top',
+          opacity: 100,
+          blur: 0,
+          height: 40
+        }
       };
+      
+      const settings = {
+        local: bannerAppearance.local,
+        staging: bannerAppearance.staging,
+        production: bannerAppearance.production
+      };
+      const baseSettings = bannerAppearance.baseSettings || {
+        fontSize: 18,
+        position: 'top',
+        opacity: 100,
+        blur: 0,
+        height: 40
+      };
+      
       const projects = result.projects || [];
       const pageTitles = result.pageTitles || {
         local: '',
         staging: '',
         production: ''
-      };
-      const bannerCustomization = result.bannerCustomization || {
-        fontSize: 18,
-        position: 'top',
-        opacity: 100,
-        blur: 0
       };
 
       const environment = detectEnvironment(domain, projects);
@@ -172,7 +194,7 @@ import { matchesShortcut, isInputFocused } from './common/keyboard.js';
         // ページタイトルを更新
         updatePageTitle(environment, pageTitles);
 
-        const banner = createBanner(environment, settings, bannerCustomization);
+        const banner = createBanner(environment, settings, baseSettings);
         if (banner) {
           // DOMが準備できているか確認
           if (document.body) {
@@ -226,8 +248,10 @@ import { matchesShortcut, isInputFocused } from './common/keyboard.js';
 
   // バナーの自動非表示機能を設定
   function setupBannerAutoHide(banner) {
-    const BANNER_HEIGHT = 40;
-    const HIDE_THRESHOLD = 60; // バナーの高さ + 余白（マウスカーソルがこの範囲内に入ると非表示）
+    // バナーの実際の高さを取得（設定値またはデフォルト値）
+    const bannerHeight = parseInt(banner.style.height) || 40;
+    const BANNER_HEIGHT = bannerHeight;
+    const HIDE_THRESHOLD = BANNER_HEIGHT + 20; // バナーの高さ + 余白（マウスカーソルがこの範囲内に入ると非表示）
     let hideTimeout = null;
     let isHidden = false;
     

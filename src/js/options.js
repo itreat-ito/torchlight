@@ -74,7 +74,9 @@ import '@melloware/coloris/dist/coloris.css';
     bannerOpacity: document.getElementById('banner-opacity'),
     bannerOpacityValue: document.getElementById('banner-opacity-value'),
     bannerBlur: document.getElementById('banner-blur'),
-    bannerBlurValue: document.getElementById('banner-blur-value')
+    bannerBlurValue: document.getElementById('banner-blur-value'),
+    bannerHeight: document.getElementById('banner-height'),
+    bannerHeightValue: document.getElementById('banner-height-value')
   };
 
   // Initialize
@@ -372,6 +374,18 @@ import '@melloware/coloris/dist/coloris.css';
       });
     }
 
+    if (elements.bannerHeight) {
+      // Initialize track fill
+      updateSliderTrackFill(elements.bannerHeight);
+      
+      elements.bannerHeight.addEventListener('input', (e) => {
+        if (elements.bannerHeightValue) {
+          elements.bannerHeightValue.textContent = e.target.value + 'px';
+        }
+        updateSliderTrackFill(e.target);
+      });
+    }
+
     // Add project
     elements.addProjectBtn.addEventListener('click', () => openProjectModal());
 
@@ -453,8 +467,8 @@ import '@melloware/coloris/dist/coloris.css';
 
   // Load common settings
   function loadSettings() {
-    chrome.storage.sync.get(['settings'], (result) => {
-      const settings = result.settings || {
+    chrome.storage.sync.get(['bannerAppearance'], (result) => {
+      const settings = result.bannerAppearance || {
         local: { text: 'You\'re on LOCAL env.', color: '#42a4ff' },
         staging: { text: 'You\'re on STAGING env.', color: '#ffc107' },
         production: { text: 'You\'re on PRODUCTION env.', color: '#f44336' }
@@ -501,26 +515,32 @@ import '@melloware/coloris/dist/coloris.css';
       }
     };
 
-    const customization = {
+    const baseSettings = {
       fontSize: parseInt(elements.bannerFontSize.value) || 18,
       position: elements.bannerPosition.value || 'top',
       opacity: parseInt(elements.bannerOpacity.value) || 100,
-      blur: parseInt(elements.bannerBlur.value) || 0
+      blur: parseInt(elements.bannerBlur.value) || 0,
+      height: parseInt(elements.bannerHeight.value) || 40
     };
 
-    chrome.storage.sync.set({ settings, bannerCustomization: customization }, () => {
+    const bannerAppearance = {
+      ...settings,
+      baseSettings: baseSettings
+    };
+
+    chrome.storage.sync.set({ bannerAppearance: bannerAppearance }, () => {
       // すべてのタブにメッセージを送信してバナーカスタマイズ設定を更新
       chrome.tabs.query({}, (tabs) => {
         tabs.forEach((tab) => {
           chrome.tabs.sendMessage(tab.id, {
             action: 'updateBannerCustomization',
-            customization: customization
+            customization: baseSettings
           }).catch(() => {
             // メッセージ送信に失敗しても無視（コンテンツスクリプトが読み込まれていないタブなど）
           });
         });
       });
-      showSuccessToast(t('message.bannerStylesSaved'));
+      showSuccessToast(t('message.bannerAppearanceSaved'));
     });
   }
 
@@ -814,15 +834,24 @@ import '@melloware/coloris/dist/coloris.css';
 
   // Export settings
   function exportSettings() {
-    chrome.storage.sync.get(['settings', 'projects', 'keyboardShortcuts', 'pageTitles', 'bannerCustomization'], (result) => {
+    chrome.storage.sync.get(['bannerAppearance', 'projects', 'keyboardShortcuts', 'pageTitles'], (result) => {
+      const defaultBannerAppearance = {
+        local: { text: 'You\'re on LOCAL env.', color: '#42a4ff' },
+        staging: { text: 'You\'re on STAGING env.', color: '#ffc107' },
+        production: { text: 'You\'re on PRODUCTION env.', color: '#f44336' },
+        baseSettings: {
+          fontSize: 18,
+          position: 'top',
+          opacity: 100,
+          blur: 0,
+          height: 40
+        }
+      };
+      
       const exportData = {
         version: '1.0.0',
         exportedAt: new Date().toISOString(),
-        settings: result.settings || {
-          local: { text: 'You\'re on LOCAL env.', color: '#42a4ff' },
-          staging: { text: 'You\'re on STAGING env.', color: '#ffc107' },
-          production: { text: 'You\'re on PRODUCTION env.', color: '#f44336' }
-        },
+        bannerAppearance: result.bannerAppearance || defaultBannerAppearance,
         projects: result.projects || [],
         keyboardShortcuts: result.keyboardShortcuts || {
           local: 'Ctrl+Shift+1',
@@ -833,12 +862,6 @@ import '@melloware/coloris/dist/coloris.css';
           local: '',
           staging: '',
           production: ''
-        },
-        bannerCustomization: result.bannerCustomization || {
-          fontSize: 18,
-          position: 'top',
-          opacity: 100,
-          blur: 0
         }
       };
 
@@ -903,11 +926,20 @@ import '@melloware/coloris/dist/coloris.css';
     }
 
     // Prepare data to import
-    const settings = importData.settings || {
+    const defaultBannerAppearance = {
       local: { text: 'You\'re on LOCAL env.', color: '#42a4ff' },
       staging: { text: 'You\'re on STAGING env.', color: '#ffc107' },
-      production: { text: 'You\'re on PRODUCTION env.', color: '#f44336' }
+      production: { text: 'You\'re on PRODUCTION env.', color: '#f44336' },
+      baseSettings: {
+        fontSize: 18,
+        position: 'top',
+        opacity: 100,
+        blur: 0,
+        height: 40
+      }
     };
+    
+    const bannerAppearance = importData.bannerAppearance || defaultBannerAppearance;
 
     const projects = importData.projects || [];
     const keyboardShortcuts = importData.keyboardShortcuts || {
@@ -920,15 +952,9 @@ import '@melloware/coloris/dist/coloris.css';
       staging: '',
       production: ''
     };
-    const bannerCustomization = importData.bannerCustomization || {
-      fontSize: 18,
-      position: 'top',
-      opacity: 100,
-      blur: 0
-    };
 
     // Save imported data
-    chrome.storage.sync.set({ settings, projects, keyboardShortcuts, pageTitles, bannerCustomization }, () => {
+    chrome.storage.sync.set({ bannerAppearance: bannerAppearance, projects, keyboardShortcuts, pageTitles }, () => {
       // Reload settings, page titles, projects, keyboard shortcuts and banner customization
       loadSettings();
       loadPageTitles();
@@ -945,9 +971,9 @@ import '@melloware/coloris/dist/coloris.css';
       return false;
     }
 
-    // Check if settings exist and have required structure
-    if (data.settings) {
-      const settings = data.settings;
+    // Check if bannerAppearance exist and have required structure
+    if (data.bannerAppearance) {
+      const settings = data.bannerAppearance;
       if (!settings.local || !settings.staging || !settings.production) {
         return false;
       }
@@ -1007,63 +1033,83 @@ import '@melloware/coloris/dist/coloris.css';
 
   // Load banner customization
   function loadBannerCustomization() {
-    chrome.storage.sync.get(['bannerCustomization'], (result) => {
-      const customization = result.bannerCustomization || {
+    chrome.storage.sync.get(['bannerAppearance'], (result) => {
+      const baseSettings = result.bannerAppearance?.baseSettings || {
         fontSize: 18,
         position: 'top',
         opacity: 100,
-        blur: 0
+        blur: 0,
+        height: 40
       };
 
       if (elements.bannerFontSize) {
-        elements.bannerFontSize.value = customization.fontSize || 18;
+        elements.bannerFontSize.value = baseSettings.fontSize || 18;
         if (elements.bannerFontSizeValue) {
-          elements.bannerFontSizeValue.textContent = (customization.fontSize || 18) + 'px';
+          elements.bannerFontSizeValue.textContent = (baseSettings.fontSize || 18) + 'px';
         }
         updateSliderTrackFill(elements.bannerFontSize);
       }
       if (elements.bannerPosition) {
-        elements.bannerPosition.value = customization.position || 'top';
+        elements.bannerPosition.value = baseSettings.position || 'top';
       }
       if (elements.bannerOpacity) {
-        elements.bannerOpacity.value = customization.opacity !== undefined ? customization.opacity : 100;
+        elements.bannerOpacity.value = baseSettings.opacity !== undefined ? baseSettings.opacity : 100;
         if (elements.bannerOpacityValue) {
-          elements.bannerOpacityValue.textContent = (customization.opacity !== undefined ? customization.opacity : 100) + '%';
+          elements.bannerOpacityValue.textContent = (baseSettings.opacity !== undefined ? baseSettings.opacity : 100) + '%';
         }
         updateSliderTrackFill(elements.bannerOpacity);
       }
       if (elements.bannerBlur) {
-        elements.bannerBlur.value = customization.blur !== undefined ? customization.blur : 0;
+        elements.bannerBlur.value = baseSettings.blur !== undefined ? baseSettings.blur : 0;
         if (elements.bannerBlurValue) {
-          elements.bannerBlurValue.textContent = (customization.blur !== undefined ? customization.blur : 0) + 'px';
+          elements.bannerBlurValue.textContent = (baseSettings.blur !== undefined ? baseSettings.blur : 0) + 'px';
         }
         updateSliderTrackFill(elements.bannerBlur);
+      }
+      if (elements.bannerHeight) {
+        elements.bannerHeight.value = baseSettings.height !== undefined ? baseSettings.height : 40;
+        if (elements.bannerHeightValue) {
+          elements.bannerHeightValue.textContent = (baseSettings.height !== undefined ? baseSettings.height : 40) + 'px';
+        }
+        updateSliderTrackFill(elements.bannerHeight);
       }
     });
   }
 
   // Save banner customization
   function saveBannerCustomization() {
-    const customization = {
+    const baseSettings = {
       fontSize: parseInt(elements.bannerFontSize.value) || 18,
       position: elements.bannerPosition.value || 'top',
       opacity: parseInt(elements.bannerOpacity.value) || 100,
-      blur: parseInt(elements.bannerBlur.value) || 0
+      blur: parseInt(elements.bannerBlur.value) || 0,
+      height: parseInt(elements.bannerHeight.value) || 40
     };
 
-    chrome.storage.sync.set({ bannerCustomization: customization }, () => {
-      // すべてのタブにメッセージを送信してバナーカスタマイズ設定を更新
-      chrome.tabs.query({}, (tabs) => {
-        tabs.forEach((tab) => {
-          chrome.tabs.sendMessage(tab.id, {
-            action: 'updateBannerCustomization',
-            customization: customization
-          }).catch(() => {
-            // メッセージ送信に失敗しても無視（コンテンツスクリプトが読み込まれていないタブなど）
+    // bannerAppearanceを読み込んでbaseSettingsを更新
+    chrome.storage.sync.get(['bannerAppearance'], (result) => {
+      const bannerAppearance = result.bannerAppearance || {
+        local: { text: 'You\'re on LOCAL env.', color: '#42a4ff' },
+        staging: { text: 'You\'re on STAGING env.', color: '#ffc107' },
+        production: { text: 'You\'re on PRODUCTION env.', color: '#f44336' }
+      };
+      
+      bannerAppearance.baseSettings = baseSettings;
+
+      chrome.storage.sync.set({ bannerAppearance: bannerAppearance }, () => {
+        // すべてのタブにメッセージを送信してバナーカスタマイズ設定を更新
+        chrome.tabs.query({}, (tabs) => {
+          tabs.forEach((tab) => {
+            chrome.tabs.sendMessage(tab.id, {
+              action: 'updateBannerCustomization',
+              customization: baseSettings
+            }).catch(() => {
+              // メッセージ送信に失敗しても無視（コンテンツスクリプトが読み込まれていないタブなど）
+            });
           });
         });
+        showSuccessToast(t('message.bannerCustomizationSaved'));
       });
-      showSuccessToast(t('message.bannerCustomizationSaved'));
     });
   }
 

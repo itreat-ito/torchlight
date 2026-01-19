@@ -31,7 +31,7 @@ const translations = {
     
     // Settings page
     'settings.banner.title': 'Banner Appearance',
-    'settings.banner.description': 'Customize the banner text and background color displayed at the top of the page for each environment.',
+    'settings.banner.description': 'Customize the banner\'s appearance and display settings for each environment.',
     'settings.banner.local': 'Local',
     'settings.banner.staging': 'Staging',
     'settings.banner.production': 'Production',
@@ -39,14 +39,15 @@ const translations = {
     'settings.banner.color': 'Background Color',
     'settings.banner.save': 'Save',
     
-    'settings.bannerCustomization.title': 'Common',
-    'settings.bannerCustomization.fontSize': 'Font Size',
-    'settings.bannerCustomization.position': 'Position',
-    'settings.bannerCustomization.positionTop': 'Top',
-    'settings.bannerCustomization.positionBottom': 'Bottom',
-    'settings.bannerCustomization.opacity': 'Background Opacity',
-    'settings.bannerCustomization.blur': 'Backdrop Blur',
-    'settings.bannerCustomization.save': 'Save',
+    'settings.bannerBaseSettings.title': 'Base Settings',
+    'settings.bannerBaseSettings.fontSize': 'Font Size',
+    'settings.bannerBaseSettings.position': 'Position',
+    'settings.bannerBaseSettings.positionTop': 'Top',
+    'settings.bannerBaseSettings.positionBottom': 'Bottom',
+    'settings.bannerBaseSettings.opacity': 'Background Opacity',
+    'settings.bannerBaseSettings.blur': 'Backdrop Blur',
+    'settings.bannerBaseSettings.height': 'Height',
+    'settings.bannerBaseSettings.save': 'Save',
     
     'settings.pageTitle.title': 'Page Titles',
     'settings.pageTitle.description': 'Set a prefix to be added to the page title when accessing each environment.',
@@ -89,7 +90,7 @@ const translations = {
     'popup.error': 'Error detecting environment',
     
     // Messages
-    'message.bannerStylesSaved': 'Banner styles saved successfully!',
+    'message.bannerAppearanceSaved': 'Banner appearance saved successfully!',
     'message.bannerCustomizationSaved': 'Banner customization saved successfully!',
     'message.pageTitlesSaved': 'Page titles saved successfully!',
     'message.urlSwitchingSaved': 'URL switching saved successfully!',
@@ -150,7 +151,7 @@ const translations = {
     
     // Settings page
     'settings.banner.title': 'バナーの見た目',
-    'settings.banner.description': '各環境のページ上部に表示されるバナーのテキストと背景色をカスタマイズします。',
+    'settings.banner.description': '各環境のバナーの見た目と表示設定をカスタマイズします。',
     'settings.banner.local': 'ローカル',
     'settings.banner.staging': 'ステージング',
     'settings.banner.production': '本番',
@@ -158,14 +159,15 @@ const translations = {
     'settings.banner.color': '背景色',
     'settings.banner.save': '保存',
     
-    'settings.bannerCustomization.title': '共通設定',
-    'settings.bannerCustomization.fontSize': 'フォントサイズ',
-    'settings.bannerCustomization.position': '表示位置',
-    'settings.bannerCustomization.positionTop': '上部',
-    'settings.bannerCustomization.positionBottom': '下部',
-    'settings.bannerCustomization.opacity': '背景の透明度',
-    'settings.bannerCustomization.blur': '背景のぼかし',
-    'settings.bannerCustomization.save': '保存',
+    'settings.bannerBaseSettings.title': '共通設定',
+    'settings.bannerBaseSettings.fontSize': 'フォントサイズ',
+    'settings.bannerBaseSettings.position': '表示位置',
+    'settings.bannerBaseSettings.positionTop': '上部',
+    'settings.bannerBaseSettings.positionBottom': '下部',
+    'settings.bannerBaseSettings.opacity': '背景の透明度',
+    'settings.bannerBaseSettings.blur': '背景のぼかし',
+    'settings.bannerBaseSettings.height': 'バナーの高さ',
+    'settings.bannerBaseSettings.save': '保存',
     
     'settings.pageTitle.title': 'ページタイトル',
     'settings.pageTitle.description': '各環境にアクセスした時のページタイトルに追加するプレフィックスを設定します。',
@@ -208,7 +210,7 @@ const translations = {
     'popup.error': '環境の検出でエラーが発生しました',
     
     // Messages
-    'message.bannerStylesSaved': 'バナースタイルを保存しました',
+    'message.bannerAppearanceSaved': 'バナースタイルを保存しました',
     'message.bannerCustomizationSaved': 'バナー詳細設定を保存しました',
     'message.pageTitlesSaved': 'ページタイトルを保存しました',
     'message.urlSwitchingSaved': 'URL切り替えを保存しました',
