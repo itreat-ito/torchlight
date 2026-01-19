@@ -333,12 +333,6 @@ textarea {
   padding: 12px 16px;
   cursor: pointer;
   transition: border-color 0.2s, box-shadow 0.2s;
-
-  &-slim {
-    font-size: .9rem;
-    padding: 8px 12px;
-    border-radius: 4px;
-  }
   
   &:hover {
     border-color: color.scale($border-color, $lightness: -10%, $space: hsl);
@@ -414,6 +408,16 @@ textarea {
     // Checkmark styling (subtle)
     &::checkmark {
       color: $primary-color;
+    }
+  }
+
+  &-slim {
+    font-size: .9rem;
+    padding: 8px 12px;
+    border-radius: 4px;
+
+    option {
+      padding: 8px;
     }
   }
 }

@@ -30,7 +30,7 @@ const translations = {
     'modal.project.cancel': 'Cancel',
     
     // Settings page
-    'settings.banner.title': 'Banner Styles',
+    'settings.banner.title': 'Banner Appearance',
     'settings.banner.description': 'Customize the banner text and background color displayed at the top of the page for each environment.',
     'settings.banner.local': 'Local',
     'settings.banner.staging': 'Staging',
@@ -39,8 +39,7 @@ const translations = {
     'settings.banner.color': 'Background Color',
     'settings.banner.save': 'Save',
     
-    'settings.bannerCustomization.title': 'Banner Customization',
-    'settings.bannerCustomization.description': 'Customize the appearance and position of the banner for all environments.',
+    'settings.bannerCustomization.title': 'Common',
     'settings.bannerCustomization.fontSize': 'Font Size',
     'settings.bannerCustomization.position': 'Position',
     'settings.bannerCustomization.positionTop': 'Top',
@@ -150,7 +149,7 @@ const translations = {
     'modal.project.cancel': 'キャンセル',
     
     // Settings page
-    'settings.banner.title': 'バナースタイル',
+    'settings.banner.title': 'バナーの見た目',
     'settings.banner.description': '各環境のページ上部に表示されるバナーのテキストと背景色をカスタマイズします。',
     'settings.banner.local': 'ローカル',
     'settings.banner.staging': 'ステージング',
@@ -159,14 +158,13 @@ const translations = {
     'settings.banner.color': '背景色',
     'settings.banner.save': '保存',
     
-    'settings.bannerCustomization.title': 'バナー詳細設定',
-    'settings.bannerCustomization.description': 'すべての環境で共通のバナーの外観と位置をカスタマイズします。',
-    'settings.bannerCustomization.fontSize': 'フォントサイズ (px)',
+    'settings.bannerCustomization.title': '共通設定',
+    'settings.bannerCustomization.fontSize': 'フォントサイズ',
     'settings.bannerCustomization.position': '表示位置',
     'settings.bannerCustomization.positionTop': '上部',
     'settings.bannerCustomization.positionBottom': '下部',
-    'settings.bannerCustomization.opacity': '背景透明度',
-    'settings.bannerCustomization.blur': '背景ぼかし (px)',
+    'settings.bannerCustomization.opacity': '背景の透明度',
+    'settings.bannerCustomization.blur': '背景のぼかし',
     'settings.bannerCustomization.save': '保存',
     
     'settings.pageTitle.title': 'ページタイトル',

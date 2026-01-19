@@ -74,8 +74,7 @@ import '@melloware/coloris/dist/coloris.css';
     bannerOpacity: document.getElementById('banner-opacity'),
     bannerOpacityValue: document.getElementById('banner-opacity-value'),
     bannerBlur: document.getElementById('banner-blur'),
-    bannerBlurValue: document.getElementById('banner-blur-value'),
-    saveBannerCustomizationBtn: document.getElementById('save-banner-customization')
+    bannerBlurValue: document.getElementById('banner-blur-value')
   };
 
   // Initialize
@@ -334,8 +333,7 @@ import '@melloware/coloris/dist/coloris.css';
     // Save keyboard shortcuts
     elements.saveShortcutsBtn.addEventListener('click', saveKeyboardShortcuts);
 
-    // Save banner customization
-    elements.saveBannerCustomizationBtn.addEventListener('click', saveBannerCustomization);
+    // Save banner customization (now handled by saveSettings)
 
     // Update slider values in real-time and track fill
     if (elements.bannerFontSize) {
@@ -486,7 +484,7 @@ import '@melloware/coloris/dist/coloris.css';
   }
 
 
-  // Save common settings
+  // Save common settings (including banner customization)
   function saveSettings() {
     const settings = {
       local: {
@@ -503,7 +501,25 @@ import '@melloware/coloris/dist/coloris.css';
       }
     };
 
-    chrome.storage.sync.set({ settings }, () => {
+    const customization = {
+      fontSize: parseInt(elements.bannerFontSize.value) || 18,
+      position: elements.bannerPosition.value || 'top',
+      opacity: parseInt(elements.bannerOpacity.value) || 100,
+      blur: parseInt(elements.bannerBlur.value) || 0
+    };
+
+    chrome.storage.sync.set({ settings, bannerCustomization: customization }, () => {
+      // すべてのタブにメッセージを送信してバナーカスタマイズ設定を更新
+      chrome.tabs.query({}, (tabs) => {
+        tabs.forEach((tab) => {
+          chrome.tabs.sendMessage(tab.id, {
+            action: 'updateBannerCustomization',
+            customization: customization
+          }).catch(() => {
+            // メッセージ送信に失敗しても無視（コンテンツスクリプトが読み込まれていないタブなど）
+          });
+        });
+      });
       showSuccessToast(t('message.bannerStylesSaved'));
     });
   }
