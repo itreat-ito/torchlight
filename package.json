@@ -17,6 +17,7 @@
   "dependencies": {
     "@melloware/coloris": "^0.25.0",
     "micromodal": "^0.6.1",
+    "sortablejs": "^1.15.6",
     "toastify-js": "^1.12.0"
   }
 }

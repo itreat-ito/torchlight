@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "torchlight",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Display customizable banners to visually distinguish between local, staging, and production environments.",
   "permissions": [
     "storage",

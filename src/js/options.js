@@ -7,6 +7,7 @@ import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
 import { initI18n, t, saveLanguage, loadLanguage, translateElements } from './common/i18n.js';
 import Coloris from '@melloware/coloris';
 import '@melloware/coloris/dist/coloris.css';
+import Sortable from 'sortablejs';
 
 (function() {
   'use strict';
@@ -126,6 +127,7 @@ import '@melloware/coloris/dist/coloris.css';
   }
 
   let editingProjectId = null;
+  let sortableInstance = null;
 
   // Function to close project modal with animation
   const closeProjectModalWithAnimation = (callback) => {
@@ -608,6 +610,12 @@ import '@melloware/coloris/dist/coloris.css';
   // Render projects
   function renderProjects(projects) {
     if (projects.length === 0) {
+      // Destroy Sortable instance if exists
+      if (sortableInstance) {
+        sortableInstance.destroy();
+        sortableInstance = null;
+      }
+      
       elements.projectsList.innerHTML = `
         <div class="empty-state">
           <p data-i18n="projects.empty.title">No projects found</p>
@@ -625,6 +633,9 @@ import '@melloware/coloris/dist/coloris.css';
       <div class="project-card" data-project-id="${project.id}">
         <div class="project-header">
           <div class="project-name-wrapper">
+            <div class="drag-handle" title="Drag to reorder">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+            </div>
             <label class="toggle-switch">
               <input type="checkbox" class="toggle-input" data-project-id="${project.id}" ${isEnabled ? 'checked' : ''}>
               <span class="toggle-slider"></span>
@@ -692,6 +703,61 @@ import '@melloware/coloris/dist/coloris.css';
         const projectId = e.target.getAttribute('data-project-id');
         const enabled = e.target.checked;
         toggleProject(projectId, enabled);
+      });
+    });
+
+    // Initialize Sortable
+    initSortable();
+  }
+
+  // Initialize Sortable for project list
+  function initSortable() {
+    // Destroy existing instance if any
+    if (sortableInstance) {
+      sortableInstance.destroy();
+      sortableInstance = null;
+    }
+
+    // Only initialize if there are projects
+    if (elements.projectsList.children.length === 0) {
+      return;
+    }
+
+    sortableInstance = new Sortable(elements.projectsList, {
+      handle: '.drag-handle',
+      animation: 150,
+      ghostClass: 'sortable-ghost',
+      chosenClass: 'sortable-chosen',
+      dragClass: 'sortable-drag',
+      onEnd: (evt) => {
+        saveProjectOrder();
+      }
+    });
+  }
+
+  // Save project order after drag and drop
+  function saveProjectOrder() {
+    const projectCards = elements.projectsList.querySelectorAll('.project-card');
+    const projectIds = Array.from(projectCards).map(card => card.getAttribute('data-project-id'));
+
+    chrome.storage.sync.get(['projects'], (result) => {
+      const projects = result.projects || [];
+      
+      // Reorder projects array based on DOM order
+      const reorderedProjects = projectIds.map(id => {
+        return projects.find(p => p.id === id);
+      }).filter(p => p !== undefined);
+
+      // Add any projects that might not be in the DOM (shouldn't happen, but safety check)
+      projects.forEach(project => {
+        if (!reorderedProjects.find(p => p.id === project.id)) {
+          reorderedProjects.push(project);
+        }
+      });
+
+      chrome.storage.sync.set({ projects: reorderedProjects }, () => {
+        // Optionally show a success message (commented out to avoid too many toasts)
+        // showSuccessToast(t('message.projectOrderSaved'));
       });
     });
   }
