@@ -64,6 +64,48 @@
             <h2 class="ttl-m" data-i18n="settings.banner.title">Banner Appearance</h2>
             <p class="section-description" data-i18n="settings.banner.description">Customize the banner's appearance and display settings for each environment.</p>
 
+            <!-- Environment-specific settings -->
+            <div class="settings-grid">
+              <!-- Local -->
+              <div class="setting-item">
+                <h3 class="ttl-s" data-i18n="settings.banner.local">Local</h3>
+                <div class="form-group">
+                  <label for="local-text" data-i18n="settings.banner.text">Text</label>
+                  <input type="text" id="local-text" data-i18n-placeholder="placeholder.localText" placeholder="You're on LOCAL env.">
+                </div>
+                <div class="form-group">
+                  <label for="local-color" data-i18n="settings.banner.color">Background Color</label>
+                  <input type="text" id="local-color" data-coloris>
+                </div>
+              </div>
+
+              <!-- Staging -->
+              <div class="setting-item">
+                <h3 class="ttl-s" data-i18n="settings.banner.staging">Staging</h3>
+                <div class="form-group">
+                  <label for="staging-text" data-i18n="settings.banner.text">Text</label>
+                  <input type="text" id="staging-text" data-i18n-placeholder="placeholder.stagingText" placeholder="You're on STAGING env.">
+                </div>
+                <div class="form-group">
+                  <label for="staging-color" data-i18n="settings.banner.color">Background Color</label>
+                  <input type="text" id="staging-color" data-coloris>
+                </div>
+              </div>
+
+              <!-- Production -->
+              <div class="setting-item">
+                <h3 class="ttl-s" data-i18n="settings.banner.production">Production</h3>
+                <div class="form-group">
+                  <label for="production-text" data-i18n="settings.banner.text">Text</label>
+                  <input type="text" id="production-text" data-i18n-placeholder="placeholder.productionText" placeholder="You're on PRODUCTION env.">
+                </div>
+                <div class="form-group">
+                  <label for="production-color" data-i18n="settings.banner.color">Background Color</label>
+                  <input type="text" id="production-color" data-coloris>
+                </div>
+              </div>
+            </div>
+
             <!-- Base Settings -->
             <h3 class="ttl-s" style="margin-top: 30px;" data-i18n="settings.bannerBaseSettings.title">Base Settings</h3>
             <div class="settings-grid banner-customization-grid">
@@ -113,50 +155,8 @@
                 </div>
               </div>
             </div>
-
-            <!-- Environment-specific settings -->
-            <div class="settings-grid">
-              <!-- Local -->
-              <div class="setting-item">
-                <h3 class="ttl-s" data-i18n="settings.banner.local">Local</h3>
-                <div class="form-group">
-                  <label for="local-text" data-i18n="settings.banner.text">Text</label>
-                  <input type="text" id="local-text" data-i18n-placeholder="placeholder.localText" placeholder="You're on LOCAL env.">
-                </div>
-                <div class="form-group">
-                  <label for="local-color" data-i18n="settings.banner.color">Background Color</label>
-                  <input type="text" id="local-color" data-coloris>
-                </div>
-              </div>
-
-              <!-- Staging -->
-              <div class="setting-item">
-                <h3 class="ttl-s" data-i18n="settings.banner.staging">Staging</h3>
-                <div class="form-group">
-                  <label for="staging-text" data-i18n="settings.banner.text">Text</label>
-                  <input type="text" id="staging-text" data-i18n-placeholder="placeholder.stagingText" placeholder="You're on STAGING env.">
-                </div>
-                <div class="form-group">
-                  <label for="staging-color" data-i18n="settings.banner.color">Background Color</label>
-                  <input type="text" id="staging-color" data-coloris>
-                </div>
-              </div>
-
-              <!-- Production -->
-              <div class="setting-item">
-                <h3 class="ttl-s" data-i18n="settings.banner.production">Production</h3>
-                <div class="form-group">
-                  <label for="production-text" data-i18n="settings.banner.text">Text</label>
-                  <input type="text" id="production-text" data-i18n-placeholder="placeholder.productionText" placeholder="You're on PRODUCTION env.">
-                </div>
-                <div class="form-group">
-                  <label for="production-color" data-i18n="settings.banner.color">Background Color</label>
-                  <input type="text" id="production-color" data-coloris>
-                </div>
-              </div>
-            </div>
             
-            <button id="save-settings" class="btn btn-primary" data-i18n="settings.banner.save">Save</button>
+            <button id="save-settings" class="btn btn-save" data-i18n="settings.banner.save">Save</button>
           </section>
 
           <!-- Page Title -->
@@ -186,7 +186,7 @@
                 </div>
               </div>
             </div>
-            <button id="save-page-titles" class="btn btn-primary" data-i18n="settings.pageTitle.save">Save</button>
+            <button id="save-page-titles" class="btn btn-save" data-i18n="settings.pageTitle.save">Save</button>
           </section>
 
           <!-- URL Switching -->
@@ -219,7 +219,7 @@
                 </div>
               </div>
             </div>
-            <button id="save-shortcuts" class="btn btn-primary" data-i18n="settings.shortcuts.save">Save</button>
+            <button id="save-shortcuts" class="btn btn-save" data-i18n="settings.shortcuts.save">Save</button>
           </section>
 
           <!-- Export/Import Section -->

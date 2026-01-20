@@ -103,7 +103,11 @@ html {
   font-weight: 700;
   font-family: inherit;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color .2s, scale .2s;
+
+  &:hover {
+    scale: .97;
+  }
 
   &-primary {
     background-color: $primary-color;
@@ -120,6 +124,19 @@ html {
 
     &:hover {
       background-color: $secondary-hover;
+    }
+  }
+
+  &-save {
+    font-size: 1.0rem;
+    margin: 40px auto 0;
+    min-width: 120px;
+    padding: 12px 24px;
+    background-color: $primary-color;
+    color: $white;
+
+    &:hover {
+      background-color: $primary-hover;
     }
   }
 
