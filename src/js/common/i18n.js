@@ -150,7 +150,7 @@ const translations = {
     'modal.project.cancel': 'キャンセル',
     
     // Settings page
-    'settings.banner.title': 'バナーの見た目',
+    'settings.banner.title': 'バナースタイル',
     'settings.banner.description': '各環境のバナーの見た目と表示設定をカスタマイズします。',
     'settings.banner.local': 'ローカル',
     'settings.banner.staging': 'ステージング',
