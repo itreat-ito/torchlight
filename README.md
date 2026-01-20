@@ -1,5 +1,5 @@
-<div align="center" style="margin:16px 0 48px;">
-  <img src="src/images/logo_text.svg" alt="torchlight" width="240">
+<div align="center">
+  <img src="src/images/logo_text.svg" alt="torchlight" width="240" style="margin:16px 0 48px;">
 </div>
 
 A Chrome extension that displays customizable banners to visually distinguish between local, staging, and production environments.
