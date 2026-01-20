@@ -1,4 +1,6 @@
-@use './common' as *;
+@use 'reset' as *;
+@use '_variables' as *;
+@use 'common' as *;
 
 body {
   width: 300px;

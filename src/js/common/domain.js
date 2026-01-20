@@ -113,11 +113,15 @@ export function getDomainMapping(environment, currentDomain, projects, globalMap
     const currentMapping = currentDomainList.length > 0 ? currentDomainList[0] : null;
     const targetMapping = targetDomainList.length > 0 ? targetDomainList[0] : null;
     
+    // ターゲット環境のプロトコルを取得（デフォルトはhttps）
+    const targetProtocol = matchingProject[`${environment}Protocol`] || 'https';
+    
     // 現在の環境のDomainとターゲット環境のDomainが両方設定されている場合
     if (currentMapping && currentMapping.trim() && targetMapping && targetMapping.trim()) {
       return {
         from: currentMapping.trim(),
-        to: targetMapping.trim()
+        to: targetMapping.trim(),
+        protocol: targetProtocol
       };
     }
   }
@@ -190,6 +194,11 @@ export function convertUrl(url, targetEnvironment) {
         
         // 新しいURLを構築
         urlObj.hostname = newDomain;
+        
+        // プロトコルの処理
+        // プロジェクト設定のプロトコルを使用（デフォルトはhttps）
+        const targetProtocol = mapping.protocol || 'https';
+        urlObj.protocol = targetProtocol + ':';
         
         // ポート番号の処理
         // プロジェクト設定のドメインに入力された文字列がそのまま置換されるようにする

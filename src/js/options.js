@@ -65,6 +65,9 @@ import Sortable from 'sortablejs';
     projectProduction: document.getElementById('project-production'),
     cancelProject: document.getElementById('cancel-project'),
     
+    // Protocol toggle buttons
+    protocolBtns: document.querySelectorAll('.protocol-btn'),
+    
     // Language selector
     languageSelect: document.getElementById('language-select'),
 
@@ -412,6 +415,51 @@ import Sortable from 'sortablejs';
 
     // Project form submission
     elements.projectForm.addEventListener('submit', handleProjectSubmit);
+
+    // Protocol toggle buttons
+    setupProtocolToggle();
+  }
+
+  // Setup protocol toggle buttons
+  function setupProtocolToggle() {
+    elements.protocolBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const env = e.target.getAttribute('data-env');
+        const protocol = e.target.getAttribute('data-protocol');
+        
+        // Find all buttons for this environment and update active state
+        const envBtns = document.querySelectorAll(`.protocol-btn[data-env="${env}"]`);
+        envBtns.forEach(b => {
+          b.classList.remove('active');
+        });
+        e.target.classList.add('active');
+      });
+    });
+  }
+
+  // Get selected protocol for an environment
+  function getSelectedProtocol(env) {
+    const activeBtn = document.querySelector(`.protocol-btn[data-env="${env}"].active`);
+    return activeBtn ? activeBtn.getAttribute('data-protocol') : 'https';
+  }
+
+  // Set protocol for an environment
+  function setProtocol(env, protocol) {
+    const envBtns = document.querySelectorAll(`.protocol-btn[data-env="${env}"]`);
+    envBtns.forEach(btn => {
+      if (btn.getAttribute('data-protocol') === protocol) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+  }
+
+  // Reset all protocols to default (HTTPS)
+  function resetProtocols() {
+    ['local', 'staging', 'production'].forEach(env => {
+      setProtocol(env, 'https');
+    });
   }
 
   // Setup navigation
@@ -767,6 +815,7 @@ import Sortable from 'sortablejs';
     editingProjectId = projectId;
     elements.modalTitle.textContent = projectId ? t('modal.project.edit') : t('modal.project.add');
     elements.projectForm.reset();
+    resetProtocols(); // Reset protocols to default (HTTPS)
 
     if (projectId) {
       chrome.storage.sync.get(['projects'], (result) => {
@@ -778,6 +827,11 @@ import Sortable from 'sortablejs';
           elements.projectLocal.value = (project.local && project.local.length > 0) ? project.local[0] : '';
           elements.projectStaging.value = (project.staging && project.staging.length > 0) ? project.staging[0] : '';
           elements.projectProduction.value = (project.production && project.production.length > 0) ? project.production[0] : '';
+          
+          // Set protocols (default to 'https' for backward compatibility)
+          setProtocol('local', project.localProtocol || 'https');
+          setProtocol('staging', project.stagingProtocol || 'https');
+          setProtocol('production', project.productionProtocol || 'https');
         }
       });
     } else {
@@ -856,6 +910,11 @@ import Sortable from 'sortablejs';
     const staging = stagingValue ? [stagingValue] : [];
     const production = productionValue ? [productionValue] : [];
 
+    // Get selected protocols
+    const localProtocol = getSelectedProtocol('local');
+    const stagingProtocol = getSelectedProtocol('staging');
+    const productionProtocol = getSelectedProtocol('production');
+
     chrome.storage.sync.get(['projects'], (result) => {
       const projects = result.projects || [];
 
@@ -871,6 +930,9 @@ import Sortable from 'sortablejs';
             local,
             staging,
             production,
+            localProtocol,
+            stagingProtocol,
+            productionProtocol,
             enabled: existingProject.enabled !== false // 既存の値があれば保持、なければtrue
           };
           
@@ -884,6 +946,9 @@ import Sortable from 'sortablejs';
           local,
           staging,
           production,
+          localProtocol,
+          stagingProtocol,
+          productionProtocol,
           enabled: true // 新規プロジェクトはデフォルトで有効
         };
         
