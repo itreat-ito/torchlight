@@ -39,7 +39,7 @@ import { matchesShortcut, isInputFocused } from './common/keyboard.js';
       height: 40
     };
     
-    // 背景色と透明度を設定
+    // 背景色と不透明度を設定
     const baseColor = envSettings.color || '#666666';
     const opacity = custom.opacity !== undefined ? custom.opacity : 100;
     const opacityDecimal = opacity / 100;

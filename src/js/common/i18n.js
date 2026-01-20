@@ -164,7 +164,7 @@ const translations = {
     'settings.bannerBaseSettings.position': '表示位置',
     'settings.bannerBaseSettings.positionTop': '上部',
     'settings.bannerBaseSettings.positionBottom': '下部',
-    'settings.bannerBaseSettings.opacity': '背景の透明度',
+    'settings.bannerBaseSettings.opacity': '背景の不透明度',
     'settings.bannerBaseSettings.blur': '背景のぼかし',
     'settings.bannerBaseSettings.height': 'バナーの高さ',
     'settings.bannerBaseSettings.save': '保存',
