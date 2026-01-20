@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "package": "npm run build && cd dist && zip -r ../torchlight-extension.zip . && cd .. && echo '配布用zipファイルを作成しました: torchlight-extension.zip'"
+    "package": "npm run build && node scripts/package.js"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.0.0-beta.21",
