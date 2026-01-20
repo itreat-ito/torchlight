@@ -208,4 +208,16 @@ async function updateEnvironmentButtons() {
       }
     }
   });
+
+  // バージョン番号を表示
+  displayVersion();
 })();
+
+// バージョン番号を表示
+function displayVersion() {
+  const versionInfo = document.getElementById('version-info');
+  if (versionInfo) {
+    const manifest = chrome.runtime.getManifest();
+    versionInfo.textContent = `torchlight ver.${manifest.version}`;
+  }
+}

@@ -109,6 +109,20 @@ import '@melloware/coloris/dist/coloris.css';
 
     // ハッシュ変更イベントをリッスン
     window.addEventListener('hashchange', loadPageFromHash);
+
+    // バージョン番号を表示
+    displayVersion();
+  }
+
+  // バージョン番号を表示
+  function displayVersion() {
+    const versionInfo = document.getElementById('version-info');
+    if (versionInfo) {
+      const manifest = chrome.runtime.getManifest();
+      let versionText = `torchlight ver.${manifest.version}`;
+      versionText += `\n${navigator.userAgent}`;
+      versionInfo.textContent = versionText;
+    }
   }
 
   let editingProjectId = null;

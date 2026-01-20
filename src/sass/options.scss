@@ -18,8 +18,7 @@ body {
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin-top: 32px;
-  margin-bottom: 32px;
+  margin: 32px 0 48px;
   img {
     max-width: 200px;
   }
@@ -490,3 +489,14 @@ body {
 // Toast notification styles
 // Note: Toastify styles are imported in toast.js
 // Additional customizations can be added here if needed
+
+// Version info
+.version-info {
+  text-align: center;
+  color: $text-muted;
+  font-size: 0.75rem;
+  margin-bottom: 20px;
+  white-space: pre-line;
+  word-break: break-all;
+  line-height: 1.4;
+}
