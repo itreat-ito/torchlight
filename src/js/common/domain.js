@@ -126,6 +126,15 @@ export function getDomainMapping(environment, currentDomain, projects, globalMap
   return null;
 }
 
+// ドメインからポート番号を抽出
+function extractPort(domain) {
+  if (!domain) {
+    return null;
+  }
+  const match = domain.match(/:(\d+)$/);
+  return match ? match[1] : null;
+}
+
 // ドメインを変換（単純な文字列置換）
 export function convertDomain(domain, fromDomain, toDomain) {
   if (!fromDomain || !toDomain) {
@@ -158,6 +167,7 @@ export function convertUrl(url, targetEnvironment) {
   try {
     const urlObj = new URL(url);
     const currentDomain = urlObj.hostname;
+    const originalPort = urlObj.port; // 元のポート番号を取得
     
     return new Promise((resolve) => {
       chrome.storage.sync.get(['projects'], (result) => {
@@ -175,8 +185,22 @@ export function convertUrl(url, targetEnvironment) {
           return;
         }
         
+        // ターゲットドメインからポート番号を抽出
+        const targetPort = extractPort(mapping.to.trim());
+        
         // 新しいURLを構築
         urlObj.hostname = newDomain;
+        
+        // ポート番号の処理
+        // プロジェクト設定のドメインに入力された文字列がそのまま置換されるようにする
+        if (targetPort) {
+          // ターゲットドメインにポート番号が含まれている場合はそれを使用
+          urlObj.port = targetPort;
+        } else {
+          // ターゲットドメインにポート番号が含まれていない場合は、ポート番号を削除
+          urlObj.port = '';
+        }
+        
         resolve(urlObj.toString());
       });
     });
