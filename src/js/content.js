@@ -144,10 +144,16 @@ import { matchesShortcut, isInputFocused } from './common/keyboard.js';
   function init() {
     const domain = getDomain();
     
+    // 既存のバナーを削除
+    const existingBanner = document.getElementById('env-banner');
+    if (existingBanner) {
+      existingBanner.remove();
+    }
+    
     chrome.storage.sync.get(['extensionEnabled', 'bannerAppearance', 'projects', 'pageTitles'], (result) => {
       // 拡張機能が無効の場合は何もしない
       if (result.extensionEnabled === false) {
-        // 既存のバナーがあれば削除
+        // 既存のバナーを削除
         const existingBanner = document.getElementById('env-banner');
         if (existingBanner) {
           existingBanner.remove();
