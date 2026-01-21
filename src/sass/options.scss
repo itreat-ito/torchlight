@@ -225,7 +225,7 @@ body {
   &:hover:not(:disabled) {
     background-color: rgba(255, 255, 255, 1);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    transform: translateX(-50%) scale(1.05);
+    transform: translateX(-50%) scale(.97);
   }
 
   &:active:not(:disabled) {
