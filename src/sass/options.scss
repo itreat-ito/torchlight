@@ -79,8 +79,8 @@ body {
 
 // Language Selector
 .language-selector {
-  margin-top: 30px;
-  padding-top: 20px;
+  margin-top: 32px;
+  padding-top: 24px;
   border-top: 1px solid $border-color;
   
   label {
@@ -180,8 +180,7 @@ body {
 .banner-preview-container {
   position: relative;
   width: 100%;
-  max-height: 200px;
-  height: 600px;
+  height: 240px;
   border-radius: 8px;
   background-color: $white;
   overflow-x: hidden;
