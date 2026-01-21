@@ -4,7 +4,8 @@ import { showSuccessToast, showErrorToast } from './toast.js';
 import { showConfirmModal } from './confirm-modal.js';
 import MicroModal from 'micromodal';
 import { getKeyCombination, normalizeShortcut } from './common/keyboard.js';
-import { initI18n, t, saveLanguage, loadLanguage, translateElements } from './common/i18n.js';
+import { initI18n, t, saveLanguage, loadLanguage, translateElements, getLanguage } from './common/i18n.js';
+import { hexToRgb, getLuminance } from './common/color.js';
 import Coloris from '@melloware/coloris';
 import '@melloware/coloris/dist/coloris.css';
 import Sortable from 'sortablejs';
@@ -80,7 +81,13 @@ import Sortable from 'sortablejs';
     bannerBlur: document.getElementById('banner-blur'),
     bannerBlurValue: document.getElementById('banner-blur-value'),
     bannerHeight: document.getElementById('banner-height'),
-    bannerHeightValue: document.getElementById('banner-height-value')
+    bannerHeightValue: document.getElementById('banner-height-value'),
+
+    // Preview
+    bannerPreview: document.getElementById('banner-preview'),
+    previewTabs: document.querySelectorAll('.preview-tab'),
+    bannerPreviewIframe: document.getElementById('banner-preview-iframe'),
+    bannerPreviewRefreshBtn: document.getElementById('banner-preview-refresh')
   };
 
   // Initialize
@@ -98,12 +105,18 @@ import Sortable from 'sortablejs';
     // requestAnimationFrameを使用して、次のフレームで実行することで確実に反映される
     requestAnimationFrame(() => {
       loadSettings();
+      loadBannerCustomization();
+      // 設定読み込み後にプレビューを初期化
+      setTimeout(() => {
+        updateBannerPreview();
+        // WikipediaのiframeのURLを初期化
+        updateWikipediaIframeUrl();
+      }, 100);
     });
     
     loadPageTitles();
     loadProjects();
     loadKeyboardShortcuts();
-    loadBannerCustomization();
     setupEventListeners();
     setupProjectModalHandlers();
     setupKeyboardShortcutInputs();
@@ -131,6 +144,7 @@ import Sortable from 'sortablejs';
 
   let editingProjectId = null;
   let sortableInstance = null;
+  let currentPreviewEnv = 'local'; // 現在選択されているプレビュー環境
 
   // Function to close project modal with animation
   const closeProjectModalWithAnimation = (callback) => {
@@ -302,6 +316,8 @@ import Sortable from 'sortablejs';
       translateElements();
       // Retranslate dynamic content
       retranslateDynamicContent();
+      // WikipediaのiframeのURLを更新
+      updateWikipediaIframeUrl();
     });
   }
   
@@ -341,6 +357,66 @@ import Sortable from 'sortablejs';
     
     // Use linear-gradient to fill left side with primary color
     slider.style.background = `linear-gradient(to right, #4476e2 ${percentage}%, #ddd ${percentage}%)`;
+  }
+
+  // Update banner preview
+  function updateBannerPreview() {
+    if (!elements.bannerPreview) return;
+
+    // 現在選択されている環境の設定を取得
+    const env = currentPreviewEnv;
+    const envText = elements[`${env}Text`]?.value || '';
+    const envColor = elements[`${env}Color`]?.value || '#666666';
+
+    // 基本設定を取得
+    const fontSize = parseInt(elements.bannerFontSize?.value) || 18;
+    const height = parseInt(elements.bannerHeight?.value) || 40;
+    const opacity = parseInt(elements.bannerOpacity?.value) || 100;
+    const blur = parseInt(elements.bannerBlur?.value) || 0;
+    const position = elements.bannerPosition?.value || 'top';
+
+    // バナーのテキストを設定
+    elements.bannerPreview.textContent = envText || `${env}環境`;
+
+    // 背景色と不透明度を設定
+    const opacityDecimal = opacity / 100;
+    const rgb = hexToRgb(envColor);
+    if (rgb) {
+      elements.bannerPreview.style.backgroundColor = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacityDecimal})`;
+    } else {
+      elements.bannerPreview.style.backgroundColor = envColor;
+      elements.bannerPreview.style.opacity = opacityDecimal.toString();
+    }
+
+    // backdrop-filter: blurを設定
+    if (blur > 0) {
+      elements.bannerPreview.style.backdropFilter = `blur(${blur}px)`;
+      elements.bannerPreview.style.webkitBackdropFilter = `blur(${blur}px)`;
+    } else {
+      elements.bannerPreview.style.backdropFilter = '';
+      elements.bannerPreview.style.webkitBackdropFilter = '';
+    }
+
+    // フォントサイズを設定
+    elements.bannerPreview.style.fontSize = `${fontSize}px`;
+
+    // バナーの高さを設定
+    elements.bannerPreview.style.height = `${height}px`;
+    elements.bannerPreview.style.lineHeight = `${height}px`;
+
+    // 表示位置を設定（プレビューでは常に上部に表示）
+    elements.bannerPreview.style.top = '0';
+    elements.bannerPreview.style.bottom = 'auto';
+    elements.bannerPreview.setAttribute('data-position', position);
+
+    // テキスト色を決定（明度に基づく）
+    const luminance = getLuminance(envColor);
+    elements.bannerPreview.classList.remove('dark-text', 'light-text');
+    if (luminance > 0.5) {
+      elements.bannerPreview.classList.add('dark-text');
+    } else {
+      elements.bannerPreview.classList.add('light-text');
+    }
   }
 
   // Setup event listeners
@@ -418,6 +494,132 @@ import Sortable from 'sortablejs';
 
     // Protocol toggle buttons
     setupProtocolToggle();
+
+    // Preview tab event listeners
+    setupPreviewTabs();
+
+    // Banner preview real-time updates
+    setupBannerPreviewUpdates();
+  }
+
+  // Setup preview tabs
+  function setupPreviewTabs() {
+    elements.previewTabs.forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        const env = e.target.getAttribute('data-preview-env');
+        if (!env) return;
+
+        // Update active tab
+        elements.previewTabs.forEach(t => t.classList.remove('active'));
+        e.target.classList.add('active');
+
+        // Update current preview environment
+        currentPreviewEnv = env;
+
+        // Update preview
+        updateBannerPreview();
+      });
+    });
+  }
+
+  // Setup banner preview real-time updates
+  function setupBannerPreviewUpdates() {
+    // Text inputs
+    [elements.localText, elements.stagingText, elements.productionText].forEach(input => {
+      if (input) {
+        input.addEventListener('input', updateBannerPreview);
+      }
+    });
+
+    // Color inputs (Coloris)
+    [elements.localColor, elements.stagingColor, elements.productionColor].forEach(input => {
+      if (input) {
+        // Colorisのchangeイベントを監視
+        input.addEventListener('change', updateBannerPreview);
+        // inputイベントも監視（カラーピッカーでリアルタイム更新）
+        input.addEventListener('input', updateBannerPreview);
+      }
+    });
+
+    // Sliders
+    if (elements.bannerFontSize) {
+      elements.bannerFontSize.addEventListener('input', updateBannerPreview);
+    }
+    if (elements.bannerHeight) {
+      elements.bannerHeight.addEventListener('input', updateBannerPreview);
+    }
+    if (elements.bannerOpacity) {
+      elements.bannerOpacity.addEventListener('input', updateBannerPreview);
+    }
+    if (elements.bannerBlur) {
+      elements.bannerBlur.addEventListener('input', updateBannerPreview);
+    }
+
+    // Position select
+    if (elements.bannerPosition) {
+      elements.bannerPosition.addEventListener('change', updateBannerPreview);
+    }
+
+    // Preview refresh button
+    if (elements.bannerPreviewRefreshBtn && elements.bannerPreviewIframe) {
+      const container = elements.bannerPreviewIframe.closest('.banner-preview-container');
+      
+      // iframeの読み込み完了を監視
+      const handleIframeLoad = () => {
+        // ローディング状態を解除
+        if (container) {
+          container.classList.remove('loading');
+        }
+        if (elements.bannerPreviewRefreshBtn) {
+          elements.bannerPreviewRefreshBtn.classList.remove('loading');
+          elements.bannerPreviewRefreshBtn.disabled = false;
+        }
+        // イベントリスナーを削除（一度だけ実行）
+        elements.bannerPreviewIframe.removeEventListener('load', handleIframeLoad);
+      };
+
+      elements.bannerPreviewRefreshBtn.addEventListener('click', () => {
+        if (elements.bannerPreviewIframe) {
+          // ローディング状態を開始
+          if (container) {
+            container.classList.add('loading');
+          }
+          elements.bannerPreviewRefreshBtn.classList.add('loading');
+          elements.bannerPreviewRefreshBtn.disabled = true;
+
+          // iframeの読み込み完了を監視
+          elements.bannerPreviewIframe.addEventListener('load', handleIframeLoad);
+
+          // 言語に応じたランダムページのURLを取得
+          const randomUrl = getWikipediaRandomUrl();
+          elements.bannerPreviewIframe.src = randomUrl + '?t=' + Date.now();
+        }
+      });
+    }
+
+    // 初期化時にWikipediaのURLを設定
+    updateWikipediaIframeUrl();
+  }
+
+  // WikipediaのランダムページURLを取得（言語に応じて）
+  function getWikipediaRandomUrl() {
+    const lang = getLanguage();
+    if (lang === 'ja') {
+      return 'https://ja.wikipedia.org/wiki/%E7%89%B9%E5%88%A5:%E3%81%8A%E3%81%BE%E3%81%8B%E3%81%9B%E8%A1%A8%E7%A4%BA';
+    } else {
+      return 'https://en.wikipedia.org/wiki/Special:Random';
+    }
+  }
+
+  // WikipediaのiframeのURLを更新
+  function updateWikipediaIframeUrl() {
+    if (elements.bannerPreviewIframe) {
+      const randomUrl = getWikipediaRandomUrl();
+      // 現在のURLと異なる場合のみ更新（無限ループを防ぐ）
+      if (elements.bannerPreviewIframe.src !== randomUrl && !elements.bannerPreviewIframe.src.includes(randomUrl.split('/wiki/')[1])) {
+        elements.bannerPreviewIframe.src = randomUrl;
+      }
+    }
   }
 
   // Setup protocol toggle buttons
@@ -558,6 +760,9 @@ import Sortable from 'sortablejs';
         elements.productionColor.value = settings.production.color || '#f44336';
         elements.productionColor.dispatchEvent(new Event('input', { bubbles: true }));
       }
+
+      // 設定読み込み後にプレビューを更新
+      updateBannerPreview();
     });
   }
 
@@ -1218,6 +1423,9 @@ import Sortable from 'sortablejs';
         }
         updateSliderTrackFill(elements.bannerHeight);
       }
+
+      // 設定読み込み後にプレビューを更新
+      updateBannerPreview();
     });
   }
 

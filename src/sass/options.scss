@@ -140,6 +140,171 @@ body {
   }
 }
 
+// Banner Preview Section
+.banner-preview-section {
+  margin-bottom: 32px;
+}
+
+.preview-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.preview-tab {
+  padding: 4px 12px;
+  border: 1px solid $border-color;
+  border-radius: 6px;
+  background-color: $bg-color;
+  color: $text-color;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: color.scale($bg-color, $lightness: -2%);
+  }
+
+  &.active {
+    background-color: $primary-color;
+    color: $white;
+    border-color: $primary-color;
+
+    &:hover {
+      background-color: $primary-hover;
+    }
+  }
+}
+
+.banner-preview-container {
+  position: relative;
+  width: 100%;
+  max-height: 200px;
+  height: 600px;
+  border-radius: 8px;
+  background-color: $white;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.banner-preview-iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: none;
+  transition: filter .4s ease;
+
+  .banner-preview-container.loading & {
+    filter: blur(12px) opacity(0);
+  }
+}
+
+.banner-preview-refresh-btn {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 12px;
+  border-radius: 20px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  z-index: 20;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+  color: $text-color;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: translateX(-50%) scale(1.05);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateX(-50%) scale(0.95);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+
+  &.loading svg {
+    animation: rotate 1s linear infinite;
+  }
+
+  span {
+    line-height: 1;
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.banner-preview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  font-family: 'Mulish', 'M PLUS 1p', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  letter-spacing: 0.8px;
+  color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  transition: all 0.2s ease-in-out;
+  z-index: 10;
+
+  // 下部に表示する場合
+  &[data-position="bottom"] {
+    top: auto;
+    bottom: 0;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  // テキストのコントラストを確保
+  &.light-text {
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+
+  &.dark-text {
+    color: #000000;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+  }
+}
+
 .setting-item {
   display: flex;
   flex-direction: column;
