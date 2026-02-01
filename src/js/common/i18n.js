@@ -66,6 +66,11 @@ const translations = {
     'settings.shortcuts.hotkeyHint': 'Click and press the key combination to set',
     'settings.shortcuts.save': 'Save',
     
+    'settings.copyToClipboard.title': 'Copy to Clipboard',
+    'settings.copyToClipboard.description': 'Set a format template for copying to the clipboard. Press the key combination Shift+Control+C to copy the text.\nYou can use the following variables.\n ・{{title}} ... the page title\n ・{{url}} ... the page URL',
+    'settings.copyToClipboard.format': 'Format',
+    'settings.copyToClipboard.save': 'Save',
+    
     'settings.export.title': 'Export/Import',
     'settings.export.export': 'Export',
     'settings.export.import': 'Import',
@@ -83,6 +88,8 @@ const translations = {
     'popup.staging': 'STAGING',
     'popup.production': 'PRODUCTION',
     'popup.openSettings': 'Settings',
+    'popup.copyToClipboard': 'Copy to Clipboard',
+    'popup.copyToClipboardButton': 'Copy',
     'popup.current': 'Current',
     'popup.domain': 'Domain',
     'popup.unableToDetect': 'Unable to detect current environment',
@@ -94,6 +101,8 @@ const translations = {
     'message.bannerCustomizationSaved': 'Banner customization saved successfully!',
     'message.pageTitlesSaved': 'Page titles saved successfully!',
     'message.urlSwitchingSaved': 'URL switching saved successfully!',
+    'message.copyToClipboardSaved': 'Copy to clipboard format saved successfully!',
+    'message.copiedToClipboard': 'Copied to clipboard!',
     'message.projectAdded': 'Project added successfully!',
     'message.projectUpdated': 'Project updated successfully!',
     'message.projectDeleted': 'Project deleted successfully!',
@@ -121,6 +130,7 @@ const translations = {
     'placeholder.projectStaging': 'example.itreat-test.com',
     'placeholder.projectProduction': 'example.com',
     'placeholder.shortcut': 'Press key combination...',
+    'placeholder.copyToClipboardFormat': '{{title}}\n{{url}}',
   },
   ja: {
     // Navigation
@@ -186,6 +196,11 @@ const translations = {
     'settings.shortcuts.hotkeyHint': 'クリックしてショートカットキーを設定',
     'settings.shortcuts.save': '保存',
     
+    'settings.copyToClipboard.title': 'クリップボードにコピー',
+    'settings.copyToClipboard.description': 'クリップボードにコピーする形式を登録します。Shift+Control+Cでコピーされます。\n以下の変数を使用できます。\n ・{{title}} ... ページタイトル\n ・{{url}} ... ページURL',
+    'settings.copyToClipboard.format': '形式',
+    'settings.copyToClipboard.save': '保存',
+    
     'settings.export.title': 'エクスポート/インポート',
     'settings.export.export': 'エクスポート',
     'settings.export.import': 'インポート',
@@ -203,6 +218,8 @@ const translations = {
     'popup.staging': 'ステージング',
     'popup.production': '本番',
     'popup.openSettings': '詳細設定',
+    'popup.copyToClipboard': 'クリップボードにコピー',
+    'popup.copyToClipboardButton': 'コピー',
     'popup.current': '現在',
     'popup.domain': 'ドメイン',
     'popup.unableToDetect': '現在の環境を検出できません',
@@ -214,6 +231,8 @@ const translations = {
     'message.bannerCustomizationSaved': 'バナー詳細設定を保存しました',
     'message.pageTitlesSaved': 'ページタイトルを保存しました',
     'message.urlSwitchingSaved': 'URL切り替えを保存しました',
+    'message.copyToClipboardSaved': 'コピー形式を保存しました',
+    'message.copiedToClipboard': 'クリップボードにコピーしました',
     'message.projectAdded': 'プロジェクトを追加しました',
     'message.projectUpdated': 'プロジェクトを更新しました',
     'message.projectDeleted': 'プロジェクトを削除しました',
@@ -241,6 +260,7 @@ const translations = {
     'placeholder.projectStaging': 'example.itreat-test.com',
     'placeholder.projectProduction': 'example.com',
     'placeholder.shortcut': 'ショートカットキーを設定してください...',
+    'placeholder.copyToClipboardFormat': '{{title}}\n{{url}}',
   }
 };
 

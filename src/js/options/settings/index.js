@@ -1,5 +1,5 @@
 // Settings - core logic, Export/Import, event wiring
-import { showSuccessToast, showErrorToast } from '../../toast.js';
+import { showSuccessToast, showErrorToast } from '../../common/toast.js';
 import { showConfirmModal } from '../../confirm-modal.js';
 import { t } from '../../common/i18n.js';
 import { loadProjects } from '../projects.js';
@@ -22,6 +22,12 @@ import {
   saveKeyboardShortcuts,
   setupKeyboardShortcutInputs
 } from './url-switching.js';
+import {
+  initCopyToClipboard,
+  loadCopyToClipboardFormat,
+  saveCopyToClipboardFormat,
+  setupCopyToClipboardEventListeners
+} from './copy-to-clipboard.js';
 
 let elements = null;
 
@@ -30,15 +36,17 @@ export function initSettings(elementsRef) {
   initBanner(elements);
   initPageTitles(elements);
   initUrlSwitching(elements);
+  initCopyToClipboard(elements);
 }
 
 export { getCurrentPreviewEnv } from './banner.js';
 export { loadSettings, saveSettings, loadBannerCustomization, updateBannerPreview, updateWikipediaIframeUrl } from './banner.js';
 export { loadPageTitles, savePageTitles } from './page-titles.js';
 export { loadKeyboardShortcuts, saveKeyboardShortcuts, setupKeyboardShortcutInputs } from './url-switching.js';
+export { loadCopyToClipboardFormat, saveCopyToClipboardFormat, setupCopyToClipboardEventListeners } from './copy-to-clipboard.js';
 
 export function exportSettings() {
-  chrome.storage.sync.get(['bannerAppearance', 'projects', 'keyboardShortcuts', 'pageTitles'], (result) => {
+  chrome.storage.sync.get(['bannerAppearance', 'projects', 'keyboardShortcuts', 'pageTitles', 'copyToClipboardFormat'], (result) => {
     const defaultBannerAppearance = {
       local: { text: 'You\'re on LOCAL env.', color: '#42a4ff' },
       staging: { text: 'You\'re on STAGING env.', color: '#ffc107' },
@@ -66,7 +74,8 @@ export function exportSettings() {
         local: '',
         staging: '',
         production: ''
-      }
+      },
+      copyToClipboardFormat: result.copyToClipboardFormat || '{{title}}\n{{url}}'
     };
 
     const jsonString = JSON.stringify(exportData, null, 2);
@@ -149,12 +158,14 @@ export async function importSettings(importData) {
     staging: '',
     production: ''
   };
+  const copyToClipboardFormat = importData.copyToClipboardFormat ?? '{{title}}\n{{url}}';
 
-  chrome.storage.sync.set({ bannerAppearance, projects, keyboardShortcuts, pageTitles }, () => {
+  chrome.storage.sync.set({ bannerAppearance, projects, keyboardShortcuts, pageTitles, copyToClipboardFormat }, () => {
     loadSettings();
     loadPageTitles();
     loadProjects();
     loadKeyboardShortcuts();
+    loadCopyToClipboardFormat();
     loadBannerCustomization();
     showSuccessToast(t('message.settingsImported'));
   });
@@ -232,6 +243,8 @@ export function setupSettingsEventListeners() {
   elements.exportSettingsBtn.addEventListener('click', exportSettings);
   elements.importSettingsBtn.addEventListener('click', () => elements.importFileInput.click());
   elements.importFileInput.addEventListener('change', handleImportFile);
+
+  setupCopyToClipboardEventListeners();
 
   setupPreviewTabs();
   setupBannerPreviewUpdates();

@@ -1,5 +1,5 @@
 // Banner display - appearance, preview, customization
-import { showSuccessToast } from '../../toast.js';
+import { showSuccessToast } from '../../common/toast.js';
 import { t, getLanguage } from '../../common/i18n.js';
 import { hexToRgb, getLuminance } from '../../common/color.js';
 

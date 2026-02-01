@@ -1,5 +1,5 @@
 // Your Projects page logic
-import { showSuccessToast, showErrorToast } from '../toast.js';
+import { showSuccessToast, showErrorToast } from '../common/toast.js';
 import { showConfirmModal } from '../confirm-modal.js';
 import MicroModal from 'micromodal';
 import { t, translateElements } from '../common/i18n.js';

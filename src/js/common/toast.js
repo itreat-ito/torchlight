@@ -5,20 +5,28 @@ import 'toastify-js/src/toastify.css';
 /**
  * Show a success toast notification
  * @param {string} message - The message to display
+ * @param {Object} [options] - Optional. e.g. { offsetTop: number } to position below a banner
  */
-export function showSuccessToast(message) {
+export function showSuccessToast(message, options = {}) {
+  const baseStyle = {
+    background: 'linear-gradient(to right, #fd79ae, #ffa17d)',
+    fontSize: '.9rem',
+    fontWeight: '700',
+    borderRadius: '4px',
+    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+  };
+  // if (options.offsetTop != null) {
+  //   baseStyle.top = `${options.offsetTop}px`;
+  // }
   Toastify({
     text: message,
     duration: 3000,
     gravity: 'top',
     position: 'right',
     stopOnFocus: true,
-    style: {
-      background: 'linear-gradient(to right, #fd79ae, #ffa17d)',
-      fontSize: '.9rem',
-      fontWeight: '700',
-      borderRadius: '4px',
-      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+    style: baseStyle,
+    offset: {
+      y: options.offsetTop ?? 10,
     },
   }).showToast();
 }

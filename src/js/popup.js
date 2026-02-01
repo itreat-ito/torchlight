@@ -3,6 +3,7 @@ import '../sass/popup.scss';
 import { detectEnvironment, convertUrl, getDomainMapping } from './common/domain.js';
 import { getLuminance, hexToRgb } from './common/color.js';
 import { initI18n, t, translateElements } from './common/i18n.js';
+import { showSuccessToast } from './common/toast.js';
 
 // グローバルトグルの状態を読み込んで表示を更新
 const globalToggle = document.getElementById('global-toggle');
@@ -13,6 +14,7 @@ const openLocalBtn = document.getElementById('open-local');
 const openStagingBtn = document.getElementById('open-staging');
 const openProductionBtn = document.getElementById('open-production');
 const currentTabInfo = document.getElementById('current-tab-info');
+const copyToClipboardBtn = document.querySelector('.copy-to-clipboard #copy-to-clipboard');
 
 // ステータステキストを更新する関数
 function updateStatusText(isEnabled) {
@@ -60,15 +62,45 @@ async function openInEnvironment(environment) {
   if (!tab || !tab.url) {
     return;
   }
-  
+
   // chrome:// や chrome-extension:// などの特殊なURLは処理しない
   if (!tab.url.startsWith('http://') && !tab.url.startsWith('https://')) {
     return;
   }
-  
+
   const newUrl = await convertUrl(tab.url, environment);
   if (newUrl) {
     chrome.tabs.create({ url: newUrl });
+  }
+}
+
+const DEFAULT_COPY_FORMAT = '{{title}}\n{{url}}';
+
+// クリップボードにコピー
+async function copyToClipboard() {
+  const tab = await getCurrentTab();
+  if (!tab || !tab.url) {
+    return;
+  }
+  if (!tab.url.startsWith('http://') && !tab.url.startsWith('https://')) {
+    return;
+  }
+  const url = tab.url;
+  const title = tab.title || '';
+
+  const result = await new Promise((resolve) => {
+    chrome.storage.sync.get(['copyToClipboardFormat'], resolve);
+  });
+  const format = (result.copyToClipboardFormat || DEFAULT_COPY_FORMAT).trim() || DEFAULT_COPY_FORMAT;
+  const text = format
+    .replace(/\{\{url\}\}/g, url)
+    .replace(/\{\{title\}\}/g, title);
+
+  try {
+    await navigator.clipboard.writeText(text);
+    showSuccessToast(t('message.copiedToClipboard'));
+  } catch (err) {
+    // ignore
   }
 }
 
@@ -173,6 +205,11 @@ async function updateEnvironmentButtons() {
   openLocalBtn.addEventListener('click', () => openInEnvironment('local'));
   openStagingBtn.addEventListener('click', () => openInEnvironment('staging'));
   openProductionBtn.addEventListener('click', () => openInEnvironment('production'));
+
+  // Copy to Clipboard（.copy-to-clipboard 内のボタン）
+  if (copyToClipboardBtn) {
+    copyToClipboardBtn.addEventListener('click', () => copyToClipboard());
+  }
 
   // 環境切り替えボタンの状態を更新
   updateEnvironmentButtons();

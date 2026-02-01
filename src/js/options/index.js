@@ -9,6 +9,7 @@ import {
   loadSettings,
   loadPageTitles,
   loadKeyboardShortcuts,
+  loadCopyToClipboardFormat,
   loadBannerCustomization,
   updateBannerPreview,
   updateWikipediaIframeUrl,
@@ -33,6 +34,8 @@ const elements = {
   shortcutStaging: document.getElementById('shortcut-staging'),
   shortcutProduction: document.getElementById('shortcut-production'),
   saveShortcutsBtn: document.getElementById('save-shortcuts'),
+  copyToClipboardFormat: document.getElementById('copy-to-clipboard-format'),
+  saveCopyToClipboardBtn: document.getElementById('save-copy-to-clipboard'),
   addProjectBtn: document.getElementById('add-project'),
   projectsList: document.getElementById('projects-list'),
   exportSettingsBtn: document.getElementById('export-settings'),
@@ -88,6 +91,7 @@ async function init() {
   loadPageTitles();
   loadProjects();
   loadKeyboardShortcuts();
+  loadCopyToClipboardFormat();
   setupProjectEventListeners();
   setupKeyboardShortcutInputs();
   setupSettingsEventListeners();

@@ -3,6 +3,8 @@ import '../sass/content.scss';
 import { detectEnvironment, convertUrl } from './common/domain.js';
 import { getLuminance, hexToRgb } from './common/color.js';
 import { matchesShortcut, isInputFocused } from './common/keyboard.js';
+import { showSuccessToast } from './common/toast.js';
+import { t, loadLanguage } from './common/i18n.js';
 
 (function() {
   'use strict';
@@ -367,6 +369,43 @@ import { matchesShortcut, isInputFocused } from './common/keyboard.js';
     }
   }
 
+  // クリップボードにコピー
+  const COPY_TO_CLIPBOARD_SHORTCUT = 'Ctrl+Shift+C';
+  const DEFAULT_COPY_FORMAT = '{{title}}\n{{url}}';
+  const TOAST_MARGIN_BELOW_BANNER = 0;
+
+  function getToastOffsetBelowBanner() {
+    const banner = document.getElementById('env-banner');
+    if (!banner) return {};
+    const position = banner.getAttribute('data-position') || 'top';
+    if (position !== 'top') return {};
+    const offsetTop = banner.offsetHeight + TOAST_MARGIN_BELOW_BANNER;
+    return { offsetTop };
+  }
+
+  function copyToClipboard() {
+    const url = window.location.href;
+    const title = document.title || '';
+
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      return;
+    }
+
+    chrome.storage.sync.get(['copyToClipboardFormat'], (result) => {
+      const format = (result.copyToClipboardFormat || DEFAULT_COPY_FORMAT).trim() || DEFAULT_COPY_FORMAT;
+      const text = format
+        .replace(/\{\{url\}\}/g, url)
+        .replace(/\{\{title\}\}/g, title);
+
+      navigator.clipboard.writeText(text).then(() => {
+        loadLanguage().then(() => {
+          const toastOptions = getToastOffsetBelowBanner();
+          showSuccessToast(t('message.copiedToClipboard'), toastOptions);
+        });
+      }).catch(() => {});
+    });
+  }
+
   // キーボードショートカットのハンドラーを設定
   function setupKeyboardShortcuts() {
     // 既存のハンドラーを削除
@@ -392,6 +431,14 @@ import { matchesShortcut, isInputFocused } from './common/keyboard.js';
       keyboardShortcutHandler = (event) => {
         // 入力フィールドにフォーカスがある場合は無視
         if (isInputFocused(event)) {
+          return;
+        }
+
+        // クリップボードにコピー
+        if (matchesShortcut(COPY_TO_CLIPBOARD_SHORTCUT, event)) {
+          copyToClipboard();
+          event.preventDefault();
+          event.stopPropagation();
           return;
         }
 

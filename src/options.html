@@ -253,6 +253,19 @@
             <button id="save-shortcuts" class="btn btn-save" data-i18n="settings.shortcuts.save">Save</button>
           </section>
 
+          <!-- Copy to Clipboard -->
+          <section class="section">
+            <h2 class="ttl-m" data-i18n="settings.copyToClipboard.title">Copy to Clipboard</h2>
+            <p class="section-description" data-i18n="settings.copyToClipboard.description">Register a format template for copying to the clipboard. Use {{url}} for the current page URL and {{title}} for the page title. Trigger: Shift+Control+C.</p>
+            <div class="setting-item">
+              <div class="form-group">
+                <label for="copy-to-clipboard-format" data-i18n="settings.copyToClipboard.format">Format</label>
+                <textarea id="copy-to-clipboard-format" rows="4" data-i18n-placeholder="placeholder.copyToClipboardFormat" placeholder="{{title}}&#10;{{url}}"></textarea>
+              </div>
+            </div>
+            <button id="save-copy-to-clipboard" class="btn btn-save" data-i18n="settings.copyToClipboard.save">Save</button>
+          </section>
+
           <!-- Export/Import Section -->
           <section class="section">
             <h2 class="ttl-m" data-i18n="settings.export.title">Export/Import</h2>

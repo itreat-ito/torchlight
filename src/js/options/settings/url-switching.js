@@ -1,5 +1,5 @@
 // URL Switching - keyboard shortcuts for environment switching
-import { showSuccessToast } from '../../toast.js';
+import { showSuccessToast } from '../../common/toast.js';
 import { getKeyCombination, normalizeShortcut } from '../../common/keyboard.js';
 import { t } from '../../common/i18n.js';
 

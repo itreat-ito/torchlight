@@ -1,5 +1,5 @@
 // Page Titles - load/save page title settings
-import { showSuccessToast } from '../../toast.js';
+import { showSuccessToast } from '../../common/toast.js';
 import { t } from '../../common/i18n.js';
 
 let elements = null;
