@@ -139,7 +139,7 @@ const translations = {
     
     // Projects page
     'projects.add': 'プロジェクトを追加',
-    'projects.empty.title': 'プロジェクトが見つかりません',
+    'projects.empty.title': 'プロジェクトがありません',
     'projects.empty.description': '「プロジェクトを追加」ボタンをクリックして新しいプロジェクトを追加してください',
     'projects.edit': '編集',
     'projects.delete': '削除',
@@ -264,8 +264,8 @@ const translations = {
   }
 };
 
-// Current language (default: English)
-let currentLanguage = 'en';
+// Current language (default: Japanese)
+let currentLanguage = 'ja';
 
 /**
  * Get the current language
@@ -311,7 +311,7 @@ export function t(key, params = {}) {
 export function loadLanguage() {
   return new Promise((resolve) => {
     chrome.storage.sync.get(['language'], (result) => {
-      const lang = result.language || 'en'; // Default to English
+      const lang = result.language || 'ja'; // Default to Japanese
       setLanguage(lang);
       resolve(lang);
     });
