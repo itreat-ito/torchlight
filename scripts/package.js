@@ -14,7 +14,7 @@ const version = manifest.version;
 
 // distディレクトリに移動してzipファイルを作成
 const distDir = join(rootDir, 'dist');
-const zipFileName = `torchlight-extension-${version}.zip`;
+const zipFileName = `torchlight-${version}.zip`;
 const zipPath = join(rootDir, zipFileName);
 
 process.chdir(distDir);

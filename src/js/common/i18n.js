@@ -180,7 +180,7 @@ const translations = {
     'settings.bannerBaseSettings.save': '保存',
     
     'settings.pageTitle.title': 'ページタイトル',
-    'settings.pageTitle.description': '各環境にアクセスした時のページタイトルに追加するプレフィックスを設定します。',
+    'settings.pageTitle.description': 'ページタイトルの先頭に任意の文字を追加します。',
     'settings.pageTitle.local': 'ローカル',
     'settings.pageTitle.staging': 'ステージング',
     'settings.pageTitle.production': '本番',
@@ -188,7 +188,7 @@ const translations = {
     'settings.pageTitle.save': '保存',
     
     'settings.shortcuts.title': 'URL切り替え',
-    'settings.shortcuts.description': '環境間を素早く切り替えるためのキーボードショートカットを設定します。',
+    'settings.shortcuts.description': '各環境間を素早く切り替えるためのキーボードショートカットを設定します。',
     'settings.shortcuts.local': 'ローカル',
     'settings.shortcuts.staging': 'ステージング',
     'settings.shortcuts.production': '本番',
@@ -201,7 +201,7 @@ const translations = {
     'settings.copyToClipboard.format': '形式',
     'settings.copyToClipboard.save': '保存',
     
-    'settings.export.title': 'エクスポート/インポート',
+    'settings.export.title': '設定のエクスポート/インポート',
     'settings.export.export': 'エクスポート',
     'settings.export.import': 'インポート',
     
@@ -213,7 +213,7 @@ const translations = {
     // Popup
     'popup.enabled': '有効',
     'popup.disabled': '無効',
-    'popup.switchEnv': '環境の切り替え',
+    'popup.switchEnv': '環境切り替え',
     'popup.local': 'ローカル',
     'popup.staging': 'ステージング',
     'popup.production': '本番',
