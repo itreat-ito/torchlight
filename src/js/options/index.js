@@ -214,6 +214,7 @@ function showPage(pageId) {
   if (pageId === 'projects') {
     targetPage = elements.pageProjects;
     targetNav = elements.navProjects;
+    loadProjects();
   } else if (pageId === 'settings') {
     targetPage = elements.pageSettings;
     targetNav = elements.navSettings;

@@ -159,9 +159,15 @@ function resetProtocols() {
 }
 
 export function loadProjects() {
-  chrome.storage.sync.get(['projects'], (result) => {
+  chrome.storage.sync.get(['projects', 'bannerAppearance'], (result) => {
     const projects = result.projects || [];
-    renderProjects(projects);
+    const bannerAppearance = result.bannerAppearance || {};
+    const bannerColors = {
+      local: bannerAppearance.local?.color || '#42a4ff',
+      staging: bannerAppearance.staging?.color || '#ffc107',
+      production: bannerAppearance.production?.color || '#f44336'
+    };
+    renderProjects(projects, bannerColors);
   });
 }
 
@@ -171,7 +177,13 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-export function renderProjects(projects) {
+export function renderProjects(projects, bannerColors = {}) {
+  const colors = {
+    local: bannerColors.local || '#42a4ff',
+    staging: bannerColors.staging || '#ffc107',
+    production: bannerColors.production || '#f44336'
+  };
+
   if (projects.length === 0) {
     if (sortableInstance) {
       sortableInstance.destroy();
@@ -216,19 +228,19 @@ export function renderProjects(projects) {
       </div>
       <div class="project-domains-section">
         <div class="project-domains">
-          <div class="domain-group">
+          <div class="domain-group" style="border-left-color: ${escapeHtml(colors.local)}">
             <h4 data-i18n="projects.local">Local</h4>
             <div class="domain-list">
               <div class="domain-value">${project.local && project.local.length > 0 && project.local[0] ? escapeHtml(project.local[0]) : `<span style="color: #999;" data-i18n="projects.notSet">Not set</span>`}</div>
             </div>
           </div>
-          <div class="domain-group">
+          <div class="domain-group" style="border-left-color: ${escapeHtml(colors.staging)}">
             <h4 data-i18n="projects.staging">Staging</h4>
             <div class="domain-list">
               <div class="domain-value">${project.staging && project.staging.length > 0 && project.staging[0] ? escapeHtml(project.staging[0]) : `<span style="color: #999;" data-i18n="projects.notSet">Not set</span>`}</div>
             </div>
           </div>
-          <div class="domain-group">
+          <div class="domain-group" style="border-left-color: ${escapeHtml(colors.production)}">
             <h4 data-i18n="projects.production">Production</h4>
             <div class="domain-list">
               <div class="domain-value">${project.production && project.production.length > 0 && project.production[0] ? escapeHtml(project.production[0]) : `<span style="color: #999;" data-i18n="projects.notSet">Not set</span>`}</div>
