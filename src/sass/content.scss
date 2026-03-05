@@ -1,18 +1,102 @@
 @import url('https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@400;700&family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap');
 
-// 環境表示バナーのスタイル
-// Top Layer API: popover属性を使用して最上位レイヤーに配置
-.env-banner {
+// バナーコンテナ（更新バナー + 環境バナーを積む）
+.env-banner-container {
   position: fixed;
-  top: 0;
   left: 0;
   right: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Mulish', 'M PLUS 1p', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+
+  &[data-position="top"] {
+    top: 0;
+  }
+
+  &[data-position="bottom"] {
+    bottom: 0;
+  }
+
+  &[popover] {
+    inset: unset;
+    width: 100%;
+    max-width: unset;
+    max-height: unset;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+  }
+
+  &:not([popover]) {
+    z-index: 9999;
+  }
+}
+
+// 更新バナー（環境バナーの上に積む、マウスで非表示にならない）
+.env-update-banner {
+  flex-shrink: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in;
+
+  .env-update-banner-inner {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .env-update-banner-link {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover {
+      opacity: 0.9;
+    }
+
+    &.env-update-banner-link--disabled {
+      text-decoration: none;
+      opacity: 0.6;
+      cursor: default;
+      pointer-events: none;
+    }
+  }
+}
+
+// 環境表示バナー
+.env-banner {
+  position: relative;
+  flex-shrink: 0;
   height: 40px;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 18px;
+  font-weight: bold;
+
+  .env-banner-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0 16px;
+    box-sizing: border-box;
+  }
   font-weight: bold;
   font-family: 'Mulish', 'M PLUS 1p', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   letter-spacing: .8px;
@@ -27,28 +111,8 @@
 
   // 下部に表示する場合
   &[data-position="bottom"] {
-    top: auto;
-    bottom: 0;
     box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
     animation: fadeInBottom 0.3s ease-in;
-  }
-
-  // Top Layer API: popover属性を持つ要素のスタイル
-  &[popover] {
-    // デフォルトのpopoverスタイルを上書き
-    inset: unset;
-    width: 100%;
-    max-width: unset;
-    max-height: unset;
-    margin: 0;
-    padding: 0;
-    border: none;
-    background: transparent;
-  }
-
-  // Top Layer APIがサポートされていない場合のフォールバック
-  &:not([popover]) {
-    z-index: 9999;
   }
 
   // テキストのコントラストを確保

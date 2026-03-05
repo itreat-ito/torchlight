@@ -16,6 +16,7 @@ import {
   setupKeyboardShortcutInputs,
   setupSettingsEventListeners
 } from './settings/index.js';
+import { checkForUpdates } from '../common/update-check.js';
 
 // DOM elements
 const elements = {
@@ -100,6 +101,29 @@ async function init() {
 
   window.addEventListener('hashchange', loadPageFromHash);
   displayVersion();
+  checkAndShowUpdateBanner();
+}
+
+async function checkAndShowUpdateBanner() {
+  const updateBanner = document.getElementById('update-banner');
+  const downloadLink = document.getElementById('update-download-link');
+  const releasesLink = document.getElementById('update-releases-link');
+  if (!updateBanner || !downloadLink || !releasesLink) return;
+
+  const result = await checkForUpdates();
+  if (result.updateAvailable && result.htmlUrl) {
+    releasesLink.href = result.htmlUrl;
+    if (result.downloadUrl) {
+      downloadLink.href = result.downloadUrl;
+      downloadLink.removeAttribute('aria-disabled');
+      downloadLink.classList.remove('update-banner-link--disabled');
+    } else {
+      downloadLink.removeAttribute('href');
+      downloadLink.setAttribute('aria-disabled', 'true');
+      downloadLink.classList.add('update-banner-link--disabled');
+    }
+    updateBanner.style.display = '';
+  }
 }
 
 function displayVersion() {

@@ -15,6 +15,52 @@ body {
   padding: 20px;
 }
 
+// Update notification banner
+.update-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  margin-bottom: 16px;
+  background-color: rgba($primary-color, 0.1);
+  border: 1px solid rgba($primary-color, 0.3);
+  border-radius: 6px;
+  font-size: 0.9rem;
+
+  .update-banner-text {
+    font-weight: 600;
+    color: $primary-color;
+  }
+
+  .update-banner-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    a {
+      color: $primary-color;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+
+      &:hover {
+        color: $primary-hover;
+      }
+
+      &.update-banner-link--disabled {
+        color: $text-light;
+        text-decoration: none;
+        cursor: default;
+        pointer-events: none;
+      }
+    }
+
+    .update-banner-separator {
+      color: $text-light;
+      font-size: 0.85em;
+    }
+  }
+}
+
 .logo {
   display: flex;
   justify-content: center;

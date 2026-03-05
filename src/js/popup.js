@@ -4,6 +4,7 @@ import { detectEnvironment, convertUrl, getDomainMapping } from './common/domain
 import { getLuminance, hexToRgb } from './common/color.js';
 import { initI18n, t, translateElements } from './common/i18n.js';
 import { showSuccessToast } from './common/toast.js';
+import { checkForUpdates } from './common/update-check.js';
 
 // グローバルトグルの状態を読み込んで表示を更新
 const globalToggle = document.getElementById('global-toggle');
@@ -248,6 +249,9 @@ async function updateEnvironmentButtons() {
 
   // バージョン番号を表示
   displayVersion();
+
+  // 更新チェック（キャッシュを温める）
+  checkForUpdates();
 })();
 
 // バージョン番号を表示

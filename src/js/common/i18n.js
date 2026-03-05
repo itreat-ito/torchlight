@@ -119,6 +119,11 @@ const translations = {
     'message.ok': 'OK',
     'message.cancel': 'Cancel',
     
+    // Update notification
+    'update.available': 'New version available',
+    'update.download': 'Download',
+    'update.releasesPage': 'Releases',
+    
     // Placeholders
     'placeholder.localText': 'You\'re on LOCAL env.',
     'placeholder.stagingText': 'You\'re on STAGING env.',
@@ -248,6 +253,11 @@ const translations = {
     'message.confirm': '確認',
     'message.ok': 'OK',
     'message.cancel': 'キャンセル',
+    
+    // Update notification
+    'update.available': '新しいバージョンが利用可能です',
+    'update.download': 'ダウンロード',
+    'update.releasesPage': 'リリースページ',
     
     // Placeholders
     'placeholder.localText': 'ローカル環境です',

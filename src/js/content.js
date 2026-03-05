@@ -5,14 +5,15 @@ import { getLuminance, hexToRgb } from './common/color.js';
 import { matchesShortcut, isInputFocused } from './common/keyboard.js';
 import { showSuccessToast } from './common/toast.js';
 import { t, loadLanguage } from './common/i18n.js';
+import { checkForUpdates } from './common/update-check.js';
 
 (function() {
   'use strict';
 
   // 既にバナーが存在する場合は削除
-  const existingBanner = document.getElementById('env-banner');
-  if (existingBanner) {
-    existingBanner.remove();
+  const existingContainer = document.getElementById('env-banner-container');
+  if (existingContainer) {
+    existingContainer.remove();
   }
 
   // ドメインを取得（ポート番号を除去）
@@ -22,6 +23,44 @@ import { t, loadLanguage } from './common/i18n.js';
   }
 
 
+  // 更新バナーを作成
+  function createUpdateBanner(container, position) {
+    loadLanguage().then(() => {
+      checkForUpdates().then((result) => {
+        if (!result.updateAvailable) return;
+        const updateBanner = document.createElement('div');
+        updateBanner.id = 'env-update-banner';
+        updateBanner.className = 'env-update-banner';
+        updateBanner.setAttribute('data-position', position);
+
+        const inner = document.createElement('div');
+        inner.className = 'env-update-banner-inner';
+        const downloadLink = document.createElement(result.downloadUrl ? 'a' : 'span');
+        if (result.downloadUrl) {
+          downloadLink.href = result.downloadUrl;
+          downloadLink.target = '_blank';
+          downloadLink.rel = 'noopener noreferrer';
+        }
+        downloadLink.className = 'env-update-banner-link' + (result.downloadUrl ? '' : ' env-update-banner-link--disabled');
+        downloadLink.textContent = t('update.download');
+        const releasesLink = document.createElement('a');
+        releasesLink.href = result.htmlUrl;
+        releasesLink.target = '_blank';
+        releasesLink.rel = 'noopener noreferrer';
+        releasesLink.className = 'env-update-banner-link';
+        releasesLink.textContent = t('update.releasesPage');
+        inner.appendChild(document.createTextNode(t('update.available') + ' '));
+        inner.appendChild(downloadLink);
+        inner.appendChild(document.createTextNode(' | '));
+        inner.appendChild(releasesLink);
+        updateBanner.appendChild(inner);
+
+        const envBanner = container.querySelector('#env-banner');
+        container.insertBefore(updateBanner, envBanner);
+      });
+    });
+  }
+
   // バナーを作成
   function createBanner(environment, settings, customization) {
     const envSettings = settings[environment];
@@ -30,7 +69,14 @@ import { t, loadLanguage } from './common/i18n.js';
     const banner = document.createElement('div');
     banner.id = 'env-banner';
     banner.className = 'env-banner';
-    banner.textContent = envSettings.text || `${environment}環境`;
+
+    const bannerInner = document.createElement('div');
+    bannerInner.className = 'env-banner-inner';
+    const envText = document.createElement('span');
+    envText.className = 'env-banner-text';
+    envText.textContent = envSettings.text || `${environment}環境`;
+    bannerInner.appendChild(envText);
+    banner.appendChild(bannerInner);
     
     // カスタマイズ設定を適用
     const custom = customization || {
@@ -82,9 +128,6 @@ import { t, loadLanguage } from './common/i18n.js';
       banner.style.bottom = 'auto';
       banner.setAttribute('data-position', 'top');
     }
-    
-    // Top Layer API: popover属性を使用して最上位レイヤーに配置
-    banner.setAttribute('popover', 'manual');
 
     // テキスト色を決定（明度に基づく）
     const luminance = getLuminance(baseColor);
@@ -155,10 +198,9 @@ import { t, loadLanguage } from './common/i18n.js';
     chrome.storage.sync.get(['extensionEnabled', 'bannerAppearance', 'projects', 'pageTitles'], (result) => {
       // 拡張機能が無効の場合は何もしない
       if (result.extensionEnabled === false) {
-        // 既存のバナーを削除
-        const existingBanner = document.getElementById('env-banner');
-        if (existingBanner) {
-          existingBanner.remove();
+        const existingContainer = document.getElementById('env-banner-container');
+        if (existingContainer) {
+          existingContainer.remove();
         }
         return;
       }
@@ -204,45 +246,42 @@ import { t, loadLanguage } from './common/i18n.js';
 
         const banner = createBanner(environment, settings, baseSettings);
         if (banner) {
-          // DOMが準備できているか確認
+          const position = baseSettings.position || 'top';
+          const container = document.createElement('div');
+          container.id = 'env-banner-container';
+          container.className = 'env-banner-container';
+          container.setAttribute('data-position', position);
+          container.appendChild(banner);
+
           if (document.body) {
-            document.body.appendChild(banner);
-            // Top Layer API: showPopover()で最上位レイヤーに表示
+            document.body.appendChild(container);
+            createUpdateBanner(container, position);
             try {
-              if (banner.showPopover && typeof banner.showPopover === 'function') {
-                banner.showPopover();
+              if (container.showPopover && typeof container.showPopover === 'function') {
+                container.setAttribute('popover', 'manual');
+                container.showPopover();
               } else {
-                // Top Layer APIがサポートされていない場合のフォールバック
-                console.warn('Top Layer API (popover) is not supported. Using fallback.');
-                banner.style.zIndex = '9999';
+                container.style.zIndex = '9999';
               }
             } catch (error) {
-              // エラーが発生した場合のフォールバック
-              console.warn('Failed to show popover:', error);
-              banner.style.zIndex = '9999';
+              container.style.zIndex = '9999';
             }
-            // マウスカーソルによるバナーの非表示機能を設定
             setupBannerAutoHide(banner);
           } else {
-            // DOMが準備できていない場合は待機
             const observer = new MutationObserver((mutations, obs) => {
               if (document.body) {
-                document.body.appendChild(banner);
-                // Top Layer API: showPopover()で最上位レイヤーに表示
+                document.body.appendChild(container);
+                createUpdateBanner(container, position);
                 try {
-                  if (banner.showPopover && typeof banner.showPopover === 'function') {
-                    banner.showPopover();
+                  if (container.showPopover && typeof container.showPopover === 'function') {
+                    container.setAttribute('popover', 'manual');
+                    container.showPopover();
                   } else {
-                    // Top Layer APIがサポートされていない場合のフォールバック
-                    console.warn('Top Layer API (popover) is not supported. Using fallback.');
-                    banner.style.zIndex = '9999';
+                    container.style.zIndex = '9999';
                   }
                 } catch (error) {
-                  // エラーが発生した場合のフォールバック
-                  console.warn('Failed to show popover:', error);
-                  banner.style.zIndex = '9999';
+                  container.style.zIndex = '9999';
                 }
-                // マウスカーソルによるバナーの非表示機能を設定
                 setupBannerAutoHide(banner);
                 obs.disconnect();
               }
@@ -254,56 +293,43 @@ import { t, loadLanguage } from './common/i18n.js';
     });
   }
 
-  // バナーの自動非表示機能を設定
+  // バナーの自動非表示機能を設定（環境バナーのみ、更新バナーは非表示にならない）
   function setupBannerAutoHide(banner) {
-    // バナーの実際の高さを取得（設定値またはデフォルト値）
-    const bannerHeight = parseInt(banner.style.height) || 40;
-    const BANNER_HEIGHT = bannerHeight;
-    const HIDE_THRESHOLD = BANNER_HEIGHT + 20; // バナーの高さ + 余白（マウスカーソルがこの範囲内に入ると非表示）
+    const MARGIN = 20;
     let hideTimeout = null;
     let isHidden = false;
-    
-    // バナーの位置を取得
     const position = banner.getAttribute('data-position') || 'top';
     const isBottom = position === 'bottom';
 
-    // マウスカーソルの位置を監視
     document.addEventListener('mousemove', (e) => {
       const mouseY = e.clientY;
-      const windowHeight = window.innerHeight;
-      
-      // 既存のタイムアウトをクリア
+      const rect = banner.getBoundingClientRect();
+      const top = rect.top - MARGIN;
+      const bottom = rect.bottom + MARGIN;
+
       if (hideTimeout) {
         clearTimeout(hideTimeout);
         hideTimeout = null;
       }
 
-      // バナーの近く（バナーの上も含む）にマウスカーソルがある場合は非表示
-      let shouldHide = false;
-      if (isBottom) {
-        // 下部に表示する場合：画面下部に近い場合に非表示
-        shouldHide = mouseY >= (windowHeight - HIDE_THRESHOLD);
-      } else {
-        // 上部に表示する場合：画面上部に近い場合に非表示
-        shouldHide = mouseY <= HIDE_THRESHOLD;
-      }
+      const shouldHide = isBottom
+        ? mouseY >= top && mouseY <= window.innerHeight
+        : mouseY >= 0 && mouseY <= bottom;
 
       if (shouldHide) {
         if (!isHidden) {
-          // バナーを非表示（pointer-eventsをnoneにしてクリック可能にする）
           banner.style.pointerEvents = 'none';
           banner.style.opacity = '0';
           banner.style.transition = 'opacity 0.2s ease-in-out';
           isHidden = true;
         }
       } else {
-        // マウスカーソルが離れたら少し遅延して再表示
         if (isHidden) {
           hideTimeout = setTimeout(() => {
             banner.style.pointerEvents = 'auto';
             banner.style.opacity = '1';
             isHidden = false;
-          }, 100); // 100msの遅延で再表示（ちらつきを防ぐ）
+          }, 100);
         }
       }
     });
@@ -375,11 +401,11 @@ import { t, loadLanguage } from './common/i18n.js';
   const TOAST_MARGIN_BELOW_BANNER = 0;
 
   function getToastOffsetBelowBanner() {
-    const banner = document.getElementById('env-banner');
-    if (!banner) return {};
-    const position = banner.getAttribute('data-position') || 'top';
+    const container = document.getElementById('env-banner-container');
+    if (!container) return {};
+    const position = container.getAttribute('data-position') || 'top';
     if (position !== 'top') return {};
-    const offsetTop = banner.offsetHeight + TOAST_MARGIN_BELOW_BANNER;
+    const offsetTop = container.offsetHeight + TOAST_MARGIN_BELOW_BANNER;
     return { offsetTop };
   }
 
