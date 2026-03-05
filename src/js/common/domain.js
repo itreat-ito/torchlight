@@ -48,7 +48,7 @@ export function detectEnvironment(domain, projects) {
         }
       }
     }
-    // ステージング環境をチェック
+    // テスト環境をチェック
     if (project.staging && Array.isArray(project.staging)) {
       for (const stagingDomain of project.staging) {
         if (matchesDomain(stagingDomain, domain)) {
