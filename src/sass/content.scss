@@ -45,9 +45,9 @@
   justify-content: center;
   padding: 6px 16px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: bold;
   color: #fff;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(to right, #fd79ae 15%, #ffa17d 85%);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   animation: fadeIn 0.3s ease-in;
 
@@ -57,15 +57,18 @@
     gap: 6px;
     flex-wrap: wrap;
     justify-content: center;
+    width: 100%;
+    font-weight: bold;
   }
 
   .env-update-banner-link {
     color: inherit;
     text-decoration: underline;
     text-underline-offset: 2px;
+    transition: opacity .2s;
 
     &:hover {
-      opacity: 0.9;
+      opacity: .9;
     }
 
     &.env-update-banner-link--disabled {
@@ -73,6 +76,24 @@
       opacity: 0.6;
       cursor: default;
       pointer-events: none;
+    }
+  }
+
+  .env-update-banner-skip {
+    margin-left: auto;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: bold;
+    color: inherit;
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color .2s, scale .2s;
+
+    &:hover {
+      scale: .97;
+      background: rgba(255, 255, 255, 0.35);
     }
   }
 }

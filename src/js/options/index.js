@@ -16,7 +16,7 @@ import {
   setupKeyboardShortcutInputs,
   setupSettingsEventListeners
 } from './settings/index.js';
-import { checkForUpdates } from '../common/update-check.js';
+import { checkForUpdates, skipVersion } from '../common/update-check.js';
 
 // DOM elements
 const elements = {
@@ -108,6 +108,7 @@ async function checkAndShowUpdateBanner() {
   const updateBanner = document.getElementById('update-banner');
   const downloadLink = document.getElementById('update-download-link');
   const releasesLink = document.getElementById('update-releases-link');
+  const skipBtn = document.getElementById('update-skip-btn');
   if (!updateBanner || !downloadLink || !releasesLink) return;
 
   const result = await checkForUpdates();
@@ -121,6 +122,12 @@ async function checkAndShowUpdateBanner() {
       downloadLink.removeAttribute('href');
       downloadLink.setAttribute('aria-disabled', 'true');
       downloadLink.classList.add('update-banner-link--disabled');
+    }
+    if (skipBtn) {
+      skipBtn.onclick = () => {
+        skipVersion(result.version);
+        updateBanner.style.display = 'none';
+      };
     }
     updateBanner.style.display = '';
   }

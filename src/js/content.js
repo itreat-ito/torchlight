@@ -5,7 +5,7 @@ import { getLuminance, hexToRgb } from './common/color.js';
 import { matchesShortcut, isInputFocused } from './common/keyboard.js';
 import { showSuccessToast } from './common/toast.js';
 import { t, loadLanguage } from './common/i18n.js';
-import { checkForUpdates } from './common/update-check.js';
+import { checkForUpdates, skipVersion } from './common/update-check.js';
 
 (function() {
   'use strict';
@@ -49,10 +49,20 @@ import { checkForUpdates } from './common/update-check.js';
         releasesLink.rel = 'noopener noreferrer';
         releasesLink.className = 'env-update-banner-link';
         releasesLink.textContent = t('update.releasesPage');
+        const skipBtn = document.createElement('button');
+        skipBtn.type = 'button';
+        skipBtn.className = 'env-update-banner-skip';
+        skipBtn.textContent = t('update.skipVersion');
+        skipBtn.addEventListener('click', () => {
+          skipVersion(result.version);
+          updateBanner.remove();
+        });
         inner.appendChild(document.createTextNode(t('update.available') + ' '));
         inner.appendChild(downloadLink);
         inner.appendChild(document.createTextNode(' | '));
         inner.appendChild(releasesLink);
+        inner.appendChild(document.createTextNode(' '));
+        inner.appendChild(skipBtn);
         updateBanner.appendChild(inner);
 
         const envBanner = container.querySelector('#env-banner');

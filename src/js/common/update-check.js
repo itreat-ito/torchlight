@@ -2,11 +2,31 @@
 // Checks for new versions and provides download/release page URLs
 
 const GITHUB_API_URL = 'https://api.github.com/repos/itreat-ito/torchlight/releases/latest';
-// const GITHUB_API_URL = 'https://api.github.com/repos/laravel/framework/releases/latest';
 const RELEASES_PAGE_URL = 'https://github.com/itreat-ito/torchlight/releases/latest';
-// const RELEASES_PAGE_URL = 'https://github.com/laravel/framework/releases/latest';
 const CACHE_KEY = 'updateCheck';
+const SKIPPED_VERSION_KEY = 'updateSkippedVersion';
 const CACHE_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+/**
+ * Get the skipped version from storage
+ * @returns {Promise<string|null>}
+ */
+function getSkippedVersion() {
+  return new Promise((resolve) => {
+    chrome.storage.local.get([SKIPPED_VERSION_KEY], (result) => {
+      resolve(result[SKIPPED_VERSION_KEY] || null);
+    });
+  });
+}
+
+/**
+ * Skip the current version and hide the banner until the next version is released
+ * @param {string} version - Version to skip (e.g. "v1.5.0")
+ */
+export function skipVersion(version) {
+  if (!version) return;
+  chrome.storage.local.set({ [SKIPPED_VERSION_KEY]: version });
+}
 
 /**
  * Parse version string (handles "v1.4.1" format)
@@ -122,8 +142,10 @@ export async function checkForUpdates() {
   const cached = await getCachedUpdateInfo();
   if (cached) {
     const isNewer = compareVersions(currentVersion, cached.version) > 0;
+    const skippedVersion = await getSkippedVersion();
+    const isSkipped = skippedVersion && cached.version === skippedVersion;
     return {
-      updateAvailable: isNewer,
+      updateAvailable: isNewer && !isSkipped,
       version: cached.version,
       downloadUrl: cached.downloadUrl,
       htmlUrl: cached.htmlUrl,
@@ -135,8 +157,10 @@ export async function checkForUpdates() {
   if (latest) {
     setCachedUpdateInfo(latest);
     const isNewer = compareVersions(currentVersion, latest.version) > 0;
+    const skippedVersion = await getSkippedVersion();
+    const isSkipped = skippedVersion && latest.version === skippedVersion;
     return {
-      updateAvailable: isNewer,
+      updateAvailable: isNewer && !isSkipped,
       version: latest.version,
       downloadUrl: latest.downloadUrl,
       htmlUrl: latest.htmlUrl,

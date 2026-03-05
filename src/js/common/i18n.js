@@ -122,7 +122,8 @@ const translations = {
     // Update notification
     'update.available': 'New version available',
     'update.download': 'Download',
-    'update.releasesPage': 'Releases',
+    'update.releasesPage': 'Release note',
+    'update.skipVersion': 'Skip this version',
     
     // Placeholders
     'placeholder.localText': 'You\'re on LOCAL env.',
@@ -257,8 +258,9 @@ const translations = {
     // Update notification
     'update.available': '新しいバージョンが利用可能です',
     'update.download': 'ダウンロード',
-    'update.releasesPage': 'リリースページ',
-    
+    'update.releasesPage': 'リリースノート',
+    'update.skipVersion': 'このバージョンをスキップ',
+
     // Placeholders
     'placeholder.localText': 'ローカル環境です',
     'placeholder.stagingText': 'ステージング環境です',
