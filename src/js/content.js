@@ -1,4 +1,19 @@
 // 環境表示バナーのコンテンツスクリプト
+(function injectFonts() {
+  const fonts = [
+    { family: 'Mulish', weight: 400, file: 'Mulish-Regular.ttf' },
+    { family: 'Mulish', weight: 700, file: 'Mulish-Bold.ttf' },
+    { family: 'M PLUS 1p', weight: 400, file: 'MPLUS1p-Regular.ttf' },
+    { family: 'M PLUS 1p', weight: 700, file: 'MPLUS1p-Bold.ttf' },
+  ];
+  const rules = fonts.map(
+    (f) =>
+      `@font-face{font-family:'${f.family}';font-style:normal;font-weight:${f.weight};font-display:swap;src:url('${chrome.runtime.getURL('fonts/' + f.file)}') format('truetype')}`
+  ).join('');
+  const style = document.createElement('style');
+  style.textContent = rules;
+  (document.head || document.documentElement).appendChild(style);
+})();
 import '../sass/content.scss';
 import { detectEnvironment, convertUrl } from './common/domain.js';
 import { getLuminance, hexToRgb } from './common/color.js';
