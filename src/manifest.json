@@ -1,14 +1,13 @@
 {
   "manifest_version": 3,
   "name": "torchlight",
-  "version": "1.5.3",
-  "description": "Display customizable banners to visually distinguish between local, staging, and production environments.",
+  "version": "1.5.4",
+  "description": "ローカル・テスト・本番環境を行き来しながら行う開発・制作作業をサポートします。",
   "permissions": [
     "storage",
     "tabs"
   ],
   "host_permissions": [
-    "<all_urls>",
     "https://api.github.com/*"
   ],
   "content_scripts": [

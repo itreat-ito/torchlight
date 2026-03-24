@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>プライバシーポリシー / Privacy Policy — torchlight</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --text: #1a1a1a;
+      --muted: #555;
+      --border: #ddd;
+      --bg: #fff;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --text: #f0f0f0;
+        --muted: #aaa;
+        --border: #444;
+        --bg: #121212;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      line-height: 1.65;
+      color: var(--text);
+      background: var(--bg);
+      margin: 0;
+      padding: 1.5rem clamp(1rem, 4vw, 2rem) 3rem;
+      max-width: 44rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .lang-nav {
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+      padding: 0.75rem 1rem;
+      background: color-mix(in srgb, var(--border) 35%, transparent);
+      border-radius: 6px;
+    }
+    .lang-nav a { margin-right: 1rem; white-space: nowrap; }
+    section[id] { scroll-margin-top: 1rem; }
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0 0 0.25rem;
+      letter-spacing: -0.02em;
+    }
+    .meta {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.75rem;
+      font-weight: 600;
+    }
+    p, ul { margin: 0 0 1rem; }
+    ul { padding-left: 1.25rem; }
+    li { margin-bottom: 0.35rem; }
+    a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+    .note {
+      font-size: 0.9rem;
+      color: var(--muted);
+      border-left: 3px solid var(--border);
+      padding-left: 1rem;
+      margin: 1rem 0;
+    }
+    .lang-divider {
+      margin: 3.5rem 0 2.5rem;
+      padding-top: 2.5rem;
+      border-top: 2px solid var(--border);
+    }
+    .lang-divider > h1:first-child {
+      margin-top: 0;
+    }
+    section[lang="en"] {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <nav class="lang-nav" aria-label="Language">
+    <a href="#privacy-ja">日本語</a>
+    <a href="#privacy-en">English</a>
+  </nav>
+
+  <!-- ========== 日本語版 ========== -->
+  <section id="privacy-ja" lang="ja">
+    <h1>プライバシーポリシー</h1>
+    <p class="meta">拡張機能: <strong>torchlight</strong><br>施行日: 2026年3月24日</p>
+
+    <p>
+      本プライバシーポリシーは、ブラウザ拡張機能「torchlight」（以下「<strong>本拡張機能</strong>」）が、利用時にどのように情報を取り扱うかを説明するものです。
+      本拡張機能は、ローカル・ステージング・本番などの環境を視覚的に区別し、関連する利便機能を提供することで、開発および本番運用の作業を支援するために提供されています。
+    </p>
+
+    <h2>概要</h2>
+    <ul>
+      <li>お客様の個人情報を<strong>販売しません</strong>。</li>
+      <li>本拡張機能内に広告やアクセス解析用のトラッカーを<strong>組み込んでいません</strong>。</li>
+      <li>お客様が入力した設定はブラウザに保存されます。Chrome の同期機能を利用している場合、一部の設定は Google の Chrome アカウント設定に従い同期されることがあります。</li>
+      <li>本拡張機能を<strong>Chrome ウェブストア</strong>からインストールした場合、後述の更新確認用エンドポイントには<strong>接続しません</strong>。</li>
+    </ul>
+
+    <h2>本拡張機能が取り扱う情報</h2>
+    <p>本拡張機能は、機能の提供に必要な範囲でのみデータを処理します。</p>
+    <ul>
+      <li>
+        <strong>閲覧中のウェブページの文脈</strong>: 環境表示バナーの表示、任意のページタイトル接頭辞の調整、キーボードショートカットの判定のため、現在のページの URL（ホスト名を含む）および必要に応じて文書タイトルを読み取ります。この処理はお使いのブラウザ内でローカルに行われます。
+      </li>
+      <li>
+        <strong>アクティブなタブの情報（拡張機能の UI 利用時）</strong>: ポップアップを使用する際、設定した別環境で同等の URL を開いたり、指定した形式でタブ情報をコピーしたりするため、アクティブなタブの URL および Chrome が拡張機能に提供する関連メタデータを読み取ります。
+      </li>
+      <li>
+        <strong>お客様が設定した項目</strong>: 例として、環境ごとのドメインパターンを含むプロジェクト定義、バナーの見た目、言語、キーボードショートカット、任意のページタイトルルール、クリップボード用の書式、拡張機能の有効／無効などです。これらは Chrome の拡張機能ストレージ API を用いて保存されます。
+      </li>
+      <li>
+        <strong>ローカル限定の更新関連の設定（Chrome ウェブストア以外からのインストール時）</strong>: ストア外でインストールした場合、繰り返しの案内を避けるため、小さなキャッシュおよび「このバージョンをスキップ」などの設定を端末内に保存することがあります。これらはお客様個人を識別するために用いません。
+      </li>
+    </ul>
+
+    <h2>Chrome のストレージと同期</h2>
+    <p>
+      多くの設定は <code>chrome.storage.sync</code> に保存され、同期が有効な場合は Chrome プロファイルに沿って利用できます。
+      Chrome にサインインし同期をオンにしている場合、同期データの取り扱いは
+      <a href="https://policies.google.com/privacy" rel="noopener noreferrer">Google のプライバシーポリシー</a>
+      に従います。本拡張機能が Google アカウントの認証情報を取得することはありません。
+    </p>
+    <p>
+      更新チェックのキャッシュやスキップしたバージョンの状態など、少量のデータは <code>chrome.storage.local</code> に保存される場合があります。これは端末に留まり、本拡張機能による同期の対象ではありません。
+    </p>
+
+    <h2>ネットワーク通信と第三者</h2>
+    <p><strong>GitHub（公開 API・条件付き）</strong></p>
+    <p>
+      本拡張機能が <strong>Chrome ウェブストア</strong> からインストールされたもので<strong>ない</strong>と判定した場合、新しいバージョンの案内のため、GitHub の公開 API
+      （<code>https://api.github.com/repos/itreat-ito/torchlight/releases/latest</code>）に最新リリースのメタデータを要求することがあります。
+      当該リクエストに、本拡張機能に入力された個人データを含めることはありません。HTTPS 通信に伴い GitHub が IP アドレスなど標準的な技術情報を受け取る場合があることについては、
+      <a href="https://docs.github.com/ja/site-policy/privacy-policies/github-privacy-statement" rel="noopener noreferrer">GitHub のプライバシーに関する声明</a>
+      をご参照ください。
+    </p>
+    <p class="note">
+      Chrome ウェブストアからインストールした場合、この GitHub による更新確認は<strong>無効</strong>です。更新は Chrome により行われます。
+    </p>
+    <p>
+      本拡張機能からリンクを辿ってリリースページやダウンロードページ等に移動した場合、それらのサイトは各サイトのポリシーが適用されます。
+    </p>
+
+    <h2>権限とその理由</h2>
+    <ul>
+      <li><strong>storage</strong> — 設定およびローカルの更新確認状態の保存・読み込みのため。</li>
+      <li><strong>tabs</strong> — ポップアップで環境切り替えやタブ情報のコピー等を行う際、アクティブなタブの URL を読み取るため。また、設定変更後に開いているタブへ通知するため。</li>
+      <li>
+        <strong>コンテンツスクリプト（マニフェスト宣言）</strong> — マニフェストで宣言された一致パターンに基づき、閲覧中のウェブページ上で環境バナー等の UI を表示します。Chrome のインストール画面では「すべてのウェブサイト上のデータの読取りと変更」などと表示されることがありますが、これはコンテンツスクリプトの注入範囲に関する表示です。本拡張機能は、任意のサイトへの広範なネットワークアクセスを付与する <code>host_permissions</code> としての <code>&lt;all_urls&gt;</code> は要求していません。
+      </li>
+      <li>
+        <strong>ホスト権限（https://api.github.com/*）</strong> — Chrome ウェブストア以外からのインストール時に、上記の条件付き GitHub API リクエストを行うため。
+      </li>
+    </ul>
+    <p>
+      また、利用可能な環境では <code>chrome.management.getSelf()</code> を用いて更新元が Chrome ウェブストアかどうかを判定します。<code>management</code> 権限は要求しません。
+    </p>
+
+    <h2>データの保存期間</h2>
+    <p>
+      設定は、Chrome で拡張機能のデータを消去する、本拡張機能をアンインストールする、オプションで編集するなど、お客様が削除するまで保持されます。
+      更新メタデータのキャッシュは、一定時間経過後または上書きにより無効化されます。
+    </p>
+
+    <h2>お子様について</h2>
+    <p>本拡張機能はお子様を対象としたものではなく、故意にお子様から個人情報を収集することはありません。</p>
+
+    <h2>本ポリシーの変更</h2>
+    <p>
+      本拡張機能の動作や要件の変更に伴い、本プライバシーポリシーを更新することがあります。
+      更新時には冒頭の施行日を改訂します。
+    </p>
+
+    <h2>お問い合わせ</h2>
+    <p>
+      本拡張機能に関するプライバシーに関するお問い合わせは、プロジェクトの Issue トラッカーからご連絡ください。
+      <a href="https://github.com/itreat-ito/torchlight/issues" rel="noopener noreferrer">https://github.com/itreat-ito/torchlight/issues</a>
+    </p>
+    <p class="note">
+      Chrome ウェブストアに提出する前に、本ページを安定した公開 URL（GitHub Pages や自社サイトなど）でホストし、ストアの掲載情報にプライバシーポリシーの URL を登録してください。
+    </p>
+  </section>
+
+  <!-- ========== English ========== -->
+  <section class="lang-divider" id="privacy-en" lang="en" aria-labelledby="privacy-en-heading">
+    <h1 id="privacy-en-heading">Privacy Policy</h1>
+    <p class="meta">Extension: <strong>torchlight</strong><br>Effective date: March 24, 2026</p>
+
+    <p>
+      This Privacy Policy describes how the torchlight browser extension (“<strong>Extension</strong>”) handles information when you use it.
+      The Extension is built to support development and production workflows by visually distinguishing environments (for example, local, staging, and production) and offering related convenience features.
+    </p>
+
+    <h2>Summary</h2>
+    <ul>
+      <li>We do <strong>not</strong> sell your personal information.</li>
+      <li>We do <strong>not</strong> run advertising or analytics trackers inside the Extension.</li>
+      <li>Configuration you enter is stored in your browser. If you use Chrome’s sync feature, some settings may be synchronized by Google according to your Chrome account settings.</li>
+      <li>When the Extension is installed from the <strong>Chrome Web Store</strong>, it does <strong>not</strong> contact our update-check endpoint described below.</li>
+    </ul>
+
+    <h2>Information the Extension processes</h2>
+    <p>The Extension processes data only as needed to provide its features:</p>
+    <ul>
+      <li>
+        <strong>Web page context (on pages you visit)</strong>: To show an environment banner, adjust optional page title prefixes, and evaluate keyboard shortcuts, the Extension reads the current page’s URL (including hostname) and, where applicable, the document title. This processing happens locally in your browser.
+      </li>
+      <li>
+        <strong>Active tab information (in the Extension UI)</strong>: When you use the popup, the Extension reads the active tab’s URL (and related metadata Chrome makes available to extensions) so you can open equivalent URLs in another configured environment or copy tab information using your chosen format.
+      </li>
+      <li>
+        <strong>Settings and preferences you configure</strong>: For example, project definitions (domain patterns per environment), banner appearance, language, keyboard shortcuts, optional page-title rules, copy-to-clipboard format, and whether the Extension is enabled. These values are stored using Chrome’s extension storage APIs.
+      </li>
+      <li>
+        <strong>Local-only update preferences (non–Chrome Web Store installs)</strong>: If you install the Extension outside the Chrome Web Store, the Extension may store a small cache and a “skipped version” preference locally to avoid repeated prompts. These are not used to identify you.
+      </li>
+    </ul>
+
+    <h2>Chrome storage and sync</h2>
+    <p>
+      Most settings are stored with <code>chrome.storage.sync</code> so they can follow your Chrome profile when syncing is enabled.
+      If you are signed in to Chrome and have sync turned on, Google processes synced data under the
+      <a href="https://policies.google.com/privacy" rel="noopener noreferrer">Google Privacy Policy</a>.
+      The Extension does not receive your Google account credentials.
+    </p>
+    <p>
+      A small amount of data (update-check cache and skipped-version state) may be stored with <code>chrome.storage.local</code>, which stays on your device and is not synced by this Extension.
+    </p>
+
+    <h2>Network requests and third parties</h2>
+    <p><strong>GitHub (public API, conditional)</strong></p>
+    <p>
+      If the Extension detects that it is <strong>not</strong> installed from the Chrome Web Store, it may request public release metadata from GitHub’s API
+      (<code>https://api.github.com/repos/itreat-ito/torchlight/releases/latest</code>) to inform you about newer versions.
+      That request does not include personal data you typed into the Extension. GitHub may receive standard technical data (such as IP address) as part of any HTTPS request, as described in
+      <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" rel="noopener noreferrer">GitHub’s privacy statement</a>.
+    </p>
+    <p class="note">
+      When the Extension is installed from the Chrome Web Store, this GitHub update check is <strong>disabled</strong>; updates are handled by Chrome.
+    </p>
+    <p>
+      If you follow links from the Extension (for example, to a release or download page), those sites are governed by their own policies.
+    </p>
+
+    <h2>Permissions (why they exist)</h2>
+    <ul>
+      <li><strong>storage</strong> — Save and load your settings and local update-check state.</li>
+      <li><strong>tabs</strong> — Read the active tab’s URL for popup actions (environment switching, copying tab info) and notify open tabs after settings change.</li>
+      <li>
+        <strong>Content scripts (declared in the manifest)</strong> — Run on pages that match the manifest’s patterns so the environment banner and related UI can appear. Chrome’s install prompt may describe broad site access (for example, read and change data on websites); that wording reflects where content scripts may run. The Extension does <strong>not</strong> request broad <code>&lt;all_urls&gt;</code> under <code>host_permissions</code>, which would grant wider programmatic network access to arbitrary origins.
+      </li>
+      <li>
+        <strong>Host access (https://api.github.com/*)</strong> — Allow the conditional GitHub API request described above for non–Chrome Web Store installations.
+      </li>
+    </ul>
+    <p>
+      The Extension also uses <code>chrome.management.getSelf()</code> where available to detect whether updates come from the Chrome Web Store, without requesting the <code>management</code> permission.
+    </p>
+
+    <h2>Data retention</h2>
+    <p>
+      Your settings remain until you remove them (for example, by clearing extension data in Chrome, uninstalling the Extension, or editing options).
+      Cached update metadata expires after a limited time or when replaced.
+    </p>
+
+    <h2>Children</h2>
+    <p>The Extension is not directed at children, and we do not knowingly collect personal information from children.</p>
+
+    <h2>Changes to this policy</h2>
+    <p>
+      We may update this Privacy Policy when the Extension’s behavior or requirements change.
+      The effective date at the top will be revised when updates are published.
+    </p>
+
+    <h2>Contact</h2>
+    <p>
+      For privacy questions about this Extension, please contact us through the project’s issue tracker:
+      <a href="https://github.com/itreat-ito/torchlight/issues" rel="noopener noreferrer">https://github.com/itreat-ito/torchlight/issues</a>
+    </p>
+    <p class="note">
+      Before submitting to the Chrome Web Store, host this page at a stable public URL (for example, GitHub Pages or your company website) and enter that URL in the listing’s privacy policy field.
+    </p>
+  </section>
+</body>
+</html>
