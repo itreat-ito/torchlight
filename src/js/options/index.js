@@ -17,6 +17,7 @@ import {
   setupSettingsEventListeners
 } from './settings/index.js';
 import { checkForUpdates, skipVersion } from '../common/update-check.js';
+import { isInstalledFromChromeWebStore } from '../common/install-source.js';
 
 // DOM elements
 const elements = {
@@ -110,6 +111,8 @@ async function checkAndShowUpdateBanner() {
   const releasesLink = document.getElementById('update-releases-link');
   const skipBtn = document.getElementById('update-skip-btn');
   if (!updateBanner || !downloadLink || !releasesLink) return;
+
+  if (await isInstalledFromChromeWebStore()) return;
 
   const result = await checkForUpdates();
   if (result.updateAvailable && result.htmlUrl) {

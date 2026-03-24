@@ -21,6 +21,7 @@ import { matchesShortcut, isInputFocused } from './common/keyboard.js';
 import { showSuccessToast } from './common/toast.js';
 import { t, loadLanguage } from './common/i18n.js';
 import { checkForUpdates, skipVersion } from './common/update-check.js';
+import { isInstalledFromChromeWebStore } from './common/install-source.js';
 
 (function() {
   'use strict';
@@ -41,8 +42,11 @@ import { checkForUpdates, skipVersion } from './common/update-check.js';
   // 更新バナーを作成
   function createUpdateBanner(container, position) {
     loadLanguage().then(() => {
-      checkForUpdates().then((result) => {
-        if (!result.updateAvailable) return;
+      isInstalledFromChromeWebStore().then((fromStore) => {
+        if (fromStore) return;
+        return checkForUpdates();
+      }).then((result) => {
+        if (!result || !result.updateAvailable) return;
         const updateBanner = document.createElement('div');
         updateBanner.id = 'env-update-banner';
         updateBanner.className = 'env-update-banner';
